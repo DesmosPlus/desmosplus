@@ -19,8 +19,8 @@ send calculator data to external services.
 Node.js 18 or newer is recommended. No dependencies need to be installed.
 
 ```sh
-git clone https://github.com/loleksyuk/github-.git
-cd github-
+git clone https://github.com/loleksyuk/desmosplus.git
+cd desmosplus
 node scripts/serve.mjs
 ```
 
@@ -48,7 +48,7 @@ Use any Node.js hosting service that can run a command from the repository.
 
 ### Render
 
-1. Create a new Web Service and connect `loleksyuk/github-`.
+1. Create a new Web Service and connect `loleksyuk/desmosplus`.
 2. Select the Node runtime.
 3. Leave the build command empty.
 4. Set the start command to `node scripts/serve.mjs`.
@@ -56,7 +56,7 @@ Use any Node.js hosting service that can run a command from the repository.
 
 ### Railway
 
-1. Create a project from `loleksyuk/github-`.
+1. Create a project from `loleksyuk/desmosplus`.
 2. Set the start command to `node scripts/serve.mjs`.
 3. Generate a public domain for the service.
 
