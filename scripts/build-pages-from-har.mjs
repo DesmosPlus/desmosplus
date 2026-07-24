@@ -76,8 +76,9 @@ function writeEntry(entry) {
   written.add(localPath);
 }
 
-function rewriteHtml(html) {
+function rewriteHtml(html, capture) {
   return html
+    .replace(/<title>[\s\S]*?<\/title>/i, `<title>DesmosPlus | ${capture.title}</title>`)
     .replace(/<link\s+rel="canonical"[^>]*>/gi, "")
     .replace(/<link\s+rel="alternate"[^>]*>/gi, "")
     .replace(
@@ -123,7 +124,7 @@ for (const capture of captures) {
   if (!entry) throw new Error(`No HTML entry found in ${capture.har}`);
 
   const pagePath = path.join(root, `${capture.slug}.html`);
-  fs.writeFileSync(pagePath, rewriteHtml(entry.response.content.text));
+  fs.writeFileSync(pagePath, rewriteHtml(entry.response.content.text, capture));
 }
 
 fs.mkdirSync(path.join(root, "account"), { recursive: true });
@@ -138,7 +139,10 @@ fs.mkdirSync(path.join(root, "sessions"), { recursive: true });
 fs.writeFileSync(path.join(root, "sessions", "bugsnag"), "\n");
 
 const links = captures
-  .map((capture) => `      <li><a href="/${capture.slug}.html">${capture.title}</a></li>`)
+  .map(
+    (capture) =>
+      `        <a href="/${capture.slug}.html"><strong>${capture.title}</strong><span>Open</span></a>`,
+  )
   .join("\n");
 
 fs.writeFileSync(
@@ -148,13 +152,21 @@ fs.writeFileSync(
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Desmos Pages</title>
+    <title>DesmosPlus | Calculators</title>
+    <link rel="stylesheet" href="/assets/local/offline-save.css">
   </head>
-  <body>
-    <h1>Desmos Pages</h1>
-    <ul>
+  <body class="desmosplus-home">
+    <header id="desmosplus-shell">
+      <a class="desmosplus-brand" href="/">DesmosPlus</a>
+      <span class="desmosplus-home-section">Calculators</span>
+    </header>
+    <main>
+      <h1>Calculators</h1>
+      <p>Local tools and saved work.</p>
+      <nav aria-label="Calculators">
 ${links}
-    </ul>
+      </nav>
+    </main>
   </body>
 </html>
 `,

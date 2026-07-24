@@ -1,4 +1,4 @@
-# Offline Calculator Pages
+# DesmosPlus
 
 Seven calculator pages recovered from local captures and packaged with their
 scripts, styles, fonts, and images. The pages do not load third-party scripts or

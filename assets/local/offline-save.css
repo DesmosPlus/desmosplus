@@ -1,48 +1,240 @@
+:root {
+  --desmosplus-bar-height: 44px;
+}
+
+#desmosplus-shell,
+#desmosplus-shell *,
+#local-save-panel,
+#local-save-panel * {
+  box-sizing: border-box;
+  border-radius: 0 !important;
+}
+
+#desmosplus-shell {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  height: var(--desmosplus-bar-height);
+  border-bottom: 1px solid #000;
+  background: #fff;
+  color: #000;
+  font: 14px Arial, sans-serif;
+}
+
+#desmosplus-shell a,
+#desmosplus-shell button,
+#desmosplus-shell select {
+  height: 100%;
+  border: 0;
+  border-right: 1px solid #000;
+  background: #fff;
+  color: #000;
+  font: inherit;
+}
+
+#desmosplus-shell button,
+#desmosplus-shell select {
+  padding: 0 12px;
+}
+
+#desmosplus-shell a,
+#desmosplus-shell button {
+  cursor: pointer;
+}
+
+#desmosplus-shell a:hover,
+#desmosplus-shell button:hover,
+#desmosplus-shell select:hover,
+#desmosplus-shell a:focus-visible,
+#desmosplus-shell button:focus-visible,
+#desmosplus-shell select:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: -2px;
+}
+
+.desmosplus-brand {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  color: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.desmosplus-product-label {
+  padding: 0 8px 0 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.desmosplus-home-section {
+  padding: 0 12px;
+}
+
+#desmosplus-product {
+  min-width: 150px;
+}
+
+.desmosplus-actions {
+  display: flex;
+  align-self: stretch;
+  margin-left: auto;
+  border-left: 1px solid #000;
+}
+
+.desmosplus-actions button:last-child {
+  border-right: 0 !important;
+}
+
 #local-save-panel {
   position: fixed;
+  inset: var(--desmosplus-bar-height) 0 0 auto;
+  z-index: 99999;
+  width: min(340px, 100vw);
+  overflow: auto;
+  border-left: 1px solid #000;
+  background: #fff;
+  color: #000;
+  font: 14px Arial, sans-serif;
+}
+
+#local-save-panel[hidden] {
+  display: none;
+}
+
+.local-panel-header {
+  position: sticky;
   top: 0;
-  right: 0;
-  z-index: 100000;
-  font: 12px Arial, sans-serif;
-  padding: 6px;
-  border: 1px solid;
-  background: white;
-  max-width: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding-left: 12px;
+  border-bottom: 1px solid #000;
+  background: #fff;
 }
 
-#local-save-panel form,
-#local-save-panel label,
-#local-save-panel .local-save-row {
-  display: block;
-  margin: 0 0 4px;
-}
-
+#local-save-panel button,
 #local-save-panel input,
-#local-save-panel select,
-#local-save-panel button {
+#local-save-panel select {
+  min-height: 34px;
+  border: 1px solid #000;
+  background: #fff;
+  color: #000;
   font: inherit;
+}
+
+#local-save-panel button {
+  padding: 0 10px;
+  cursor: pointer;
 }
 
 #local-save-panel input,
 #local-save-panel select {
-  width: 170px;
+  width: 100%;
+  padding: 6px;
 }
 
-#local-save-panel .local-save-actions {
-  margin-top: 4px;
+#local-close {
+  align-self: stretch;
+  border-width: 0 0 0 1px !important;
+}
+
+#local-save-form,
+.local-filters {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-bottom: 1px solid #000;
+}
+
+#local-save-form label,
+.local-filters label {
+  font-size: 12px;
+  font-weight: 700;
 }
 
 #local-save-list {
-  max-height: 160px;
-  overflow: auto;
-  margin-top: 4px;
+  padding: 0 12px;
 }
 
-#local-save-list button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  margin: 0 0 2px;
+.local-save-row {
+  display: grid;
+  gap: 5px;
+  padding: 12px 0;
+  border-bottom: 1px solid #000;
+}
+
+.local-save-row small {
+  overflow-wrap: anywhere;
+}
+
+.local-save-row div {
+  display: flex;
+  gap: 6px;
+}
+
+.local-empty,
+#local-save-status {
+  margin: 0;
+  padding: 12px 0;
+}
+
+#local-save-status {
+  padding-right: 12px;
+  padding-left: 12px;
+}
+
+.desmosplus-home {
+  margin: 0;
+  color: #000;
+  background: #fff;
+  font: 16px Arial, sans-serif;
+}
+
+.desmosplus-home #desmosplus-shell {
+  position: static;
+}
+
+.desmosplus-home main {
+  width: min(760px, calc(100% - 32px));
+  margin: 40px auto;
+}
+
+.desmosplus-home h1 {
+  margin: 0 0 8px;
+  font-size: 32px;
+  letter-spacing: 0;
+}
+
+.desmosplus-home p {
+  margin: 0 0 24px;
+}
+
+.desmosplus-home nav {
+  border-top: 1px solid #000;
+}
+
+.desmosplus-home nav a {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #000;
+  color: #000;
+  text-decoration: none;
+}
+
+.desmosplus-home nav span {
+  font-size: 13px;
+}
+
+.desmosplus-home nav a:hover,
+.desmosplus-home nav a:focus-visible {
+  text-decoration: underline;
 }
 
 .dcg-action-sign-in,
@@ -57,7 +249,52 @@
 .dcg-notice--authenticate,
 .dcg-notice-wrapper,
 .dcg-authentication-modal,
+.dcg-header,
+.dcg-powered-by,
+.dcg-powered-by + .dcg-icon-desmos,
 #navigation,
 .dcg-basic-calc-footer {
   display: none !important;
+}
+
+@media (max-width: 620px) {
+  .desmosplus-product-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .desmosplus-brand {
+    padding: 0 10px;
+    font-size: 15px;
+  }
+
+  #desmosplus-product {
+    min-width: 0;
+    width: 120px;
+    padding: 0 6px !important;
+  }
+
+  #local-new {
+    display: none;
+  }
+
+  #desmosplus-shell button {
+    padding: 0 8px;
+  }
+}
+
+@media (max-width: 340px) {
+  .desmosplus-brand {
+    width: 44px;
+    padding: 0 12px;
+    font-size: 0;
+  }
+
+  .desmosplus-brand::after {
+    content: "D+";
+    font-size: 15px;
+  }
 }
