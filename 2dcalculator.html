@@ -1,0 +1,123 @@
+<!doctype html>
+    <html no_gl="true" lang="en" class="dcg-calculator-api-container-v1_13">
+      <head>
+        <link rel="stylesheet" href="/assets/build/shared_calculator_desktop-107e9102cbe602f07d5d9d0de66cc3625261ae7c.css" />
+        <link rel="icon" href="/assets/img/apps/graphing/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="/assets/img/apps/graphing/apple-touch-icon.png" />
+        <link rel="manifest" href="/assets/pwa/app.webmanifest" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <meta name="Description" content="Explore math with our beautiful, free online graphing calculator. Graph functions, plot points, visualize algebraic equations, add sliders, animate graphs, and more." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:title" content="Desmos | Graphing Calculator" />
+    <meta property="og:site_name" content="Desmos" />
+    
+    <title>Desmos | Graphing Calculator</title>
+    <style>
+      @keyframes dcg-loading-pulse {
+        0% {
+          opacity: 0;
+        }
+        20% {
+          opacity: 1;
+        }
+        80% {
+          opacity: 0;
+          transform: scale(1.5, 1.5);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.5, 1.5);
+        }
+      }
+
+      .dcg-loading-div-container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: #fff;
+        z-index: 1000;
+      }
+
+      .dcg-loading-background-div {
+        animation: dcg-loading-pulse 2.2s infinite;
+        background: #eee;
+        width: 140px;
+        height: 140px;
+        display: inline-block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -70px;
+        margin-top: -70px;
+        border-radius: 50%;
+      }
+
+      .dcg-loading-div {
+        font-size: 18px;
+        width: 140px;
+        height: 140px;
+        display: inline-block;
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        color: transparent;
+        margin-left: -70px;
+        margin-top: -70px;
+        border-radius: 50%;
+        background: no-repeat center center;
+        background-size: 120px 25px;
+        background-image: url(data:image/webp;base64,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);
+      }
+    </style>
+              <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline' data:; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; worker-src 'self' blob:; child-src 'self' blob:; frame-src 'self' blob:;">
+        <link rel="stylesheet" href="/assets/local/offline-save.css" />
+      </head>
+      <body data-load-data="{&quot;initialProduct&quot;:&quot;graphing&quot;}">
+        <div class="dcg-loading-div-container">
+      <div class="dcg-loading-background-div"></div>
+      <div class="dcg-loading-div">Loading...</div>
+    </div>
+    <div class="dcg-sliding-interior">
+      <div id="dcg-header-container"></div>
+      <div id="dcg-main-content"></div>
+    </div>
+    <div id="mygraphs-container"></div>
+    <div id="dcg-modal-container" handleEvent="true"></div>
+    <img
+      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wLEhYhKmtn2wYAAAAidEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVAgb24gYSBNYWOHqHdDAAAADElEQVQI12P4//8/AAX+Av7czFnnAAAAAElFTkSuQmCC"
+      id="whitebg"
+      aria-hidden="true"
+      alt=""
+    /><script type="text/javascript">
+      try {
+        if (window !== window.top) {
+          window.onerror = window.top.onerror;
+          window.addEventListener('unhandledrejection', function (e) {
+            throw e.reason;
+          });
+        }
+      } catch (ex) {}
+      if (typeof Desmos === 'undefined') Desmos = {};
+      Desmos.config = {};
+      Desmos.commit = '20a9e59d27dbc6740729f1f35f0439b3e9347201';
+    </script><script type="text/javascript">
+      if (!window.console) window.console = {};
+      if (!window.console.log) window.console.log = function () {};
+    </script><script type="text/javascript">
+      if (window.location.protocol === 'file:') {
+        window.history.pushState = function () {};
+        window.history.replaceState = function () {};
+      }
+    </script>
+        <script src="/assets/local/offline-guard.js"></script>
+        <script src="/assets/build/shared_calculator_desktop-439f0ecfe37f5abf802d0f5ab4a878fd6798cff3.js"></script>
+        
+        
+        <script src="/assets/local/offline-save.js"></script>
+      </body>
+    </html>

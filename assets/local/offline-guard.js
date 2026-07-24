@@ -1,0 +1,89 @@
+(function () {
+  "use strict";
+
+  function isLocalUrl(value) {
+    try {
+      var url = new URL(value, window.location.href);
+      return (
+        url.origin === window.location.origin ||
+        url.protocol === "data:" ||
+        url.protocol === "blob:" ||
+        url.protocol === "about:"
+      );
+    } catch (error) {
+      return true;
+    }
+  }
+
+  function emptyResponse() {
+    return new Response("{}", {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  }
+
+  if (window.fetch) {
+    var originalFetch = window.fetch.bind(window);
+    window.fetch = function (input, init) {
+      var url = typeof input === "string" ? input : input && input.url;
+      if (url && !isLocalUrl(url)) return Promise.resolve(emptyResponse());
+      return originalFetch(input, init);
+    };
+  }
+
+  if (window.XMLHttpRequest) {
+    var originalOpen = XMLHttpRequest.prototype.open;
+    var originalSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open = function (method, url) {
+      this.__offlineBlocked = url && !isLocalUrl(url);
+      if (this.__offlineBlocked) {
+        this.__offlineMethod = method || "GET";
+        this.__offlineUrl = url;
+        return;
+      }
+      return originalOpen.apply(this, arguments);
+    };
+    XMLHttpRequest.prototype.send = function () {
+      if (!this.__offlineBlocked) return originalSend.apply(this, arguments);
+      setTimeout(
+        function () {
+          this.dispatchEvent(new Event("loadend"));
+        }.bind(this),
+        0,
+      );
+    };
+  }
+
+  if (navigator.sendBeacon) {
+    var originalBeacon = navigator.sendBeacon.bind(navigator);
+    navigator.sendBeacon = function (url, data) {
+      if (!isLocalUrl(url)) return false;
+      return originalBeacon(url, data);
+    };
+  }
+
+  var originalAppendChild = Node.prototype.appendChild;
+  Node.prototype.appendChild = function (node) {
+    if (
+      node &&
+      node.tagName === "SCRIPT" &&
+      node.src &&
+      !isLocalUrl(node.src)
+    ) {
+      node.removeAttribute("src");
+      node.text = "";
+    }
+    return originalAppendChild.apply(this, arguments);
+  };
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      var link = event.target && event.target.closest && event.target.closest("a[href]");
+      if (!link || isLocalUrl(link.href)) return;
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    true,
+  );
+})();

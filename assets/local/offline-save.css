@@ -1,0 +1,63 @@
+#local-save-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100000;
+  font: 12px Arial, sans-serif;
+  padding: 6px;
+  border: 1px solid;
+  background: white;
+  max-width: 280px;
+}
+
+#local-save-panel form,
+#local-save-panel label,
+#local-save-panel .local-save-row {
+  display: block;
+  margin: 0 0 4px;
+}
+
+#local-save-panel input,
+#local-save-panel select,
+#local-save-panel button {
+  font: inherit;
+}
+
+#local-save-panel input,
+#local-save-panel select {
+  width: 170px;
+}
+
+#local-save-panel .local-save-actions {
+  margin-top: 4px;
+}
+
+#local-save-list {
+  max-height: 160px;
+  overflow: auto;
+  margin-top: 4px;
+}
+
+#local-save-list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 0 0 2px;
+}
+
+.dcg-action-sign-in,
+.dcg-action-sign-up,
+.dcg-action-login,
+.dcg-action-createaccount,
+.dcg-sign-in,
+.dcg-sign-up,
+.dcg-create-account,
+.dcg-login,
+.dcg-account-menu,
+.dcg-notice--authenticate,
+.dcg-notice-wrapper,
+.dcg-authentication-modal,
+#navigation,
+.dcg-basic-calc-footer {
+  display: none !important;
+}
