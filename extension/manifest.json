@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "DesmosPlus Exporter",
+  "version": "1.0.0",
+  "description": "Export a Desmos calculator state for DesmosPlus.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_title": "Export to DesmosPlus",
+    "default_popup": "popup.html"
+  }
+}

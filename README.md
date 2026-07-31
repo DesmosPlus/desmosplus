@@ -81,6 +81,33 @@ Saved calculators stay in that browser and website address. They do not sync
 between devices. Changing the deployed domain creates a separate browser
 storage area, while redeploying to the same domain preserves existing saves.
 
+## Chrome Extension
+
+The extension exports the raw state of a Desmos graph into a
+`.desmosplus.json` file. Expressions, folders, sliders, tables, regressions,
+notes, settings, and product-specific state remain in the file.
+
+Library also accepts raw Desmos state JSON containing `graph` and
+`expressions.list`. Raw files import into the calculator currently open.
+
+Install it in Chrome or another Chromium browser:
+
+1. Open `chrome://extensions`.
+2. Enable Developer mode.
+3. Select Load unpacked.
+4. Select the `extension` folder from this repository.
+
+Export and import a graph:
+
+1. Open a calculator on `desmos.com` and wait for it to load.
+2. Open DesmosPlus Exporter and select Export graph.
+3. Open the matching calculator in DesmosPlus.
+4. Open Library and select Import graph file.
+5. Select the exported `.desmosplus.json` file.
+
+The importer automatically switches to the matching DesmosPlus calculator and
+opens the imported state.
+
 ## Rebuild from the HAR Files
 
 Place the original HAR files in the paths expected by

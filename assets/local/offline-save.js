@@ -211,6 +211,8 @@
       '<input id="local-save-category" list="local-save-categories" autocomplete="off">' +
       '<datalist id="local-save-categories"></datalist>' +
       '<button type="submit">Save instance</button>' +
+      '<button type="button" id="local-import">Import graph file</button>' +
+      '<input type="file" id="local-import-file" accept=".json,.desmosplus.json,application/json" hidden>' +
       "</form>" +
       '<div class="local-filters">' +
       '<label for="local-product-filter">Calculator</label>' +
@@ -226,6 +228,14 @@
     document.getElementById("local-save-form").addEventListener("submit", function (event) {
       event.preventDefault();
       saveCurrent();
+    });
+    document.getElementById("local-import").addEventListener("click", function () {
+      document.getElementById("local-import-file").click();
+    });
+    document.getElementById("local-import-file").addEventListener("change", function (event) {
+      var file = event.target.files && event.target.files[0];
+      if (file) importGraph(file);
+      event.target.value = "";
     });
     document.getElementById("local-close").addEventListener("click", closePanel);
     document.getElementById("local-product-filter").addEventListener("change", render);
@@ -330,6 +340,63 @@
     writeStore(store);
     render();
     status("Deleted local instance.");
+  }
+
+  function knownProduct(value) {
+    return PRODUCTS.some(function (entry) {
+      return entry[0] === value;
+    });
+  }
+
+  async function importGraph(file) {
+    try {
+      var imported = JSON.parse(await file.text());
+      var wrapped = imported.format === "desmosplus.graph" && imported.version === 1;
+      var raw =
+        !wrapped &&
+        imported &&
+        typeof imported === "object" &&
+        !Array.isArray(imported) &&
+        imported.graph &&
+        typeof imported.graph === "object" &&
+        imported.expressions &&
+        Array.isArray(imported.expressions.list);
+      var importedProduct = wrapped ? imported.product : product();
+      var importedState = wrapped ? imported.state : imported;
+      if (
+        (!wrapped && !raw) ||
+        !knownProduct(importedProduct) ||
+        !importedState ||
+        typeof importedState !== "object" ||
+        Array.isArray(importedState)
+      ) {
+        throw new Error("Invalid DesmosPlus graph file.");
+      }
+
+      var store = readStore();
+      var id = importedProduct + "-import-" + Date.now().toString(36);
+      store.saves.push({
+        id: id,
+        product: importedProduct,
+        category: safeName(wrapped && imported.category, "Imported"),
+        name: safeName(wrapped && imported.name, file.name.replace(/\.(desmosplus\.)?json$/i, "")),
+        state: importedState,
+        updatedAt: new Date().toISOString(),
+      });
+      writeStore(store);
+
+      if (importedProduct !== product()) {
+        window.location.href =
+          productPath(importedProduct) + "#save=" + encodeURIComponent(id);
+        return;
+      }
+
+      openSave(id);
+      openPanel();
+      status("Imported graph.");
+    } catch (error) {
+      status(error.message || String(error));
+    }
   }
 
   function categories(store, productFilter) {
@@ -480,7 +547,10 @@
       button.classList.add("dcg-local-save-button");
     });
     document.querySelectorAll('[aria-label*="Desmos"]').forEach(function (node) {
-      node.setAttribute("aria-label", node.getAttribute("aria-label").replaceAll("Desmos", "DesmosPlus"));
+      node.setAttribute(
+        "aria-label",
+        node.getAttribute("aria-label").replace(/Desmos(?!Plus)/g, "DesmosPlus"),
+      );
     });
   }
 
