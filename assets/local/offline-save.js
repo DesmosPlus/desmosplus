@@ -80,8 +80,7 @@
     var speed = Number(value);
     turbo.speed = TURBO_SPEEDS.indexOf(speed) === -1 ? 1 : speed;
 
-    var select = document.getElementById("local-turbo");
-    if (select) select.value = String(turbo.speed);
+    setDropdownValue("local-turbo", String(turbo.speed));
     document.documentElement.setAttribute("data-turbo-speed", String(turbo.speed));
 
     try {
@@ -102,10 +101,10 @@
   function installTurbo() {
     var current = api();
     var controller = current && current._calc && current._calc.controller;
-    var select = document.getElementById("local-turbo");
+    var button = document.getElementById("local-turbo-button");
 
     if (!controller || typeof controller.handleTick !== "function") {
-      if (select) select.disabled = true;
+      if (button) button.disabled = true;
       document.documentElement.setAttribute("data-turbo-api", "unavailable");
       return;
     }
@@ -135,8 +134,121 @@
       return result;
     };
 
-    if (select) select.disabled = false;
+    if (button) button.disabled = false;
     document.documentElement.setAttribute("data-turbo-api", "ready");
+  }
+
+  function dropdownHtml(id, value, options) {
+    var selected = options.find(function (option) {
+      return option[0] === value;
+    });
+    return (
+      '<div class="desmosplus-menu" id="' +
+      id +
+      '" data-value="' +
+      escapeHtml(value) +
+      '">' +
+      '<button type="button" class="desmosplus-menu-button" id="' +
+      id +
+      '-button" role="combobox" aria-expanded="false" aria-controls="' +
+      id +
+      '-options" aria-haspopup="listbox">' +
+      escapeHtml(selected ? selected[1] : value) +
+      "</button>" +
+      '<div class="desmosplus-menu-options" id="' +
+      id +
+      '-options" role="listbox" hidden>' +
+      options
+        .map(function (option) {
+          return (
+            '<button type="button" role="option" data-value="' +
+            escapeHtml(option[0]) +
+            '" aria-selected="' +
+            (option[0] === value ? "true" : "false") +
+            '">' +
+            escapeHtml(option[1]) +
+            "</button>"
+          );
+        })
+        .join("") +
+      "</div></div>"
+    );
+  }
+
+  function setDropdownValue(id, value) {
+    var dropdown = document.getElementById(id);
+    if (!dropdown) return;
+    var selected = dropdown.querySelector('[data-value="' + value + '"]');
+    if (!selected) return;
+    dropdown.setAttribute("data-value", value);
+    document.getElementById(id + "-button").textContent = selected.textContent;
+    dropdown.querySelectorAll("[role=option]").forEach(function (option) {
+      option.setAttribute("aria-selected", option === selected ? "true" : "false");
+    });
+  }
+
+  function closeDropdown(dropdown, restoreFocus) {
+    var button = dropdown.querySelector(".desmosplus-menu-button");
+    dropdown.querySelector(".desmosplus-menu-options").hidden = true;
+    button.setAttribute("aria-expanded", "false");
+    if (restoreFocus) button.focus();
+  }
+
+  function setupDropdown(id, onSelect) {
+    var dropdown = document.getElementById(id);
+    var button = dropdown.querySelector(".desmosplus-menu-button");
+    var options = Array.from(dropdown.querySelectorAll("[role=option]"));
+
+    button.addEventListener("click", function () {
+      var list = dropdown.querySelector(".desmosplus-menu-options");
+      document.querySelectorAll(".desmosplus-menu").forEach(function (other) {
+        if (other !== dropdown) closeDropdown(other, false);
+      });
+      list.hidden = !list.hidden;
+      button.setAttribute("aria-expanded", list.hidden ? "false" : "true");
+    });
+
+    options.forEach(function (option, index) {
+      option.addEventListener("click", function () {
+        setDropdownValue(id, option.getAttribute("data-value"));
+        closeDropdown(dropdown, true);
+        onSelect(option.getAttribute("data-value"));
+      });
+      option.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeDropdown(dropdown, true);
+        } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          var step = event.key === "ArrowDown" ? 1 : -1;
+          options[(index + step + options.length) % options.length].focus();
+        }
+      });
+    });
+
+    button.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeDropdown(dropdown, false);
+      } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        var list = dropdown.querySelector(".desmosplus-menu-options");
+        list.hidden = false;
+        button.setAttribute("aria-expanded", "true");
+        options[event.key === "ArrowDown" ? 0 : options.length - 1].focus();
+      }
+    });
+
+    document.addEventListener("click", function () {
+      closeDropdown(dropdown, false);
+    });
+  }
+
+  function isolateControls(container) {
+    ["pointerdown", "mousedown", "mouseup", "click", "touchstart"].forEach(function (type) {
+      container.addEventListener(type, function (event) {
+        event.stopPropagation();
+      });
+    });
   }
 
   function cookieMap() {
@@ -245,40 +357,29 @@
     shell.id = "desmosplus-shell";
     shell.innerHTML =
       '<a class="desmosplus-brand" href="/">DesmosPlus</a>' +
-      '<label class="desmosplus-product-label" for="desmosplus-product">Calculator</label>' +
-      '<select id="desmosplus-product" aria-label="Calculator">' +
-      PRODUCTS.map(function (entry) {
-        return (
-          '<option value="' +
-          escapeHtml(entry[0]) +
-          '"' +
-          (entry[0] === product() ? " selected" : "") +
-          ">" +
-          escapeHtml(entry[1]) +
-          "</option>"
-        );
-      }).join("") +
-      "</select>" +
+      '<label class="desmosplus-product-label" for="desmosplus-product-button">Calculator</label>' +
+      dropdownHtml("desmosplus-product", product(), PRODUCTS) +
       '<div class="desmosplus-actions">' +
-      '<label class="desmosplus-turbo-label" for="local-turbo">Turbo</label>' +
-      '<select id="local-turbo" aria-label="Turbo speed" title="Higher speeds use more CPU and memory">' +
-      '<option value="1">Off</option>' +
-      '<option value="2">2x</option>' +
-      '<option value="4">4x</option>' +
-      '<option value="8">8x</option>' +
-      '<option value="16">16x</option>' +
-      "</select>" +
+      '<label class="desmosplus-turbo-label" for="local-turbo-button">Turbo</label>' +
+      dropdownHtml("local-turbo", "1", [
+        ["1", "Off"],
+        ["2", "2x"],
+        ["4", "4x"],
+        ["8", "8x"],
+        ["16", "16x"],
+      ]) +
       '<button type="button" id="local-new">New</button>' +
       '<button type="button" id="local-save">Save</button>' +
       '<button type="button" id="local-library" aria-expanded="false">Library</button>' +
       "</div>";
     document.body.appendChild(shell);
+    isolateControls(shell);
 
-    document.getElementById("desmosplus-product").addEventListener("change", function (event) {
-      window.location.href = productPath(event.target.value);
+    setupDropdown("desmosplus-product", function (value) {
+      window.location.href = productPath(value);
     });
-    document.getElementById("local-turbo").addEventListener("change", function (event) {
-      setTurboSpeed(event.target.value, true);
+    setupDropdown("local-turbo", function (value) {
+      setTurboSpeed(value, true);
     });
     document.getElementById("local-new").addEventListener("click", newCurrent);
     document.getElementById("local-save").addEventListener("click", saveCurrent);
@@ -315,6 +416,7 @@
       '<div id="local-save-list"></div>' +
       '<div id="local-save-status" aria-live="polite"></div>';
     document.body.appendChild(panel);
+    isolateControls(panel);
 
     document.getElementById("local-save-category").value = productName(product());
     document.getElementById("local-save-form").addEventListener("submit", function (event) {
