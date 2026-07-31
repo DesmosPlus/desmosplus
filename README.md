@@ -5,7 +5,7 @@
 <h1 align="center">DesmosPlus</h1>
 
 <p align="center">
-  Offline-first calculator workspace with local saves and a Chrome graph exporter.
+  Offline-first calculator workspace with local saves and Chrome graph transfer.
 </p>
 
 DesmosPlus packages seven calculator experiences from local browser captures into
@@ -22,7 +22,7 @@ stays in the browser, and the included Chrome extension moves graph state from
 - Seven calculators behind one consistent DesmosPlus shell.
 - Local New, Save, Library, category, open, edit, and delete workflows.
 - Browser-local persistence with no application database.
-- Chrome MV3 extension for exporting current Desmos calculator state.
+- Chrome MV3 extension for exporting from and injecting into Desmos calculators.
 - Import support for `.desmosplus.json` and raw Desmos state JSON.
 - Local copies of required scripts, styles, fonts, images, and response stubs.
 - No package installation, frontend framework, analytics SDK, or build step.
@@ -82,9 +82,10 @@ Storage is scoped to the current browser and site origin:
 
 ## Chrome Extension
 
-The extension reads the active calculator state only after the user selects
-Export graph. It produces a `.desmosplus.json` file containing the state returned
-by Desmos rather than attempting to parse expressions from the page.
+The extension transfers calculator state in both directions. It reads state only
+after the user selects Export from Desmos and writes state only after the user
+selects Import into Desmos. Exported files contain the state returned by Desmos
+rather than expressions parsed from the page.
 
 ### Install
 
@@ -92,13 +93,13 @@ by Desmos rather than attempting to parse expressions from the page.
 2. Enable Developer mode.
 3. Select Load unpacked.
 4. Select the repository's `extension` directory.
-5. Pin DesmosPlus Exporter when frequent access is useful.
+5. Pin DesmosPlus Transfer when frequent access is useful.
 
 ### Export and Import
 
 1. Open a supported calculator on `desmos.com` and wait for it to load.
-2. Open DesmosPlus Exporter.
-3. Set the name and category, then select Export graph.
+2. Open DesmosPlus Transfer.
+3. Set the name and category, then select Export from Desmos.
 4. Open DesmosPlus and select Library.
 5. Select Import graph file and choose the exported file.
 
@@ -106,12 +107,23 @@ Wrapped exports include the calculator product, so DesmosPlus switches to the
 matching calculator before opening the imported state. Raw Desmos state JSON can
 also be imported into the calculator currently open.
 
+### Inject into Desmos
+
+1. Open the matching calculator on `desmos.com`.
+2. Open DesmosPlus Transfer and select Import into Desmos.
+3. Choose a `.desmosplus.json` file or raw Desmos state JSON.
+4. Review the loaded graph, then use Desmos Save if it should remain in the
+   Desmos account or graph library.
+
+Injection changes only the active calculator state. The extension does not click
+Save, publish a graph, or access Desmos account APIs.
+
 ### Permissions
 
 | Permission | Purpose |
 | --- | --- |
 | `activeTab` | Grants temporary access to the current tab after extension use. |
-| `scripting` | Reads `window.Calc` or `window.Notebook` in the page's main world. |
+| `scripting` | Reads or writes `window.Calc` or `window.Notebook` in the page's main world. |
 
 The extension declares no persistent host permissions and makes no network
 requests.
@@ -202,7 +214,7 @@ server to use the packaged calculators without internet access.
 | `*calculator.html`, `geometry.html`, `notebook.html` | Product pages. |
 | `assets/build/` | Captured calculator bundles and static assets. |
 | `assets/local/` | DesmosPlus shell, storage, import, and offline guard code. |
-| `extension/` | Chrome MV3 graph exporter. |
+| `extension/` | Chrome MV3 graph import and export extension. |
 | `scripts/serve.mjs` | Local and production Node server. |
 | `scripts/build-pages-from-har.mjs` | HAR extraction and page regeneration. |
 
@@ -257,6 +269,7 @@ that contain information you do not intend to publish.
 - Browser saves are not synchronized or backed up automatically.
 - Browser storage quotas limit very large libraries.
 - The extension is installed unpacked and is not published to a browser store.
+- Graphs injected into Desmos remain temporary until saved through Desmos.
 - Upstream calculator changes can require fresh captures or importer updates.
 - Optional upstream account, gallery, help, and sharing features are not part of
   the local workspace.

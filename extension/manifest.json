@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "DesmosPlus Exporter",
-  "version": "1.0.0",
-  "description": "Export a Desmos calculator state for DesmosPlus.",
+  "name": "DesmosPlus Transfer",
+  "version": "1.1.0",
+  "description": "Transfer calculator state between Desmos and DesmosPlus.",
   "permissions": ["activeTab", "scripting"],
   "icons": {
     "16": "icons/icon-16.png",
@@ -11,7 +11,7 @@
     "128": "icons/icon-128.png"
   },
   "action": {
-    "default_title": "Export to DesmosPlus",
+    "default_title": "Transfer a Desmos graph",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon-16.png",

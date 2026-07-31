@@ -2,6 +2,8 @@
   "use strict";
 
   var exportButton = document.getElementById("export");
+  var importButton = document.getElementById("import");
+  var importFile = document.getElementById("import-file");
   var nameInput = document.getElementById("graph-name");
   var categoryInput = document.getElementById("graph-category");
   var statusNode = document.getElementById("status");
@@ -48,6 +50,15 @@
     };
   }
 
+  function writeCalculator(state) {
+    var calculator = window.Calc || window.Notebook;
+    if (!calculator || typeof calculator.setState !== "function") {
+      throw new Error("Calculator API is not ready.");
+    }
+    calculator.setState(state, { allowUndo: true });
+    return true;
+  }
+
   function download(value, name) {
     var url = URL.createObjectURL(
       new Blob([JSON.stringify(value)], { type: "application/json" }),
@@ -61,6 +72,11 @@
 
   function setStatus(message) {
     statusNode.textContent = message;
+  }
+
+  function setBusy(value) {
+    exportButton.disabled = value;
+    importButton.disabled = value;
   }
 
   async function activeTab() {
@@ -78,7 +94,7 @@
   }
 
   async function exportGraph() {
-    exportButton.disabled = true;
+    setBusy(true);
     setStatus("Reading graph...");
     try {
       var page = await inspectPage();
@@ -110,20 +126,64 @@
     } catch (error) {
       setStatus(error.message || String(error));
     } finally {
-      exportButton.disabled = false;
+      setBusy(false);
+    }
+  }
+
+  async function importGraph(file) {
+    setBusy(true);
+    setStatus("Reading file...");
+    try {
+      var page = await inspectPage();
+      var imported = JSON.parse(await file.text());
+      var wrapped =
+        imported &&
+        typeof imported === "object" &&
+        imported.format === "desmosplus.graph" &&
+        imported.version === 1;
+      var state = wrapped ? imported.state : imported;
+      if (!state || typeof state !== "object" || Array.isArray(state)) {
+        throw new Error("Invalid graph file.");
+      }
+      if (wrapped && imported.product !== page.product) {
+        throw new Error("Open the matching Desmos calculator first.");
+      }
+      var results = await chrome.scripting.executeScript({
+        target: { tabId: page.tab.id },
+        world: "MAIN",
+        func: writeCalculator,
+        args: [state],
+      });
+      if (!results[0] || results[0].result !== true) {
+        throw new Error("Desmos rejected the graph state.");
+      }
+      setStatus("Imported into Desmos. Use Desmos Save to keep it.");
+    } catch (error) {
+      setStatus(error.message || String(error));
+    } finally {
+      setBusy(false);
     }
   }
 
   async function initialize() {
     try {
       await inspectPage();
-      setStatus("Ready to export.");
+      setStatus("Ready to transfer.");
     } catch (error) {
       setStatus(error.message || String(error));
       exportButton.disabled = true;
+      importButton.disabled = true;
     }
   }
 
   exportButton.addEventListener("click", exportGraph);
+  importButton.addEventListener("click", function () {
+    importFile.click();
+  });
+  importFile.addEventListener("change", function () {
+    var file = importFile.files && importFile.files[0];
+    if (file) importGraph(file);
+    importFile.value = "";
+  });
   initialize();
 })();
