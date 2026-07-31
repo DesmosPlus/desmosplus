@@ -18,8 +18,19 @@ main {
 }
 
 h1 {
-  margin: 0 0 5px;
+  margin: 0;
   font-size: 20px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+header img {
+  display: block;
 }
 
 label {

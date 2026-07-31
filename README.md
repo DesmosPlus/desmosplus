@@ -1,22 +1,52 @@
-# DesmosPlus
+<p align="center">
+  <img src="extension/icons/icon-128.png" width="128" height="128" alt="DesmosPlus icon">
+</p>
 
-Seven calculator pages recovered from local captures and packaged with their
-scripts, styles, fonts, and images. The pages do not load third-party scripts or
-send calculator data to external services.
+<h1 align="center">DesmosPlus</h1>
 
-## Included Pages
+<p align="center">
+  Offline-first calculator workspace with local saves and a Chrome graph exporter.
+</p>
 
-- 2D Calculator: `/2dcalculator.html`
-- 3D Calculator: `/3dcalculator.html`
-- Geometry: `/geometry.html`
-- Matrix: `/matrix.html`
-- Notebook: `/notebook.html`
-- Four Function: `/fourfunction.html`
-- Scientific: `/scientific.html`
+DesmosPlus packages seven calculator experiences from local browser captures into
+one dependency-free Node.js project. Calculator assets run locally, saved work
+stays in the browser, and the included Chrome extension moves graph state from
+`desmos.com` into DesmosPlus without translating or rebuilding expressions.
 
-## Run Locally
+> [!IMPORTANT]
+> DesmosPlus is an independent project. It is not affiliated with, endorsed by,
+> or maintained by Desmos Studio PBC.
 
-Node.js 18 or newer is recommended. No dependencies need to be installed.
+## Features
+
+- Seven calculators behind one consistent DesmosPlus shell.
+- Local New, Save, Library, category, open, edit, and delete workflows.
+- Browser-local persistence with no application database.
+- Chrome MV3 extension for exporting current Desmos calculator state.
+- Import support for `.desmosplus.json` and raw Desmos state JSON.
+- Local copies of required scripts, styles, fonts, images, and response stubs.
+- No package installation, frontend framework, analytics SDK, or build step.
+- Responsive desktop and mobile layouts.
+
+## Calculators
+
+| Calculator | Route |
+| --- | --- |
+| 2D Graphing | `/2dcalculator.html` |
+| 3D Graphing | `/3dcalculator.html` |
+| Geometry | `/geometry.html` |
+| Matrix | `/matrix.html` |
+| Notebook | `/notebook.html` |
+| Four Function | `/fourfunction.html` |
+| Scientific | `/scientific.html` |
+
+## Requirements
+
+- Node.js 18 or newer.
+- A current Chromium browser to use the extension.
+- No npm packages or global dependencies.
+
+## Quick Start
 
 ```sh
 git clone https://github.com/loleksyuk/desmosplus.git
@@ -26,95 +56,217 @@ node scripts/serve.mjs
 
 Open <http://localhost:8765>.
 
-To use another port:
+Use another port when needed:
 
 ```sh
 PORT=3000 node scripts/serve.mjs
 ```
 
-Keep the local server and this folder on the computer to use the calculators
-without an internet connection.
+The custom server is recommended over a generic static server. It serves the
+calculator files and local stubs used by account, analytics, usage, and error
+reporting routes.
 
-## Deploy
+## Local Library
 
-Use any Node.js hosting service that can run a command from the repository.
+Each calculator exposes New, Save, and Library controls. A saved instance keeps
+the complete calculator state and can be reopened, edited, recategorized, and
+saved again.
+
+Storage is scoped to the current browser and site origin:
+
+- Cookie chunks hold the local save archive.
+- `localStorage` mirrors the archive as a fallback.
+- Saves do not sync between browsers, devices, or domains.
+- Redeploying to the same origin preserves browser storage.
+- Large graph collections remain subject to browser storage quotas.
+
+## Chrome Extension
+
+The extension reads the active calculator state only after the user selects
+Export graph. It produces a `.desmosplus.json` file containing the state returned
+by Desmos rather than attempting to parse expressions from the page.
+
+### Install
+
+1. Open `chrome://extensions` in Chrome, Chromium, Brave, or Edge.
+2. Enable Developer mode.
+3. Select Load unpacked.
+4. Select the repository's `extension` directory.
+5. Pin DesmosPlus Exporter when frequent access is useful.
+
+### Export and Import
+
+1. Open a supported calculator on `desmos.com` and wait for it to load.
+2. Open DesmosPlus Exporter.
+3. Set the name and category, then select Export graph.
+4. Open DesmosPlus and select Library.
+5. Select Import graph file and choose the exported file.
+
+Wrapped exports include the calculator product, so DesmosPlus switches to the
+matching calculator before opening the imported state. Raw Desmos state JSON can
+also be imported into the calculator currently open.
+
+### Permissions
+
+| Permission | Purpose |
+| --- | --- |
+| `activeTab` | Grants temporary access to the current tab after extension use. |
+| `scripting` | Reads `window.Calc` or `window.Notebook` in the page's main world. |
+
+The extension declares no persistent host permissions and makes no network
+requests.
+
+## Graph File Format
+
+DesmosPlus wraps the raw calculator state with minimal routing metadata:
+
+```json
+{
+  "format": "desmosplus.graph",
+  "version": 1,
+  "product": "2dcalculator",
+  "name": "Example graph",
+  "category": "Imported",
+  "exportedAt": "2026-07-31T00:00:00.000Z",
+  "sourceUrl": "https://www.desmos.com/calculator/example",
+  "state": {
+    "version": 8,
+    "randomSeed": "...",
+    "graph": {},
+    "expressions": {
+      "list": []
+    }
+  }
+}
+```
+
+The `state` object is stored and passed to the matching calculator unchanged.
+This preserves expressions, folders, sliders, tables, regressions, notes,
+viewport settings, animation state, and product-specific fields supported by
+the captured calculator bundle.
+
+## Deployment
+
+Use a Node.js host that can run the included server.
 
 | Setting | Value |
 | --- | --- |
 | Build command | None |
 | Start command | `node scripts/serve.mjs` |
-| Port | Supplied automatically through `PORT` |
-| Publish directory | Not used |
+| Port | Supplied through `PORT` |
+| Health check | `/` |
+| Persistent server storage | Not required |
 
 ### Render
 
-1. Create a new Web Service and connect `loleksyuk/desmosplus`.
+1. Create a Web Service from `loleksyuk/desmosplus`.
 2. Select the Node runtime.
 3. Leave the build command empty.
 4. Set the start command to `node scripts/serve.mjs`.
-5. Deploy the service.
+5. Deploy.
 
 ### Railway
 
 1. Create a project from `loleksyuk/desmosplus`.
 2. Set the start command to `node scripts/serve.mjs`.
-3. Generate a public domain for the service.
+3. Generate a public domain.
 
 ### VPS or Local Network
-
-Clone the repository on the server, then run:
 
 ```sh
 PORT=8080 node scripts/serve.mjs
 ```
 
-Put a reverse proxy such as Caddy or Nginx in front of port `8080` when exposing
-the service publicly.
+Use HTTPS and place Caddy, Nginx, or another reverse proxy in front of the Node
+process for a public deployment. Keep the public origin stable when users need
+existing browser-local saves to remain available.
 
-## Saved Calculators
+## Offline and Privacy Model
 
-The Save button stores calculator states in browser cookies, with local storage
-as a backup. Saves are grouped by category and can be opened, edited, and saved
-again.
+- Calculator scripts and static assets are served from this repository.
+- Runtime guards block outbound requests and external script injection.
+- Local telemetry endpoints return inert responses.
+- Calculator states remain in browser storage unless the user exports a file.
+- The extension reads only the active supported Desmos tab after a user action.
 
-Saved calculators stay in that browser and website address. They do not sync
-between devices. Changing the deployed domain creates a separate browser
-storage area, while redeploying to the same domain preserves existing saves.
+Captured bundles can still contain remote URLs as inactive strings for upstream
+help, gallery, account, thumbnail, and reporting features. A hosted deployment
+also requires a network connection for the initial page download. Run the local
+server to use the packaged calculators without internet access.
 
-## Chrome Extension
+## Repository Layout
 
-The extension exports the raw state of a Desmos graph into a
-`.desmosplus.json` file. Expressions, folders, sliders, tables, regressions,
-notes, settings, and product-specific state remain in the file.
+| Path | Purpose |
+| --- | --- |
+| `index.html` | Calculator directory. |
+| `*calculator.html`, `geometry.html`, `notebook.html` | Product pages. |
+| `assets/build/` | Captured calculator bundles and static assets. |
+| `assets/local/` | DesmosPlus shell, storage, import, and offline guard code. |
+| `extension/` | Chrome MV3 graph exporter. |
+| `scripts/serve.mjs` | Local and production Node server. |
+| `scripts/build-pages-from-har.mjs` | HAR extraction and page regeneration. |
 
-Library also accepts raw Desmos state JSON containing `graph` and
-`expressions.list`. Raw files import into the calculator currently open.
+## Development
 
-Install it in Chrome or another Chromium browser:
+Run syntax and manifest checks:
 
-1. Open `chrome://extensions`.
-2. Enable Developer mode.
-3. Select Load unpacked.
-4. Select the `extension` folder from this repository.
+```sh
+node --check assets/local/offline-save.js
+node --check assets/local/offline-guard.js
+node --check extension/popup.js
+node --check scripts/serve.mjs
+node -e 'JSON.parse(require("fs").readFileSync("extension/manifest.json", "utf8"))'
+```
 
-Export and import a graph:
+Start the server and verify the main route:
 
-1. Open a calculator on `desmos.com` and wait for it to load.
-2. Open DesmosPlus Exporter and select Export graph.
-3. Open the matching calculator in DesmosPlus.
-4. Open Library and select Import graph file.
-5. Select the exported `.desmosplus.json` file.
+```sh
+node scripts/serve.mjs
+curl --fail http://localhost:8765/
+```
 
-The importer automatically switches to the matching DesmosPlus calculator and
-opens the imported state.
+### Rebuild from HAR Captures
 
-## Rebuild from the HAR Files
-
-Place the original HAR files in the paths expected by
-`scripts/build-pages-from-har.mjs`, then run:
+`scripts/build-pages-from-har.mjs` expects the seven source HAR paths listed in
+the script. Update those paths when working on another machine, then run:
 
 ```sh
 node scripts/build-pages-from-har.mjs
 ```
 
-The rebuild script regenerates the calculator HTML and local response stubs.
+The command regenerates product HTML and local response stubs. HAR files can
+contain account details, headers, cookies, and session data. Never commit or
+share a capture without reviewing and sanitizing it first.
+
+## Contributing
+
+1. Fork the repository and create a focused branch.
+2. Keep runtime dependencies at zero unless a dependency removes more risk than
+   it adds.
+3. Preserve offline behavior and browser-local storage semantics.
+4. Keep UI changes restrained, accessible, unrounded, and responsive.
+5. Run the checks above and test affected calculators before opening a pull
+   request.
+
+Bug reports should include the calculator route, browser version, reproduction
+steps, and console error text. Do not attach private HAR files or graph exports
+that contain information you do not intend to publish.
+
+## Known Limitations
+
+- Browser saves are not synchronized or backed up automatically.
+- Browser storage quotas limit very large libraries.
+- The extension is installed unpacked and is not published to a browser store.
+- Upstream calculator changes can require fresh captures or importer updates.
+- Optional upstream account, gallery, help, and sharing features are not part of
+  the local workspace.
+
+## License and Third-Party Notice
+
+This repository does not currently include an open-source license. Public source
+visibility alone does not grant reuse rights. Add an explicit `LICENSE` before
+accepting outside contributions or redistributing the project.
+
+Desmos is a trademark of Desmos Studio PBC. Captured calculator code and assets
+may remain subject to third-party terms. Review those rights before public or
+commercial distribution.
