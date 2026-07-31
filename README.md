@@ -225,6 +225,7 @@ server to use the packaged calculators without internet access.
 | `*calculator.html`, `geometry.html`, `notebook.html` | Product pages. |
 | `assets/build/` | Captured calculator bundles and static assets. |
 | `assets/local/` | DesmosPlus shell, storage, import, and offline guard code. |
+| [`assets/product-logos/`](assets/product-logos/) | PNG and ICO product logo pack for all seven calculators. |
 | `extension/` | Chrome MV3 graph import and export extension. |
 | `scripts/serve.mjs` | Local and production Node server. |
 | `scripts/build-pages-from-har.mjs` | HAR extraction and page regeneration. |
