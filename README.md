@@ -23,6 +23,7 @@ stays in the browser, and the included Chrome extension moves graph state from
 - Local New, Save, Library, category, open, edit, and delete workflows.
 - Browser-local persistence with no application database.
 - Chrome MV3 extension for exporting from and injecting into Desmos calculators.
+- Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.
 - Import support for `.desmosplus.json` and raw Desmos state JSON.
 - Local copies of required scripts, styles, fonts, images, and response stubs.
 - No package installation, frontend framework, analytics SDK, or build step.
@@ -79,6 +80,16 @@ Storage is scoped to the current browser and site origin:
 - Saves do not sync between browsers, devices, or domains.
 - Redeploying to the same origin preserves browser storage.
 - Large graph collections remain subject to browser storage quotas.
+
+## Turbo Mode
+
+Graphing calculators expose an opt-in Turbo selector with Off, 2x, 4x, 8x,
+and 16x settings. Turbo runs additional native slider and ticker clock passes
+per rendered frame. It does not alter saved graph state, and its setting resets
+when the browser session ends.
+
+Higher settings intentionally use more CPU and memory. Large graphs may become
+slow or briefly unresponsive when the evaluator cannot keep up.
 
 ## Chrome Extension
 
@@ -271,6 +282,7 @@ that contain information you do not intend to publish.
 - The extension is installed unpacked and is not published to a browser store.
 - Graphs injected into Desmos remain temporary until saved through Desmos.
 - Upstream calculator changes can require fresh captures or importer updates.
+- Turbo speed remains limited by browser and calculator evaluator throughput.
 - Optional upstream account, gallery, help, and sharing features are not part of
   the local workspace.
 

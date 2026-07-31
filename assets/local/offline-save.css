@@ -80,9 +80,21 @@
 
 .desmosplus-actions {
   display: flex;
+  align-items: center;
   align-self: stretch;
   margin-left: auto;
   border-left: 1px solid #000;
+}
+
+.desmosplus-turbo-label {
+  padding: 0 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+#local-turbo {
+  width: 54px;
+  padding: 0 6px !important;
 }
 
 .desmosplus-actions button:last-child {
@@ -281,12 +293,20 @@
     display: none;
   }
 
+  .desmosplus-turbo-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
   #desmosplus-shell button {
     padding: 0 8px;
   }
 }
 
-@media (max-width: 340px) {
+@media (max-width: 430px) {
   .desmosplus-brand {
     width: 44px;
     padding: 0 12px;
@@ -296,5 +316,13 @@
   .desmosplus-brand::after {
     content: "D+";
     font-size: 15px;
+  }
+
+  #desmosplus-product {
+    width: 100px;
+  }
+
+  #desmosplus-shell button {
+    padding: 0 6px;
   }
 }

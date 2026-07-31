@@ -5,6 +5,15 @@
   var COOKIE_KEY = "desmos_offline_saves_v1";
   var COOKIE_AGE = 60 * 60 * 24 * 365 * 20;
   var CHUNK_SIZE = 3200;
+  var TURBO_KEY = "desmosplus.turbo.speed";
+  var TURBO_SPEEDS = [1, 2, 4, 8, 16];
+  var turbo = {
+    speed: 1,
+    controller: null,
+    original: null,
+    lastRealTime: null,
+    virtualTime: null,
+  };
   var loadedId = "";
   var PRODUCTS = [
     ["2dcalculator", "2D Calculator"],
@@ -56,6 +65,78 @@
   function setState(state) {
     if (!apiReady()) throw new Error("Calculator is not ready yet.");
     api().setState(state, { allowUndo: true });
+  }
+
+  function readTurboSpeed() {
+    try {
+      var speed = Number(sessionStorage.getItem(TURBO_KEY) || 1);
+      return TURBO_SPEEDS.indexOf(speed) === -1 ? 1 : speed;
+    } catch (error) {
+      return 1;
+    }
+  }
+
+  function setTurboSpeed(value, announce) {
+    var speed = Number(value);
+    turbo.speed = TURBO_SPEEDS.indexOf(speed) === -1 ? 1 : speed;
+
+    var select = document.getElementById("local-turbo");
+    if (select) select.value = String(turbo.speed);
+    document.documentElement.setAttribute("data-turbo-speed", String(turbo.speed));
+
+    try {
+      sessionStorage.setItem(TURBO_KEY, String(turbo.speed));
+    } catch (error) {
+      // Turbo still works when session storage is unavailable.
+    }
+
+    if (announce) {
+      status(
+        turbo.speed === 1
+          ? "Turbo off."
+          : "Turbo " + turbo.speed + "x enabled. Higher CPU and memory use.",
+      );
+    }
+  }
+
+  function installTurbo() {
+    var current = api();
+    var controller = current && current._calc && current._calc.controller;
+    var select = document.getElementById("local-turbo");
+
+    if (!controller || typeof controller.handleTick !== "function") {
+      if (select) select.disabled = true;
+      document.documentElement.setAttribute("data-turbo-api", "unavailable");
+      return;
+    }
+    if (turbo.controller === controller) return;
+
+    turbo.controller = controller;
+    turbo.original = controller.handleTick;
+    turbo.lastRealTime = null;
+    turbo.virtualTime = null;
+    controller.handleTick = function (realTime) {
+      if (!Number.isFinite(realTime)) {
+        return turbo.original.call(this, realTime);
+      }
+      if (turbo.lastRealTime === null) {
+        turbo.lastRealTime = realTime;
+        turbo.virtualTime = realTime;
+        return turbo.original.call(this, realTime);
+      }
+
+      var delta = Math.max(0, realTime - turbo.lastRealTime);
+      var result;
+      turbo.lastRealTime = realTime;
+      for (var i = 0; i < turbo.speed; i += 1) {
+        turbo.virtualTime += delta;
+        result = turbo.original.call(this, turbo.virtualTime);
+      }
+      return result;
+    };
+
+    if (select) select.disabled = false;
+    document.documentElement.setAttribute("data-turbo-api", "ready");
   }
 
   function cookieMap() {
@@ -179,6 +260,14 @@
       }).join("") +
       "</select>" +
       '<div class="desmosplus-actions">' +
+      '<label class="desmosplus-turbo-label" for="local-turbo">Turbo</label>' +
+      '<select id="local-turbo" aria-label="Turbo speed" title="Higher speeds use more CPU and memory">' +
+      '<option value="1">Off</option>' +
+      '<option value="2">2x</option>' +
+      '<option value="4">4x</option>' +
+      '<option value="8">8x</option>' +
+      '<option value="16">16x</option>' +
+      "</select>" +
       '<button type="button" id="local-new">New</button>' +
       '<button type="button" id="local-save">Save</button>' +
       '<button type="button" id="local-library" aria-expanded="false">Library</button>' +
@@ -187,6 +276,9 @@
 
     document.getElementById("desmosplus-product").addEventListener("change", function (event) {
       window.location.href = productPath(event.target.value);
+    });
+    document.getElementById("local-turbo").addEventListener("change", function (event) {
+      setTurboSpeed(event.target.value, true);
     });
     document.getElementById("local-new").addEventListener("click", newCurrent);
     document.getElementById("local-save").addEventListener("click", saveCurrent);
@@ -560,6 +652,7 @@
 
   function boot() {
     buildShell();
+    setTurboSpeed(readTurboSpeed(), false);
     buildPanel();
     interceptBuiltInSave();
     setInterval(keepBuiltInSaveLocal, 500);
@@ -568,6 +661,7 @@
       document.documentElement.setAttribute("data-local-save-api", ready ? "ready" : "waiting");
       if (!ready) return;
       clearInterval(timer);
+      installTurbo();
       var id = pendingSaveId();
       if (id) openSave(id);
       else status("Local saves ready.");
@@ -579,4 +673,16 @@
   } else {
     boot();
   }
+
+  window.DesmosPlusTurbo = {
+    getSpeed: function () {
+      return turbo.speed;
+    },
+    setSpeed: function (speed) {
+      setTurboSpeed(speed, true);
+    },
+    isReady: function () {
+      return turbo.controller !== null;
+    },
+  };
 })();
