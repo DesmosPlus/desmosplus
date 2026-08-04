@@ -55,7 +55,7 @@ cd desmosplus
 node scripts/serve.mjs
 ```
 
-Open <http://localhost:8765>.
+Open <http://127.0.0.1:8765>.
 
 Use another port when needed:
 
@@ -104,7 +104,7 @@ marker so they do not produce false recovery messages.
 
 The local Node server also supervises its serving worker. A worker that exits or
 fails three consecutive health checks is replaced automatically while keeping
-the same `http://localhost:8765` address.
+the same `http://127.0.0.1:8765` address.
 
 ## Chrome Extension
 
@@ -261,7 +261,7 @@ Start the server and verify the main route:
 
 ```sh
 node scripts/serve.mjs
-curl --fail http://localhost:8765/
+curl --fail http://127.0.0.1:8765/
 ```
 
 ### Rebuild from HAR Captures

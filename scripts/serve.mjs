@@ -174,7 +174,7 @@ function startServer() {
   server.headersTimeout = 5000;
   server.requestTimeout = 10000;
   server.listen(port, () => {
-    console.log(`Serving ${root} at http://localhost:${port}/ (worker ${process.pid})`);
+    console.log(`Serving ${root} at http://127.0.0.1:${port}/ (worker ${process.pid})`);
   });
 }
 
