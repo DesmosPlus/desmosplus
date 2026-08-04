@@ -672,7 +672,7 @@
       '<button type="submit">Save instance</button>' +
       '<button type="button" id="local-import">Import graph file</button>' +
       '<input type="file" id="local-import-file" accept=".desmos,.desmosplus.json,.json,application/json" hidden>' +
-      '<button type="button" id="local-import-svg">Import static SVG</button>' +
+      '<button type="button" id="local-import-svg">Import SVG as equations</button>' +
       '<input type="file" id="local-import-svg-file" accept=".svg,image/svg+xml" hidden>' +
       "</form>" +
       '<div class="local-filters">' +
@@ -705,7 +705,7 @@
       window.DesmosPlusSvg && window.DesmosPlusSvg.supportedProduct(product());
     svgButton.disabled = !svgSupported;
     svgButton.title = svgSupported
-      ? "Add a static SVG image to this graph"
+      ? "Convert a static SVG into editable Desmos equations"
       : "Available in 2D Calculator and Geometry";
     svgButton.addEventListener("click", function () {
       svgFile.click();
@@ -833,19 +833,25 @@
       }
       if (!apiReady()) throw new Error("Calculator is still loading.");
 
-      var item = window.DesmosPlusSvg.parse(await file.text(), file.name);
+      var converted = window.DesmosPlusSvg.parse(await file.text(), file.name);
       var state = getState();
       if (!state.expressions || !Array.isArray(state.expressions.list)) {
-        throw new Error("This calculator cannot accept SVG images.");
+        throw new Error("This calculator cannot accept SVG equations.");
       }
-      state.expressions.list.push(item);
+      Array.prototype.push.apply(state.expressions.list, converted.expressions);
       setState(state);
 
       var nameInput = document.getElementById("local-save-name");
-      if (nameInput.value === "Untitled") nameInput.value = item.name;
+      if (nameInput.value === "Untitled") nameInput.value = converted.name;
       queueRecoverySnapshot();
       openPanel();
-      status("Imported static SVG. Save the instance to keep it.");
+      status(
+        "Imported " +
+          converted.equationCount +
+          " editable SVG equation" +
+          (converted.equationCount === 1 ? "" : "s") +
+          ". Save the instance to keep them.",
+      );
     } catch (error) {
       status(error.message || String(error));
     }

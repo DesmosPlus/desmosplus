@@ -61,7 +61,7 @@
     return true;
   }
 
-  function writeSvg(item) {
+  function writeSvg(expressions) {
     var calculator = window.Calc;
     if (
       !calculator ||
@@ -72,9 +72,9 @@
     }
     var state = calculator.getState();
     if (!state.expressions || !Array.isArray(state.expressions.list)) {
-      throw new Error("This calculator cannot accept SVG images.");
+      throw new Error("This calculator cannot accept SVG equations.");
     }
-    state.expressions.list.push(item);
+    Array.prototype.push.apply(state.expressions.list, expressions);
     calculator.setState(state, { allowUndo: true });
     return true;
   }
@@ -194,17 +194,23 @@
       if (!DesmosPlusSvg.supportedProduct(page.product)) {
         throw new Error("Open Desmos 2D Calculator or Geometry.");
       }
-      var item = DesmosPlusSvg.parse(await file.text(), file.name);
+      var converted = DesmosPlusSvg.parse(await file.text(), file.name);
       var results = await chrome.scripting.executeScript({
         target: { tabId: page.tab.id },
         world: "MAIN",
         func: writeSvg,
-        args: [item],
+        args: [converted.expressions],
       });
       if (!results[0] || results[0].result !== true) {
-        throw new Error("Desmos rejected the SVG image.");
+        throw new Error("Desmos rejected the SVG equations.");
       }
-      setStatus("Static SVG added to Desmos. Use Desmos Save to keep it.");
+      setStatus(
+        "Added " +
+          converted.equationCount +
+          " editable equation" +
+          (converted.equationCount === 1 ? "" : "s") +
+          ". Use Desmos Save to keep them.",
+      );
     } catch (error) {
       setStatus(error.message || String(error));
     } finally {

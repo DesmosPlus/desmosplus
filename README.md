@@ -12,7 +12,8 @@ DesmosPlus packages seven calculator experiences from local browser captures int
 one dependency-free Node.js project. Calculator assets run locally, saved work
 stays in the browser, and the included Chrome extension moves graph state from
 `desmos.com` into DesmosPlus without translating or rebuilding expressions.
-It can also add validated static SVG files to local or official Desmos graphs.
+It can also convert validated static SVG files into editable equations in local
+or official Desmos graphs.
 
 > [!IMPORTANT]
 > DesmosPlus is an independent project. It is not affiliated with, endorsed by,
@@ -161,17 +162,20 @@ also be imported into the calculator currently open.
 Injection changes only the active calculator state. The extension does not click
 Save, publish a graph, or access Desmos account APIs.
 
-### Import a Static SVG
+### Convert a Static SVG
 
-In DesmosPlus, open the Library and select **Import static SVG**. In the
+In DesmosPlus, open the Library and select **Import SVG as equations**. In the
 extension, open an official Desmos 2D or Geometry graph, select **SVG**, and
-choose the file. The SVG is added as a centered image while the rest of the
-graph remains unchanged.
+choose the file. DesmosPlus converts paths and basic SVG shapes into editable
+polygon and point-list expressions inside a named folder. Curves are sampled
+into points, centered on the graph, and retain simple fill, stroke, opacity, and
+transform information.
 
 SVG files must be 1 MB or smaller and cannot contain SMIL or CSS animation,
 scripts, embedded HTML, document entities, or embedded or external resources.
-Image data is stored inline in graph state, so importing does not upload the
-file or require a network request.
+Text, raster images, clipping, filters, patterns, and reusable symbols must be
+converted to paths before import. Conversion runs locally and does not upload
+the file or add image data to graph state.
 
 ### Permissions
 
@@ -273,7 +277,7 @@ server to use the packaged calculators without internet access.
 | `assets/local/` | DesmosPlus shell, storage, import, and offline guard code. |
 | [`assets/product-logos/`](assets/product-logos/) | PNG and ICO product logo pack for all seven calculators. |
 | `extension/` | Chrome MV3 graph import and export extension. |
-| `extension/svg-import.js` | Shared static SVG validation and image-state conversion. |
+| `extension/svg-import.js` | Shared static SVG validation and equation conversion. |
 | `scripts/serve.mjs` | Local and production Node server. |
 | `scripts/build-pages-from-har.mjs` | HAR extraction and page regeneration. |
 
