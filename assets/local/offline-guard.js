@@ -1,6 +1,55 @@
 (function () {
   "use strict";
 
+  var SITE_CACHE_VERSION = "2026-08-03-1";
+  var SITE_CACHE_KEY = "desmosplus.site-cache-version";
+
+  function resetOldSiteCache() {
+    var previousVersion = "";
+    try {
+      previousVersion = localStorage.getItem(SITE_CACHE_KEY) || "";
+      if (previousVersion === SITE_CACHE_VERSION) {
+        document.documentElement.setAttribute("data-cache-reset", "current");
+        return;
+      }
+      localStorage.setItem(SITE_CACHE_KEY, SITE_CACHE_VERSION);
+    } catch (error) {
+      // Cache cleanup still runs when persistent storage is unavailable.
+    }
+
+    document.documentElement.setAttribute("data-cache-reset", "running");
+    var tasks = [];
+    if (window.caches && typeof window.caches.keys === "function") {
+      tasks.push(
+        window.caches.keys().then(function (names) {
+          return Promise.all(
+            names.map(function (name) {
+              return window.caches.delete(name);
+            }),
+          );
+        }),
+      );
+    }
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+      tasks.push(
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+          return Promise.all(
+            registrations.map(function (registration) {
+              return registration.unregister();
+            }),
+          );
+        }),
+      );
+    }
+
+    Promise.allSettled(tasks).then(function () {
+      document.documentElement.setAttribute("data-cache-reset", "done");
+    });
+  }
+
+  document.documentElement.setAttribute("data-cache-version", SITE_CACHE_VERSION);
+  resetOldSiteCache();
+
   function isLocalUrl(value) {
     try {
       var url = new URL(value, window.location.href);

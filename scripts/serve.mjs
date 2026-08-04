@@ -160,8 +160,10 @@ function startServer() {
       }
 
       response.writeHead(200, {
-        "cache-control": "no-store",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
         "content-type": types.get(path.extname(filePath)) || "application/octet-stream",
+        expires: "0",
+        pragma: "no-cache",
       });
       if (request.method === "HEAD") response.end();
       else response.end(data);

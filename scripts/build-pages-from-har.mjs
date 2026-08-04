@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
+const siteVersion = "2026-08-03-1";
 
 const captures = [
   {
@@ -83,19 +84,19 @@ function rewriteHtml(html, capture) {
     .replace(/<link\s+rel="alternate"[^>]*>/gi, "")
     .replace(
       /<script>\s*var _paq =[\s\S]*?<\/script>/g,
-      '<script src="/assets/local/offline-save.js"></script>',
+      `<script src="/assets/local/offline-save.js?v=${siteVersion}"></script>`,
     )
     .replace(
       /<script type="text\/javascript">\s*var _paq =[\s\S]*?<\/script>/g,
-      '<script src="/assets/local/offline-save.js"></script>',
+      `<script src="/assets/local/offline-save.js?v=${siteVersion}"></script>`,
     )
     .replace(
       "</head>",
-      '        <meta http-equiv="Content-Security-Policy" content="default-src \'self\' data: blob:; script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' blob:; style-src \'self\' \'unsafe-inline\' data:; img-src \'self\' data: blob:; font-src \'self\' data:; connect-src \'self\' data: blob:; worker-src \'self\' blob:; child-src \'self\' blob:; frame-src \'self\' blob:;">\n        <link rel="stylesheet" href="/assets/local/offline-save.css" />\n      </head>',
+      `        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline' data:; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; worker-src 'self' blob:; child-src 'self' blob:; frame-src 'self' blob:;">\n        <link rel="stylesheet" href="/assets/local/offline-save.css?v=${siteVersion}" />\n      </head>`,
     )
     .replace(
       /(<script src="\/assets\/build\/[^"]+\.js"><\/script>)/,
-      '<script src="/assets/local/offline-guard.js"></script>\n        $1',
+      `<script src="/assets/local/offline-guard.js?v=${siteVersion}"></script>\n        $1`,
     )
     .replaceAll('href="/assets/', 'href="/assets/')
     .replaceAll("href=/assets/", "href=/assets/")
@@ -153,7 +154,8 @@ fs.writeFileSync(
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DesmosPlus | Calculators</title>
-    <link rel="stylesheet" href="/assets/local/offline-save.css">
+    <link rel="stylesheet" href="/assets/local/offline-save.css?v=${siteVersion}">
+    <script src="/assets/local/offline-guard.js?v=${siteVersion}"></script>
   </head>
   <body class="desmosplus-home">
     <header id="desmosplus-shell">

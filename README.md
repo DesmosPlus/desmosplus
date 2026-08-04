@@ -223,6 +223,8 @@ existing browser-local saves to remain available.
 
 - Calculator scripts and static assets are served from this repository.
 - Runtime guards block outbound requests and external script injection.
+- Versioned local assets clear stale Cache Storage entries and obsolete service
+  workers without deleting saves, categories, cookies, or recovery snapshots.
 - Local telemetry endpoints return inert responses.
 - Calculator states remain in browser storage unless the user exports a file.
 - The extension reads only the active supported Desmos tab after a user action.
@@ -276,6 +278,10 @@ node scripts/build-pages-from-har.mjs
 The command regenerates product HTML and local response stubs. HAR files can
 contain account details, headers, cookies, and session data. Never commit or
 share a capture without reviewing and sanitizing it first.
+
+When changing local CSS, guards, or save behavior, bump `siteVersion` in
+`scripts/build-pages-from-har.mjs` and the matching `SITE_CACHE_VERSION` in
+`assets/local/offline-guard.js`, then regenerate or update the page references.
 
 ## Contributing
 
