@@ -9,10 +9,13 @@
   var TURBO_SPEEDS = [1, 2, 4, 8, 16];
   var turbo = {
     speed: 1,
-    controller: null,
-    original: null,
+    calculator: null,
+    originalTick: null,
     lastRealTime: null,
     virtualTime: null,
+    fpsStartedAt: null,
+    frameCount: 0,
+    fps: 0,
   };
   var loadedId = "";
   var PRODUCTS = [
@@ -100,42 +103,57 @@
 
   function installTurbo() {
     var current = api();
-    var controller = current && current._calc && current._calc.controller;
+    var calculator = current && current._calc;
     var button = document.getElementById("local-turbo-button");
 
-    if (!controller || typeof controller.handleTick !== "function") {
+    if (!calculator || typeof calculator.tick !== "function") {
       if (button) button.disabled = true;
       document.documentElement.setAttribute("data-turbo-api", "unavailable");
       return;
     }
-    if (turbo.controller === controller) return;
+    if (turbo.calculator === calculator) return;
 
-    turbo.controller = controller;
-    turbo.original = controller.handleTick;
+    turbo.calculator = calculator;
+    turbo.originalTick = calculator.tick;
     turbo.lastRealTime = null;
     turbo.virtualTime = null;
-    controller.handleTick = function (realTime) {
+    calculator.tick = function (realTime, paused) {
       if (!Number.isFinite(realTime)) {
-        return turbo.original.call(this, realTime);
+        return turbo.originalTick.call(this, realTime, paused);
       }
       if (turbo.lastRealTime === null) {
         turbo.lastRealTime = realTime;
         turbo.virtualTime = realTime;
-        return turbo.original.call(this, realTime);
+      } else {
+        var delta = Math.max(0, realTime - turbo.lastRealTime);
+        turbo.lastRealTime = realTime;
+        turbo.virtualTime += delta * (paused ? 1 : turbo.speed);
       }
 
-      var delta = Math.max(0, realTime - turbo.lastRealTime);
-      var result;
-      turbo.lastRealTime = realTime;
-      for (var i = 0; i < turbo.speed; i += 1) {
-        turbo.virtualTime += delta;
-        result = turbo.original.call(this, turbo.virtualTime);
-      }
-      return result;
+      updateTurboStats(realTime);
+      return turbo.originalTick.call(this, turbo.virtualTime, paused);
     };
 
     if (button) button.disabled = false;
     document.documentElement.setAttribute("data-turbo-api", "ready");
+  }
+
+  function updateTurboStats(realTime) {
+    if (turbo.fpsStartedAt === null) turbo.fpsStartedAt = realTime;
+    turbo.frameCount += 1;
+    var elapsed = realTime - turbo.fpsStartedAt;
+    if (elapsed < 500) return;
+
+    turbo.fps = Math.round((turbo.frameCount * 1000) / elapsed);
+    turbo.frameCount = 0;
+    turbo.fpsStartedAt = realTime;
+    document.documentElement.setAttribute("data-turbo-fps", String(turbo.fps));
+    document.documentElement.setAttribute(
+      "data-turbo-time",
+      String(Math.round(turbo.virtualTime)),
+    );
+    var readout = document.getElementById("local-turbo-fps");
+    if (readout) readout.textContent = turbo.fps + " FPS";
   }
 
   function dropdownHtml(id, value, options) {
@@ -368,6 +386,7 @@
         ["8", "8x"],
         ["16", "16x"],
       ]) +
+      '<span id="local-turbo-fps" title="Current animation frame rate">-- FPS</span>' +
       '<button type="button" id="local-new">New</button>' +
       '<button type="button" id="local-save">Save</button>' +
       '<button type="button" id="local-library" aria-expanded="false">Library</button>' +
@@ -784,7 +803,10 @@
       setTurboSpeed(speed, true);
     },
     isReady: function () {
-      return turbo.controller !== null;
+      return turbo.calculator !== null;
+    },
+    getFps: function () {
+      return turbo.fps;
     },
   };
 })();

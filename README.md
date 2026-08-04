@@ -84,9 +84,11 @@ Storage is scoped to the current browser and site origin:
 ## Turbo Mode
 
 Graphing calculators expose an opt-in Turbo selector with Off, 2x, 4x, 8x,
-and 16x settings. Turbo runs additional native slider and ticker clock passes
-per rendered frame. It does not alter saved graph state, and its setting resets
-when the browser session ends.
+and 16x settings. Turbo scales the complete controller, evaluator, and grapher
+clock while preserving one full calculator tick per browser animation frame.
+This speeds graph motion without intentionally reducing render throughput. A
+live FPS readout reports the animation-frame rate. Turbo does not alter saved
+graph state, and its setting resets when the browser session ends.
 
 Higher settings intentionally use more CPU and memory. Large graphs may become
 slow or briefly unresponsive when the evaluator cannot keep up.
@@ -284,6 +286,7 @@ that contain information you do not intend to publish.
 - Graphs injected into Desmos remain temporary until saved through Desmos.
 - Upstream calculator changes can require fresh captures or importer updates.
 - Turbo speed remains limited by browser and calculator evaluator throughput.
+- FPS remains limited by hardware, graph complexity, and display refresh rate.
 - Optional upstream account, gallery, help, and sharing features are not part of
   the local workspace.
 
