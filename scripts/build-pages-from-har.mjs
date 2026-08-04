@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
-const siteVersion = "2026-08-04-4";
+const siteVersion = "2026-08-04-5";
 
 const captures = [
   {
@@ -84,11 +84,13 @@ function rewriteHtml(html, capture) {
     .replace(/<link\s+rel="alternate"[^>]*>/gi, "")
     .replace(
       /<script>\s*var _paq =[\s\S]*?<\/script>/g,
-      `<script src="/assets/local/offline-save.js?v=${siteVersion}"></script>`,
+      `<script src="/extension/svg-import.js?v=${siteVersion}"></script>
+        <script src="/assets/local/offline-save.js?v=${siteVersion}"></script>`,
     )
     .replace(
       /<script type="text\/javascript">\s*var _paq =[\s\S]*?<\/script>/g,
-      `<script src="/assets/local/offline-save.js?v=${siteVersion}"></script>`,
+      `<script src="/extension/svg-import.js?v=${siteVersion}"></script>
+        <script src="/assets/local/offline-save.js?v=${siteVersion}"></script>`,
     )
     .replace(
       "</head>",

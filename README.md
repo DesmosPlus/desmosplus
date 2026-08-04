@@ -12,6 +12,7 @@ DesmosPlus packages seven calculator experiences from local browser captures int
 one dependency-free Node.js project. Calculator assets run locally, saved work
 stays in the browser, and the included Chrome extension moves graph state from
 `desmos.com` into DesmosPlus without translating or rebuilding expressions.
+It can also add validated static SVG files to local or official Desmos graphs.
 
 > [!IMPORTANT]
 > DesmosPlus is an independent project. It is not affiliated with, endorsed by,
@@ -23,6 +24,7 @@ stays in the browser, and the included Chrome extension moves graph state from
 - Local New, Save, Library, category, open, edit, and delete workflows.
 - Browser-local persistence with no application database.
 - Chrome MV3 extension for exporting from and injecting into Desmos calculators.
+- Static SVG import for local and official Desmos 2D and Geometry graphs.
 - Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.
 - `.desmos` graph exports, with import compatibility for older
   `.desmosplus.json` files and raw Desmos state JSON.
@@ -159,6 +161,18 @@ also be imported into the calculator currently open.
 Injection changes only the active calculator state. The extension does not click
 Save, publish a graph, or access Desmos account APIs.
 
+### Import a Static SVG
+
+In DesmosPlus, open the Library and select **Import static SVG**. In the
+extension, open an official Desmos 2D or Geometry graph, select **SVG**, and
+choose the file. The SVG is added as a centered image while the rest of the
+graph remains unchanged.
+
+SVG files must be 1 MB or smaller and cannot contain SMIL or CSS animation,
+scripts, embedded HTML, document entities, or embedded or external resources.
+Image data is stored inline in graph state, so importing does not upload the
+file or require a network request.
+
 ### Permissions
 
 | Permission | Purpose |
@@ -259,6 +273,7 @@ server to use the packaged calculators without internet access.
 | `assets/local/` | DesmosPlus shell, storage, import, and offline guard code. |
 | [`assets/product-logos/`](assets/product-logos/) | PNG and ICO product logo pack for all seven calculators. |
 | `extension/` | Chrome MV3 graph import and export extension. |
+| `extension/svg-import.js` | Shared static SVG validation and image-state conversion. |
 | `scripts/serve.mjs` | Local and production Node server. |
 | `scripts/build-pages-from-har.mjs` | HAR extraction and page regeneration. |
 
@@ -269,6 +284,7 @@ Run syntax and manifest checks:
 ```sh
 node --check assets/local/offline-save.js
 node --check assets/local/offline-guard.js
+node --check extension/svg-import.js
 node --check extension/popup.js
 node --check scripts/serve.mjs
 node -e 'JSON.parse(require("fs").readFileSync("extension/manifest.json", "utf8"))'

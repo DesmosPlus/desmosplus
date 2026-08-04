@@ -672,6 +672,8 @@
       '<button type="submit">Save instance</button>' +
       '<button type="button" id="local-import">Import graph file</button>' +
       '<input type="file" id="local-import-file" accept=".desmos,.desmosplus.json,.json,application/json" hidden>' +
+      '<button type="button" id="local-import-svg">Import static SVG</button>' +
+      '<input type="file" id="local-import-svg-file" accept=".svg,image/svg+xml" hidden>' +
       "</form>" +
       '<div class="local-filters">' +
       '<label for="local-product-filter">Calculator</label>' +
@@ -695,6 +697,22 @@
     document.getElementById("local-import-file").addEventListener("change", function (event) {
       var file = event.target.files && event.target.files[0];
       if (file) importGraph(file);
+      event.target.value = "";
+    });
+    var svgButton = document.getElementById("local-import-svg");
+    var svgFile = document.getElementById("local-import-svg-file");
+    var svgSupported =
+      window.DesmosPlusSvg && window.DesmosPlusSvg.supportedProduct(product());
+    svgButton.disabled = !svgSupported;
+    svgButton.title = svgSupported
+      ? "Add a static SVG image to this graph"
+      : "Available in 2D Calculator and Geometry";
+    svgButton.addEventListener("click", function () {
+      svgFile.click();
+    });
+    svgFile.addEventListener("change", function (event) {
+      var file = event.target.files && event.target.files[0];
+      if (file) importSvg(file);
       event.target.value = "";
     });
     document.getElementById("local-close").addEventListener("click", closePanel);
@@ -806,6 +824,31 @@
     return PRODUCTS.some(function (entry) {
       return entry[0] === value;
     });
+  }
+
+  async function importSvg(file) {
+    try {
+      if (!window.DesmosPlusSvg || !window.DesmosPlusSvg.supportedProduct(product())) {
+        throw new Error("SVG import is available in 2D Calculator and Geometry.");
+      }
+      if (!apiReady()) throw new Error("Calculator is still loading.");
+
+      var item = window.DesmosPlusSvg.parse(await file.text(), file.name);
+      var state = getState();
+      if (!state.expressions || !Array.isArray(state.expressions.list)) {
+        throw new Error("This calculator cannot accept SVG images.");
+      }
+      state.expressions.list.push(item);
+      setState(state);
+
+      var nameInput = document.getElementById("local-save-name");
+      if (nameInput.value === "Untitled") nameInput.value = item.name;
+      queueRecoverySnapshot();
+      openPanel();
+      status("Imported static SVG. Save the instance to keep it.");
+    } catch (error) {
+      status(error.message || String(error));
+    }
   }
 
   async function importGraph(file) {

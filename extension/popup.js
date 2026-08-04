@@ -3,7 +3,9 @@
 
   var exportButton = document.getElementById("export");
   var importButton = document.getElementById("import");
+  var svgButton = document.getElementById("import-svg");
   var importFile = document.getElementById("import-file");
+  var svgFile = document.getElementById("svg-file");
   var nameInput = document.getElementById("graph-name");
   var categoryInput = document.getElementById("graph-category");
   var statusNode = document.getElementById("status");
@@ -59,6 +61,24 @@
     return true;
   }
 
+  function writeSvg(item) {
+    var calculator = window.Calc;
+    if (
+      !calculator ||
+      typeof calculator.getState !== "function" ||
+      typeof calculator.setState !== "function"
+    ) {
+      throw new Error("Graphing Calculator API is not ready.");
+    }
+    var state = calculator.getState();
+    if (!state.expressions || !Array.isArray(state.expressions.list)) {
+      throw new Error("This calculator cannot accept SVG images.");
+    }
+    state.expressions.list.push(item);
+    calculator.setState(state, { allowUndo: true });
+    return true;
+  }
+
   function download(value, name) {
     var url = URL.createObjectURL(
       new Blob([JSON.stringify(value)], { type: "application/json" }),
@@ -77,6 +97,7 @@
   function setBusy(value) {
     exportButton.disabled = value;
     importButton.disabled = value;
+    svgButton.disabled = value || svgButton.dataset.supported !== "true";
   }
 
   async function activeTab() {
@@ -165,9 +186,37 @@
     }
   }
 
+  async function importSvg(file) {
+    setBusy(true);
+    setStatus("Reading SVG...");
+    try {
+      var page = await inspectPage();
+      if (!DesmosPlusSvg.supportedProduct(page.product)) {
+        throw new Error("Open Desmos 2D Calculator or Geometry.");
+      }
+      var item = DesmosPlusSvg.parse(await file.text(), file.name);
+      var results = await chrome.scripting.executeScript({
+        target: { tabId: page.tab.id },
+        world: "MAIN",
+        func: writeSvg,
+        args: [item],
+      });
+      if (!results[0] || results[0].result !== true) {
+        throw new Error("Desmos rejected the SVG image.");
+      }
+      setStatus("Static SVG added to Desmos. Use Desmos Save to keep it.");
+    } catch (error) {
+      setStatus(error.message || String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function initialize() {
     try {
-      await inspectPage();
+      var page = await inspectPage();
+      svgButton.dataset.supported = String(DesmosPlusSvg.supportedProduct(page.product));
+      svgButton.disabled = svgButton.dataset.supported !== "true";
       setStatus("Ready to transfer.");
     } catch (error) {
       setStatus(error.message || String(error));
@@ -180,10 +229,18 @@
   importButton.addEventListener("click", function () {
     importFile.click();
   });
+  svgButton.addEventListener("click", function () {
+    svgFile.click();
+  });
   importFile.addEventListener("change", function () {
     var file = importFile.files && importFile.files[0];
     if (file) importGraph(file);
     importFile.value = "";
+  });
+  svgFile.addEventListener("change", function () {
+    var file = svgFile.files && svgFile.files[0];
+    if (file) importSvg(file);
+    svgFile.value = "";
   });
   initialize();
 })();
