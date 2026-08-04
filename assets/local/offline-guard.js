@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var SITE_CACHE_VERSION = "2026-08-04-1";
+  var SITE_CACHE_VERSION = "2026-08-04-2";
   var SITE_CACHE_KEY = "desmosplus.site-cache-version";
 
   function resetOldSiteCache() {

@@ -24,7 +24,8 @@ stays in the browser, and the included Chrome extension moves graph state from
 - Browser-local persistence with no application database.
 - Chrome MV3 extension for exporting from and injecting into Desmos calculators.
 - Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.
-- Import support for `.desmosplus.json` and raw Desmos state JSON.
+- `.desmos` graph exports, with import compatibility for older
+  `.desmosplus.json` files and raw Desmos state JSON.
 - Local copies of required scripts, styles, fonts, images, and response stubs.
 - No package installation, frontend framework, analytics SDK, or build step.
 - Responsive desktop and mobile layouts.
@@ -150,7 +151,8 @@ also be imported into the calculator currently open.
 
 1. Open the matching calculator on `desmos.com`.
 2. Open DesmosPlus Transfer and select Import into Desmos.
-3. Choose a `.desmosplus.json` file or raw Desmos state JSON.
+3. Choose a `.desmos` file, an older `.desmosplus.json` file, or raw Desmos
+   state JSON.
 4. Review the loaded graph, then use Desmos Save if it should remain in the
    Desmos account or graph library.
 

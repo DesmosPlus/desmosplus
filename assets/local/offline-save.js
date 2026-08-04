@@ -671,7 +671,7 @@
       '<datalist id="local-save-categories"></datalist>' +
       '<button type="submit">Save instance</button>' +
       '<button type="button" id="local-import">Import graph file</button>' +
-      '<input type="file" id="local-import-file" accept=".json,.desmosplus.json,application/json" hidden>' +
+      '<input type="file" id="local-import-file" accept=".desmos,.desmosplus.json,.json,application/json" hidden>' +
       "</form>" +
       '<div class="local-filters">' +
       '<label for="local-product-filter">Calculator</label>' +
@@ -839,7 +839,10 @@
         id: id,
         product: importedProduct,
         category: safeName(wrapped && imported.category, "Imported"),
-        name: safeName(wrapped && imported.name, file.name.replace(/\.(desmosplus\.)?json$/i, "")),
+        name: safeName(
+          wrapped && imported.name,
+          file.name.replace(/\.(?:desmos|desmosplus\.json|json)$/i, ""),
+        ),
         state: importedState,
         updatedAt: new Date().toISOString(),
       });

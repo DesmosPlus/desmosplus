@@ -65,7 +65,7 @@
     );
     var link = document.createElement("a");
     link.href = url;
-    link.download = fileName(name) + ".desmosplus.json";
+    link.download = fileName(name) + ".desmos";
     link.click();
     URL.revokeObjectURL(url);
   }
