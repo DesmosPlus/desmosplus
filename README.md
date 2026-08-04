@@ -88,19 +88,23 @@ and 16x settings. Turbo scales the complete controller, evaluator, and grapher
 clock while preserving one full calculator tick per browser animation frame.
 This speeds graph motion without intentionally reducing render throughput. A
 live FPS readout reports the animation-frame rate. Turbo does not alter saved
-graph state, and its setting resets when the browser session ends.
+graph state and is never stored in cookies or browser storage. Reloading or
+reopening a calculator always starts with Turbo Off.
 
 Higher settings intentionally use more CPU and memory. Large graphs may become
 slow when the evaluator cannot keep up. If measured frame rate remains below 30
 FPS for roughly 1.5 seconds, DesmosPlus automatically reduces Turbo by one step
-until the page becomes responsive again.
+until the page becomes responsive again. A stalled frame disables Turbo and
+discarded background time is not multiplied when the tab becomes active again.
 
 ## Crash Recovery
 
 DesmosPlus keeps a browser-local recovery checkpoint of the current calculator
 state. After an abnormal renderer exit, the next load restores that unsaved
-state automatically. Clean navigation and normal page closure clear the crash
-marker so they do not produce false recovery messages.
+state automatically. A recovered snapshot is quarantined until the page remains
+stable, preventing a failing snapshot from causing a reload loop. Clean
+navigation and normal page closure clear the crash marker so they do not produce
+false recovery messages.
 
 The local Node server also supervises its serving worker. A worker that exits or
 fails three consecutive health checks is replaced automatically while keeping

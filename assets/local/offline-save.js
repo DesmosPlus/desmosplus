@@ -5,12 +5,16 @@
   var COOKIE_KEY = "desmos_offline_saves_v1";
   var COOKIE_AGE = 60 * 60 * 24 * 365 * 20;
   var CHUNK_SIZE = 3200;
-  var TURBO_KEY = "desmosplus.turbo.speed";
+  var LEGACY_TURBO_KEY = "desmosplus.turbo.speed";
   var TURBO_SPEEDS = [1, 2, 4, 8, 16];
   var TURBO_MIN_FPS = 30;
   var TURBO_LOW_FPS_LIMIT = 3;
+  var TURBO_MAX_FRAME_DELTA = 100;
   var RECOVERY_PREFIX = "desmosplus.recovery.";
+  var RECOVERY_REARM_DELAY = 5000;
   var recoveryNeeded = false;
+  var recoverySkipped = false;
+  var recoverySafeAt = 0;
   var recoveryTimer = null;
   var turbo = {
     speed: 1,
@@ -76,12 +80,16 @@
     api().setState(state, { allowUndo: true });
   }
 
-  function readTurboSpeed() {
+  function clearLegacyTurboSpeed() {
     try {
-      var speed = Number(sessionStorage.getItem(TURBO_KEY) || 1);
-      return TURBO_SPEEDS.indexOf(speed) === -1 ? 1 : speed;
+      sessionStorage.removeItem(LEGACY_TURBO_KEY);
     } catch (error) {
-      return 1;
+      // Turbo still resets when session storage is unavailable.
+    }
+    try {
+      localStorage.removeItem(LEGACY_TURBO_KEY);
+    } catch (error) {
+      // Turbo still resets when local storage is unavailable.
     }
   }
 
@@ -92,12 +100,6 @@
 
     setDropdownValue("local-turbo", String(turbo.speed));
     document.documentElement.setAttribute("data-turbo-speed", String(turbo.speed));
-
-    try {
-      sessionStorage.setItem(TURBO_KEY, String(turbo.speed));
-    } catch (error) {
-      // Turbo still works when session storage is unavailable.
-    }
 
     if (announce) {
       status(
@@ -130,10 +132,15 @@
       }
       if (turbo.lastRealTime === null) {
         turbo.lastRealTime = realTime;
-        turbo.virtualTime = realTime;
+        if (turbo.virtualTime === null) turbo.virtualTime = realTime;
       } else {
-        var delta = Math.max(0, realTime - turbo.lastRealTime);
+        var frameDelta = Math.max(0, realTime - turbo.lastRealTime);
         turbo.lastRealTime = realTime;
+        if (frameDelta > TURBO_MAX_FRAME_DELTA && turbo.speed > 1) {
+          setTurboSpeed(1, false);
+          status("Turbo disabled after the page stalled.");
+        }
+        var delta = Math.min(frameDelta, TURBO_MAX_FRAME_DELTA);
         turbo.virtualTime += delta * (paused ? 1 : turbo.speed);
       }
 
@@ -191,11 +198,16 @@
 
   function startRecoverySession() {
     try {
-      recoveryNeeded = sessionStorage.getItem(recoveryKey("active")) === "1";
+      var wasActive = sessionStorage.getItem(recoveryKey("active")) === "1";
+      var restoreAttempted =
+        sessionStorage.getItem(recoveryKey("restore-attempted")) === "1";
+      recoveryNeeded = wasActive && !restoreAttempted;
+      recoverySkipped = wasActive && restoreAttempted;
+      if (recoverySkipped) localStorage.removeItem(recoveryKey("snapshot"));
       sessionStorage.setItem(recoveryKey("active"), "1");
       document.documentElement.setAttribute(
         "data-recovery",
-        recoveryNeeded ? "pending" : "ready",
+        recoverySkipped ? "skipped" : recoveryNeeded ? "pending" : "ready",
       );
     } catch (error) {
       document.documentElement.setAttribute("data-recovery", "unavailable");
@@ -204,6 +216,7 @@
     window.addEventListener("pagehide", function () {
       try {
         sessionStorage.removeItem(recoveryKey("active"));
+        sessionStorage.removeItem(recoveryKey("restore-attempted"));
       } catch (error) {
         // A blocked storage API cannot be cleaned up.
       }
@@ -219,6 +232,10 @@
 
   function writeRecoverySnapshot() {
     if (!apiReady()) return;
+    if (Date.now() < recoverySafeAt) {
+      queueRecoverySnapshot();
+      return;
+    }
     try {
       localStorage.setItem(
         recoveryKey("snapshot"),
@@ -229,6 +246,7 @@
           state: getState(),
         }),
       );
+      sessionStorage.removeItem(recoveryKey("restore-attempted"));
       document.documentElement.setAttribute("data-recovery", "ready");
     } catch (error) {
       document.documentElement.setAttribute("data-recovery", "unavailable");
@@ -237,7 +255,10 @@
 
   function queueRecoverySnapshot() {
     clearTimeout(recoveryTimer);
-    recoveryTimer = setTimeout(writeRecoverySnapshot, 400);
+    recoveryTimer = setTimeout(
+      writeRecoverySnapshot,
+      Math.max(400, recoverySafeAt - Date.now()),
+    );
   }
 
   function restoreRecoverySnapshot() {
@@ -245,6 +266,9 @@
     try {
       var snapshot = JSON.parse(localStorage.getItem(recoveryKey("snapshot")) || "null");
       if (!snapshot || snapshot.product !== product() || !snapshot.state) return false;
+      sessionStorage.setItem(recoveryKey("restore-attempted"), "1");
+      localStorage.removeItem(recoveryKey("snapshot"));
+      recoverySafeAt = Date.now() + RECOVERY_REARM_DELAY;
       setState(snapshot.state);
       document.documentElement.setAttribute("data-recovery", "restored");
       status("Recovered unsaved graph after the previous crash.");
@@ -883,7 +907,8 @@
   function boot() {
     startRecoverySession();
     buildShell();
-    setTurboSpeed(readTurboSpeed(), false);
+    clearLegacyTurboSpeed();
+    setTurboSpeed(1, false);
     buildPanel();
     interceptBuiltInSave();
     setInterval(keepBuiltInSaveLocal, 500);
@@ -895,11 +920,18 @@
       installTurbo();
       var id = pendingSaveId();
       if (id) openSave(id);
-      else if (!restoreRecoverySnapshot()) status("Local saves ready.");
+      else if (!restoreRecoverySnapshot()) {
+        status(
+          recoverySkipped
+            ? "Started safely without the failing recovery snapshot."
+            : "Local saves ready.",
+        );
+      }
       setupRecoverySnapshots();
     }, 250);
 
     document.addEventListener("visibilitychange", function () {
+      turbo.lastRealTime = null;
       turbo.fpsStartedAt = null;
       turbo.frameCount = 0;
       turbo.lowFpsSamples = 0;
