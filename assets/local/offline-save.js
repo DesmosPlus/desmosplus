@@ -10,6 +10,7 @@
   var TURBO_MIN_FPS = 30;
   var TURBO_LOW_FPS_LIMIT = 3;
   var TURBO_MAX_FRAME_DELTA = 100;
+  var TURBO_MAX_TICKER_FPS = 30;
   var RECOVERY_PREFIX = "desmosplus.recovery.";
   var RECOVERY_REARM_DELAY = 5000;
   var recoveryNeeded = false;
@@ -187,7 +188,9 @@
       originalHandler: ticker.handlerLatex,
       originalMinStep: ticker.minStepLatex,
       acceleratedHandler: acceleratedHandler,
-      acceleratedMinStep: String(Math.max(16, minStep / turbo.speed)),
+      acceleratedMinStep: String(
+        Math.max(1000 / TURBO_MAX_TICKER_FPS, minStep / turbo.speed),
+      ),
     };
   }
 
@@ -241,7 +244,11 @@
       } else {
         var frameDelta = Math.max(0, realTime - turbo.lastRealTime);
         turbo.lastRealTime = realTime;
-        if (frameDelta > TURBO_MAX_FRAME_DELTA && turbo.speed > 1) {
+        if (
+          frameDelta > TURBO_MAX_FRAME_DELTA &&
+          turbo.speed > 1 &&
+          !turbo.tickerAdaptive
+        ) {
           setTurboSpeed(1, false);
           status("Turbo disabled after the page stalled.");
         }
@@ -282,7 +289,7 @@
     var readout = document.getElementById("local-turbo-fps");
     if (readout) readout.textContent = turbo.fps + " FPS";
 
-    if (turbo.speed === 1 || turbo.fps >= TURBO_MIN_FPS) {
+    if (turbo.speed === 1 || turbo.tickerAdaptive || turbo.fps >= TURBO_MIN_FPS) {
       turbo.lowFpsSamples = 0;
       return;
     }

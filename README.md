@@ -101,7 +101,10 @@ Simple fixed-step tickers are accelerated with Desmos's elapsed-time `dt`
 variable. This keeps their motion at the selected speed when a large graph
 cannot evaluate every requested tick, while requesting the highest update rate
 the calculator can sustain. The original ticker action and interval are retained
-in local saves and recovery snapshots. Other ticker actions use clock scaling.
+in local saves and recovery snapshots. Adaptive tickers request at most 30
+updates per second and are not reduced merely because rendering is below 30 FPS;
+`dt` keeps their selected speed accurate without accumulating delayed ticks.
+Other ticker actions use clock scaling and the standard overload guards.
 
 ## Crash Recovery
 
