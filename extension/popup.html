@@ -12,12 +12,18 @@
         <img src="icons/icon-48.png" width="40" height="40" alt="">
         <h1>DesmosPlus</h1>
       </header>
-      <label for="graph-name">Name</label>
-      <input id="graph-name" value="Untitled" autocomplete="off">
-      <label for="graph-category">Category</label>
-      <input id="graph-category" value="Imported" autocomplete="off">
-      <button id="export" type="button">Export from Desmos</button>
-      <button id="import" type="button">Import into Desmos</button>
+      <div class="field">
+        <label for="graph-name">Name</label>
+        <input id="graph-name" value="Untitled" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="graph-category">Category</label>
+        <input id="graph-category" value="Imported" autocomplete="off">
+      </div>
+      <div class="actions">
+        <button id="export" type="button">Export</button>
+        <button id="import" type="button">Import</button>
+      </div>
       <input id="import-file" type="file" accept=".desmos,.desmosplus.json,.json,application/json" hidden>
       <p id="status" aria-live="polite">Open a Desmos calculator.</p>
     </main>
