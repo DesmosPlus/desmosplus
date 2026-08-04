@@ -97,6 +97,12 @@ FPS for roughly 1.5 seconds, DesmosPlus automatically reduces Turbo by one step
 until the page becomes responsive again. A stalled frame disables Turbo and
 discarded background time is not multiplied when the tab becomes active again.
 
+Simple fixed-step tickers are accelerated with Desmos's elapsed-time `dt`
+variable. This keeps their motion at the selected speed when a large graph
+cannot evaluate every requested tick, while requesting the highest update rate
+the calculator can sustain. The original ticker action and interval are retained
+in local saves and recovery snapshots. Other ticker actions use clock scaling.
+
 ## Crash Recovery
 
 DesmosPlus keeps a browser-local recovery checkpoint of the current calculator

@@ -26,6 +26,11 @@
     frameCount: 0,
     fps: 0,
     lowFpsSamples: 0,
+    tickerAdaptive: false,
+    tickerController: null,
+    tickerOriginalHandler: "",
+    tickerOriginalMinStep: "",
+    tickerAcceleratedHandler: "",
   };
   var loadedId = "";
   var PRODUCTS = [
@@ -72,12 +77,22 @@
 
   function getState() {
     if (!apiReady()) throw new Error("Calculator is not ready yet.");
-    return api().getState();
+    return cleanTurboState(api().getState());
   }
 
   function setState(state) {
     if (!apiReady()) throw new Error("Calculator is not ready yet.");
+    restoreAdaptiveTicker();
     api().setState(state, { allowUndo: true });
+    setTimeout(syncAdaptiveTicker, 0);
+  }
+
+  function cleanTurboState(state) {
+    var ticker = state && state.expressions && state.expressions.ticker;
+    if (!ticker || !turbo.tickerAdaptive) return state;
+    ticker.handlerLatex = turbo.tickerOriginalHandler;
+    ticker.minStepLatex = turbo.tickerOriginalMinStep;
+    return state;
   }
 
   function clearLegacyTurboSpeed() {
@@ -100,6 +115,7 @@
 
     setDropdownValue("local-turbo", String(turbo.speed));
     document.documentElement.setAttribute("data-turbo-speed", String(turbo.speed));
+    syncAdaptiveTicker();
 
     if (announce) {
       status(
@@ -108,6 +124,95 @@
           : "Turbo " + turbo.speed + "x enabled. Higher CPU and memory use.",
       );
     }
+  }
+
+  function restoreAdaptiveTicker() {
+    var controller = turbo.tickerController;
+    if (turbo.tickerAdaptive && controller) {
+      if (controller.getTickerHandlerLatex() === turbo.tickerAcceleratedHandler) {
+        controller.dispatch({
+          type: "update-ticker-handlerlatex",
+          latex: turbo.tickerOriginalHandler,
+        });
+        controller.dispatch({
+          type: "update-ticker-minsteplatex",
+          latex: turbo.tickerOriginalMinStep,
+        });
+      }
+    }
+    turbo.tickerAdaptive = false;
+    turbo.tickerController = null;
+    turbo.tickerOriginalHandler = "";
+    turbo.tickerOriginalMinStep = "";
+    turbo.tickerAcceleratedHandler = "";
+    document.documentElement.setAttribute("data-turbo-ticker", "clock");
+  }
+
+  function simpleTickerPlan(controller) {
+    var state = api().getState();
+    var expressions = state && state.expressions;
+    var ticker = expressions && expressions.ticker;
+    if (!ticker || !ticker.handlerLatex) return null;
+
+    var minStep = Number(ticker.minStepLatex);
+    if (!Number.isFinite(minStep) || minStep <= 0) return null;
+
+    var definition = expressions.list.find(function (item) {
+      return (
+        item.type === "expression" &&
+        typeof item.latex === "string" &&
+        item.latex.indexOf(ticker.handlerLatex + "=") === 0
+      );
+    });
+    if (!definition) return null;
+
+    var actionLatex = definition.latex.slice(ticker.handlerLatex.length + 1);
+    var update = actionLatex.match(
+      /^([A-Za-z](?:_\{[^{}]+\})?)\\to\s*\1\s*\+\s*(.+)$/,
+    );
+    if (!update || update[2].indexOf("\\operatorname{dt}") !== -1) return null;
+
+    var acceleratedHandler =
+      update[1] +
+      "\\to " +
+      update[1] +
+      "+\\left(" +
+      update[2] +
+      "\\right)\\frac{\\operatorname{dt}}{" +
+      ticker.minStepLatex +
+      "}" +
+      turbo.speed;
+    return {
+      controller: controller,
+      originalHandler: ticker.handlerLatex,
+      originalMinStep: ticker.minStepLatex,
+      acceleratedHandler: acceleratedHandler,
+      acceleratedMinStep: String(Math.max(16, minStep / turbo.speed)),
+    };
+  }
+
+  function syncAdaptiveTicker() {
+    var controller = turbo.calculator && turbo.calculator.controller;
+    restoreAdaptiveTicker();
+    if (!controller || turbo.speed === 1) return;
+
+    var plan = simpleTickerPlan(controller);
+    if (!plan) return;
+
+    turbo.tickerAdaptive = true;
+    turbo.tickerController = plan.controller;
+    turbo.tickerOriginalHandler = plan.originalHandler;
+    turbo.tickerOriginalMinStep = plan.originalMinStep;
+    turbo.tickerAcceleratedHandler = plan.acceleratedHandler;
+    document.documentElement.setAttribute("data-turbo-ticker", "adaptive");
+    controller.dispatch({
+      type: "update-ticker-handlerlatex",
+      latex: plan.acceleratedHandler,
+    });
+    controller.dispatch({
+      type: "update-ticker-minsteplatex",
+      latex: plan.acceleratedMinStep,
+    });
   }
 
   function installTurbo() {
@@ -141,7 +246,8 @@
           status("Turbo disabled after the page stalled.");
         }
         var delta = Math.min(frameDelta, TURBO_MAX_FRAME_DELTA);
-        turbo.virtualTime += delta * (paused ? 1 : turbo.speed);
+        var clockSpeed = turbo.tickerAdaptive ? 1 : turbo.speed;
+        turbo.virtualTime += delta * (paused ? 1 : clockSpeed);
       }
 
       updateTurboStats(realTime);
@@ -150,6 +256,7 @@
 
     if (button) button.disabled = false;
     document.documentElement.setAttribute("data-turbo-api", "ready");
+    syncAdaptiveTicker();
   }
 
   function updateTurboStats(realTime) {
@@ -957,5 +1064,6 @@
     getFps: function () {
       return turbo.fps;
     },
+    cleanState: cleanTurboState,
   };
 })();
