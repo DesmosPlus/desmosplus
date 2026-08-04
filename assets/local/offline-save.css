@@ -164,10 +164,24 @@
   border: 1px solid #000;
   border-radius: var(--desmosplus-radius);
   background: #fff;
+  transform-origin: top;
+  animation: desmosplus-menu-open 140ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .desmosplus-menu-options[hidden] {
   display: none;
+}
+
+@keyframes desmosplus-menu-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 #desmosplus-product .desmosplus-menu-options {
@@ -210,10 +224,23 @@
   background: #fff;
   color: #000;
   font: 14px var(--desmosplus-font);
+  animation: desmosplus-panel-open 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 #local-save-panel[hidden] {
   display: none;
+}
+
+@keyframes desmosplus-panel-open {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .local-panel-header {
@@ -385,6 +412,13 @@
 #navigation,
 .dcg-basic-calc-footer {
   display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desmosplus-menu-options,
+  #local-save-panel {
+    animation: none;
+  }
 }
 
 @media (max-width: 700px) {
