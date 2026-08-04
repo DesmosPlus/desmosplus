@@ -91,7 +91,20 @@ live FPS readout reports the animation-frame rate. Turbo does not alter saved
 graph state, and its setting resets when the browser session ends.
 
 Higher settings intentionally use more CPU and memory. Large graphs may become
-slow or briefly unresponsive when the evaluator cannot keep up.
+slow when the evaluator cannot keep up. If measured frame rate remains below 30
+FPS for roughly 1.5 seconds, DesmosPlus automatically reduces Turbo by one step
+until the page becomes responsive again.
+
+## Crash Recovery
+
+DesmosPlus keeps a browser-local recovery checkpoint of the current calculator
+state. After an abnormal renderer exit, the next load restores that unsaved
+state automatically. Clean navigation and normal page closure clear the crash
+marker so they do not produce false recovery messages.
+
+The local Node server also supervises its serving worker. A worker that exits or
+fails three consecutive health checks is replaced automatically while keeping
+the same `http://localhost:8765` address.
 
 ## Chrome Extension
 
@@ -282,6 +295,8 @@ that contain information you do not intend to publish.
 
 - Browser saves are not synchronized or backed up automatically.
 - Browser storage quotas limit very large libraries.
+- Crash checkpoints are best effort and remain subject to browser storage
+  availability and quotas.
 - The extension is installed unpacked and is not published to a browser store.
 - Graphs injected into Desmos remain temporary until saved through Desmos.
 - Upstream calculator changes can require fresh captures or importer updates.

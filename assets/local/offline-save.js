@@ -7,6 +7,11 @@
   var CHUNK_SIZE = 3200;
   var TURBO_KEY = "desmosplus.turbo.speed";
   var TURBO_SPEEDS = [1, 2, 4, 8, 16];
+  var TURBO_MIN_FPS = 30;
+  var TURBO_LOW_FPS_LIMIT = 3;
+  var RECOVERY_PREFIX = "desmosplus.recovery.";
+  var recoveryNeeded = false;
+  var recoveryTimer = null;
   var turbo = {
     speed: 1,
     calculator: null,
@@ -16,6 +21,7 @@
     fpsStartedAt: null,
     frameCount: 0,
     fps: 0,
+    lowFpsSamples: 0,
   };
   var loadedId = "";
   var PRODUCTS = [
@@ -82,6 +88,7 @@
   function setTurboSpeed(value, announce) {
     var speed = Number(value);
     turbo.speed = TURBO_SPEEDS.indexOf(speed) === -1 ? 1 : speed;
+    turbo.lowFpsSamples = 0;
 
     setDropdownValue("local-turbo", String(turbo.speed));
     document.documentElement.setAttribute("data-turbo-speed", String(turbo.speed));
@@ -139,6 +146,12 @@
   }
 
   function updateTurboStats(realTime) {
+    if (document.hidden) {
+      turbo.fpsStartedAt = realTime;
+      turbo.frameCount = 0;
+      turbo.lowFpsSamples = 0;
+      return;
+    }
     if (turbo.fpsStartedAt === null) turbo.fpsStartedAt = realTime;
     turbo.frameCount += 1;
     var elapsed = realTime - turbo.fpsStartedAt;
@@ -154,6 +167,102 @@
     );
     var readout = document.getElementById("local-turbo-fps");
     if (readout) readout.textContent = turbo.fps + " FPS";
+
+    if (turbo.speed === 1 || turbo.fps >= TURBO_MIN_FPS) {
+      turbo.lowFpsSamples = 0;
+      return;
+    }
+    turbo.lowFpsSamples += 1;
+    if (turbo.lowFpsSamples < TURBO_LOW_FPS_LIMIT) return;
+
+    var speedIndex = TURBO_SPEEDS.indexOf(turbo.speed);
+    var saferSpeed = TURBO_SPEEDS[Math.max(0, speedIndex - 1)];
+    setTurboSpeed(saferSpeed, false);
+    status(
+      saferSpeed === 1
+        ? "Turbo disabled after frame rate dropped below 30 FPS."
+        : "Turbo reduced to " + saferSpeed + "x after frame rate dropped below 30 FPS.",
+    );
+  }
+
+  function recoveryKey(name) {
+    return RECOVERY_PREFIX + product() + "." + name;
+  }
+
+  function startRecoverySession() {
+    try {
+      recoveryNeeded = sessionStorage.getItem(recoveryKey("active")) === "1";
+      sessionStorage.setItem(recoveryKey("active"), "1");
+      document.documentElement.setAttribute(
+        "data-recovery",
+        recoveryNeeded ? "pending" : "ready",
+      );
+    } catch (error) {
+      document.documentElement.setAttribute("data-recovery", "unavailable");
+    }
+
+    window.addEventListener("pagehide", function () {
+      try {
+        sessionStorage.removeItem(recoveryKey("active"));
+      } catch (error) {
+        // A blocked storage API cannot be cleaned up.
+      }
+    });
+    window.addEventListener("pageshow", function () {
+      try {
+        sessionStorage.setItem(recoveryKey("active"), "1");
+      } catch (error) {
+        // A blocked storage API cannot track the active page.
+      }
+    });
+  }
+
+  function writeRecoverySnapshot() {
+    if (!apiReady()) return;
+    try {
+      localStorage.setItem(
+        recoveryKey("snapshot"),
+        JSON.stringify({
+          version: 1,
+          product: product(),
+          savedAt: new Date().toISOString(),
+          state: getState(),
+        }),
+      );
+      document.documentElement.setAttribute("data-recovery", "ready");
+    } catch (error) {
+      document.documentElement.setAttribute("data-recovery", "unavailable");
+    }
+  }
+
+  function queueRecoverySnapshot() {
+    clearTimeout(recoveryTimer);
+    recoveryTimer = setTimeout(writeRecoverySnapshot, 400);
+  }
+
+  function restoreRecoverySnapshot() {
+    if (!recoveryNeeded) return false;
+    try {
+      var snapshot = JSON.parse(localStorage.getItem(recoveryKey("snapshot")) || "null");
+      if (!snapshot || snapshot.product !== product() || !snapshot.state) return false;
+      setState(snapshot.state);
+      document.documentElement.setAttribute("data-recovery", "restored");
+      status("Recovered unsaved graph after the previous crash.");
+      return true;
+    } catch (error) {
+      document.documentElement.setAttribute("data-recovery", "failed");
+      return false;
+    }
+  }
+
+  function setupRecoverySnapshots() {
+    var current = api();
+    if (current && typeof current.observeEvent === "function") {
+      current.observeEvent("change", queueRecoverySnapshot);
+    } else {
+      setInterval(writeRecoverySnapshot, 3000);
+    }
+    queueRecoverySnapshot();
   }
 
   function dropdownHtml(id, value, options) {
@@ -772,6 +881,7 @@
   }
 
   function boot() {
+    startRecoverySession();
     buildShell();
     setTurboSpeed(readTurboSpeed(), false);
     buildPanel();
@@ -785,8 +895,15 @@
       installTurbo();
       var id = pendingSaveId();
       if (id) openSave(id);
-      else status("Local saves ready.");
+      else if (!restoreRecoverySnapshot()) status("Local saves ready.");
+      setupRecoverySnapshots();
     }, 250);
+
+    document.addEventListener("visibilitychange", function () {
+      turbo.fpsStartedAt = null;
+      turbo.frameCount = 0;
+      turbo.lowFpsSamples = 0;
+    });
   }
 
   if (document.readyState === "loading") {
