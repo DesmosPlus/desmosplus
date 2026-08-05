@@ -160,13 +160,24 @@
         minimumMagnitude: 0.0001,
       };
     }
+    if (modeInput.value === "high") {
+      return {
+        mode: "high",
+        start: 0,
+        end: 0,
+        fps: 60,
+        polyphony: 144,
+        maxNotes: 1200000,
+        minimumMagnitude: 0.0001,
+      };
+    }
     return {
       mode: "custom",
       start: Math.max(0, numericSetting("desaudify-start", 0)),
       end: Math.max(0, numericSetting("desaudify-end", 0)),
       fps: Math.max(10, Math.min(120, numericSetting("desaudify-fps", 30))),
       polyphony: Math.max(8, Math.min(192, numericSetting("desaudify-polyphony", 32))),
-      maxNotes: Math.max(1000, Math.min(700000, numericSetting("desaudify-notes", 260000))),
+      maxNotes: Math.max(1000, Math.min(1500000, numericSetting("desaudify-notes", 260000))),
       minimumMagnitude: Math.max(
         0.000001,
         Math.min(1, numericSetting("desaudify-magnitude", 0.0001)),
@@ -184,6 +195,47 @@
       " voices, up to " +
       settings.maxNotes.toLocaleString() +
       " notes";
+  }
+
+  function prepareDesAudifyTemplate(template, file, stats) {
+    var state = JSON.parse(JSON.stringify(template));
+    var items = state.expressions.list;
+    var byId = function (id) {
+      return items.find(function (item) {
+        return String(item.id) === String(id);
+      });
+    };
+    var title = file.name.replace(/\.[^.]+$/, "") || "DesAudify Audio";
+    var countExpression = byId("8647");
+    var countParts = [];
+    for (var index = 1; index <= stats.chunkCount; index += 1) {
+      countParts.push("c_{ount}\\left(t_{" + index + "}\\right)");
+    }
+
+    byId("8901").text =
+      "Data\n\n" +
+      stats.chunkCount +
+      " chunks in " +
+      stats.shardCount +
+      " injected shard" +
+      (stats.shardCount === 1 ? "" : "s");
+    byId("8512").title = "Aux (Total " + stats.notes.toLocaleString() + ")";
+    byId("8512").collapsed = true;
+    countExpression.latex = countParts.join("+");
+    byId("9130").latex =
+      "g_{calc2}\\left(q,v\\right)=\\operatorname{join}\\left(\\left(v+q\\right)\\left[q>0\\right],v\\left[v>0\\right]\\right)";
+    byId("9131").latex =
+      "g_{calc}\\left(L\\right)=g_{calc2}\\left(\\operatorname{floor}\\left(0.0000001L\\right),\\operatorname{mod}\\left(L,10000000\\right)\\right)";
+    byId("7716").latex =
+      "s_{gain}\\left(x\\right)=10^{\\frac{4}{998}\\left(l_{ightgain}\\left(x\\right)-1\\right)-4}";
+    byId("34").latex = "d_{t}=" + Math.round(1000 / stats.fps);
+    byId("34").slider.max = String(Math.max(20, Math.round(1000 / stats.fps)));
+    byId("9183").title = "Processing";
+    byId("9183").collapsed = true;
+    byId("7089").label = title;
+    byId("7104").label = "Generated locally with DesmosPlus";
+    if (state.expressions.ticker) state.expressions.ticker.playing = false;
+    return state;
   }
 
   async function activeTab() {
@@ -359,8 +411,22 @@
       setStatus("Loading player and equations...");
       var response = await fetch(chrome.runtime.getURL("desaudify-template.json"));
       if (!response.ok) throw new Error("Bundled DesAudify player could not be read.");
-      await runDesAudify(page, "loadTemplate", [await response.json()]);
-      await runDesAudify(page, "insertSchema", [converted.data, file.name + " data", "data"]);
+      var template = prepareDesAudifyTemplate(await response.json(), file, converted.stats);
+      await runDesAudify(page, "loadTemplate", [template]);
+      for (var shardIndex = 0; shardIndex < converted.dataShards.length; shardIndex += 1) {
+        setStatus(
+          "Injecting shard " +
+            (shardIndex + 1) +
+            " of " +
+            converted.dataShards.length +
+            " at a safe rate...",
+        );
+        await runDesAudify(page, "insertSchema", [
+          converted.dataShards[shardIndex],
+          file.name + " Shard " + (shardIndex + 1),
+          "data",
+        ]);
+      }
       await runDesAudify(page, "insertSchema", [
         converted.processing,
         file.name + " processing",
@@ -374,7 +440,11 @@
           Math.round(converted.stats.duration) +
           " seconds at " +
           converted.stats.fps +
-          " FPS.",
+          " FPS across " +
+          converted.stats.shardCount +
+          " shard" +
+          (converted.stats.shardCount === 1 ? "" : "s") +
+          ".",
       );
     } catch (error) {
       setStatus(error.message || String(error));

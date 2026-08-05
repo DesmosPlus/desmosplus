@@ -1,10 +1,13 @@
 (function (root) {
   "use strict";
 
-  if (root.DesmosPlusDesAudify) return;
+  var BRIDGE_VERSION = 2;
+  if (root.DesmosPlusDesAudify && root.DesmosPlusDesAudify.version === BRIDGE_VERSION) return;
 
   var MAX_SCHEMA_BYTES = 6 * 1024 * 1024;
   var MAX_SCHEMA_LINES = 500;
+  var MAX_BATCH_BYTES = 750 * 1024;
+  var MAX_BATCH_LINES = 4;
 
   function calculator() {
     var instance = root.Calc;
@@ -77,7 +80,47 @@
     return { ok: true, expressionCount: state.expressions.list.length };
   }
 
-  function insertSchema(text, fileName, kind) {
+  function pause(milliseconds) {
+    return new Promise(function (resolve) {
+      root.setTimeout(resolve, milliseconds);
+    });
+  }
+
+  function injectionBatches(lines, kind) {
+    if (kind === "data") {
+      var pairs = [];
+      for (var pairIndex = 0; pairIndex < lines.length; pairIndex += 2) {
+        pairs.push(lines.slice(pairIndex, pairIndex + 2));
+      }
+      return pairs;
+    }
+
+    var batches = [];
+    var current = [];
+    var currentBytes = 0;
+    lines.forEach(function (line) {
+      var lineBytes = byteLength(line);
+      if (
+        current.length &&
+        (current.length >= MAX_BATCH_LINES || currentBytes + lineBytes > MAX_BATCH_BYTES)
+      ) {
+        batches.push(current);
+        current = [];
+        currentBytes = 0;
+      }
+      current.push(line);
+      currentBytes += lineBytes;
+    });
+    if (current.length) batches.push(current);
+    return batches;
+  }
+
+  function settleDelay(batch) {
+    var bytes = byteLength(batch.join("\n"));
+    return Math.min(2500, 300 + Math.ceil(bytes / (250 * 1024)) * 250);
+  }
+
+  async function insertSchema(text, fileName, kind) {
     if (kind !== "data" && kind !== "processing") {
       throw new Error("Unknown DesAudify schema type.");
     }
@@ -107,13 +150,30 @@
         folderId: folder.id,
       };
     });
+    var batches = injectionBatches(lines, kind);
+    var offset = 0;
 
-    state.expressions.list.push.apply(state.expressions.list, [folder].concat(expressions));
-    instance.setState(state, { allowUndo: true });
-    return { ok: true, equationCount: expressions.length, folderTitle: title };
+    if (typeof instance.setExpressions !== "function") {
+      throw new Error("This Desmos calculator cannot accept paced equation batches.");
+    }
+    instance.setExpressions([folder]);
+    await pause(200);
+    for (var batchIndex = 0; batchIndex < batches.length; batchIndex += 1) {
+      var batch = expressions.slice(offset, offset + batches[batchIndex].length);
+      instance.setExpressions(batch);
+      offset += batch.length;
+      await pause(settleDelay(batches[batchIndex]));
+    }
+    return {
+      ok: true,
+      equationCount: expressions.length,
+      batchCount: batches.length,
+      folderTitle: title,
+    };
   }
 
   root.DesmosPlusDesAudify = {
+    version: BRIDGE_VERSION,
     hasPlayer: function () {
       return hasPlayer(calculator().getState());
     },

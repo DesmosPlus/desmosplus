@@ -189,9 +189,16 @@ packed DesAudify schemas, loads the player, and injects both schema sets.
 
 In the extension's **DesAudify** section, select **Import audio**. **Auto** uses
 30 FPS, 32-voice polyphony, a 260,000-note budget, and a `0.0001` minimum
-magnitude. **Custom** exposes start/end time, FPS, polyphony, note limit, and
+magnitude. **High quality** uses 60 FPS, 144-voice polyphony, and a 1,200,000-note
+budget. **Custom** exposes start/end time, FPS, polyphony, note limit, and
 minimum magnitude. Conversion supports a selected range up to five minutes and
 runs locally without uploading the audio.
+
+Generated data is divided into shard-sized folders while remaining in the same
+graph as the player. Shard equations are injected as ordered `t_i`/`p_i` pairs,
+with a byte-scaled pause after each pair so Desmos can parse large lists without
+receiving the entire graph in one burst. Processing equations are paced in
+small batches after all data shards are present.
 
 The upstream Python pipeline remains available for multi-resolution
 synchrosqueezed analysis or manually generated shards:

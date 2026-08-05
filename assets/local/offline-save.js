@@ -847,7 +847,14 @@
       var bridge = desAudifyBridge();
       var total = 0;
       for (var i = 0; i < files.length; i += 1) {
-        var result = bridge.insertSchema(await files[i].text(), files[i].name, kind);
+        audioStatus(
+          "Importing " +
+            (i + 1) +
+            " of " +
+            files.length +
+            " at a safe rate...",
+        );
+        var result = await bridge.insertSchema(await files[i].text(), files[i].name, kind);
         total += result.equationCount;
       }
       queueRecoverySnapshot();

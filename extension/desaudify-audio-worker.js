@@ -9,6 +9,7 @@ var MIN_FREQUENCY = 20;
 var MAX_FREQUENCY = 20000;
 var DEFAULT_MAX_NOTES = 260000;
 var DEFAULT_MIN_MAGNITUDE = 0.0001;
+var MAX_SHARD_BYTES = Math.floor(4.5 * 1024 * 1024);
 
 function progress(value, message) {
   self.postMessage({ type: "progress", value: value, message: message });
@@ -209,7 +210,7 @@ function processingSchema(chunkCount) {
 
   var toneDefinition =
     tones.length > 1
-      ? "t_{ones}=\\left\\{" + tones.join(",") + "\\right\\}"
+      ? "t_{ones}=\\operatorname{join}\\left(" + tones.join(",") + "\\right)"
       : "t_{ones}=" + tones[0];
   return [
     "m_{inmax}=\\left[" + minmax.join(",") + "\\right]",
@@ -219,7 +220,11 @@ function processingSchema(chunkCount) {
     "m_{inpitch}=\\min\\left(" + minimumPitch.join(",") + "\\right)",
     "s_{upercond}=" + superConditions.join(","),
   ]
-    .concat(counters)
+    .concat(
+      counters.map(function (counter) {
+        return counter.replace("=0", "=-1");
+      }),
+    )
     .concat([toneDefinition, "d_{uration}=\\max\\left(m_{inmax}.y\\right)"])
     .join("\n");
 }
@@ -274,8 +279,28 @@ function generateSchemas(frames, fps) {
     );
   });
 
+  var dataShards = [];
+  var currentShard = [];
+  var currentBytes = 0;
+  for (var lineIndex = 0; lineIndex < dataLines.length; lineIndex += 2) {
+    var pair = dataLines.slice(lineIndex, lineIndex + 2).join("\n");
+    var pairBytes = new TextEncoder().encode(pair).length;
+    if (currentShard.length && currentBytes + pairBytes + 1 > MAX_SHARD_BYTES) {
+      dataShards.push(currentShard.join("\n"));
+      currentShard = [];
+      currentBytes = 0;
+    }
+    currentShard.push(pair);
+    currentBytes += pairBytes + (currentShard.length > 1 ? 1 : 0);
+  }
+  if (currentShard.length) dataShards.push(currentShard.join("\n"));
+
   progress(98, "Building DesAudify equations");
-  return { data: dataLines.join("\n"), processing: processingSchema(chunks.length) };
+  return {
+    dataShards: dataShards,
+    processing: processingSchema(chunks.length),
+    chunkCount: chunks.length,
+  };
 }
 
 self.onmessage = function (event) {
@@ -294,7 +319,7 @@ self.onmessage = function (event) {
     progress(0, "Starting audio analysis");
     fps = clamp(Math.round(fps), 10, 120);
     polyphony = clamp(Math.round(polyphony), 8, 192);
-    maxNotes = clamp(Math.round(maxNotes), 1000, 700000);
+    maxNotes = clamp(Math.round(maxNotes), 1000, 1500000);
     minimumMagnitude = clamp(minimumMagnitude, 0.000001, 1);
     var analysis = analyze(samples, sampleRate, fps, polyphony, maxNotes);
     var encoded = encodeFrames(
@@ -306,7 +331,7 @@ self.onmessage = function (event) {
     var schemas = generateSchemas(encoded.frames, fps);
     self.postMessage({
       type: "complete",
-      data: schemas.data,
+      dataShards: schemas.dataShards,
       processing: schemas.processing,
       stats: {
         duration: samples.length / sampleRate,
@@ -316,6 +341,8 @@ self.onmessage = function (event) {
         polyphony: polyphony,
         maxNotes: maxNotes,
         minimumMagnitude: minimumMagnitude,
+        chunkCount: schemas.chunkCount,
+        shardCount: schemas.dataShards.length,
       },
     });
   } catch (error) {
