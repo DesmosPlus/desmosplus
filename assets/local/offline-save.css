@@ -8,7 +8,9 @@
 #desmosplus-shell,
 #desmosplus-shell *,
 #local-save-panel,
-#local-save-panel * {
+#local-save-panel *,
+#local-audio-panel,
+#local-audio-panel * {
   box-sizing: border-box;
   letter-spacing: 0;
 }
@@ -68,6 +70,7 @@
 #local-save-panel button:focus-visible,
 #local-save-panel input:focus-visible,
 #local-save-panel select:focus-visible,
+#local-audio-panel button:focus-visible,
 .desmosplus-home nav a:focus-visible {
   outline: 2px solid #000;
   outline-offset: 2px;
@@ -214,7 +217,8 @@
   text-decoration: underline;
 }
 
-#local-save-panel {
+#local-save-panel,
+#local-audio-panel {
   position: fixed;
   inset: var(--desmosplus-bar-height) 0 0 auto;
   z-index: 99999;
@@ -227,7 +231,8 @@
   animation: desmosplus-panel-open 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-#local-save-panel[hidden] {
+#local-save-panel[hidden],
+#local-audio-panel[hidden] {
   display: none;
 }
 
@@ -262,7 +267,8 @@
 
 #local-save-panel button,
 #local-save-panel input,
-#local-save-panel select {
+#local-save-panel select,
+#local-audio-panel button {
   min-height: var(--desmosplus-control-height);
   border: 1px solid #000;
   border-radius: var(--desmosplus-radius);
@@ -271,12 +277,14 @@
   font: inherit;
 }
 
-#local-save-panel button {
+#local-save-panel button,
+#local-audio-panel button {
   padding: 0 12px;
   cursor: pointer;
 }
 
-#local-save-panel button:hover {
+#local-save-panel button:hover,
+#local-audio-panel button:hover {
   text-decoration: underline;
 }
 
@@ -291,7 +299,8 @@
 }
 
 #local-save-form,
-.local-filters {
+.local-filters,
+.local-audio-actions {
   display: grid;
   gap: 8px;
   padding: 16px;
@@ -334,6 +343,13 @@
 #local-save-status {
   margin: 0;
   padding: 16px 0;
+}
+
+#local-audio-status {
+  margin: 0;
+  padding: 16px;
+  border-top: 1px solid #000;
+  line-height: 1.4;
 }
 
 #local-save-status {
@@ -416,7 +432,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .desmosplus-menu-options,
-  #local-save-panel {
+  #local-save-panel,
+  #local-audio-panel {
     animation: none;
   }
 }
@@ -477,7 +494,7 @@
   }
 
   #desmosplus-product {
-    width: 100px;
+    width: 80px;
   }
 
   #local-turbo {

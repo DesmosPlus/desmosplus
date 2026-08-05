@@ -4,11 +4,18 @@
   var exportButton = document.getElementById("export");
   var importButton = document.getElementById("import");
   var svgButton = document.getElementById("import-svg");
+  var templateButton = document.getElementById("desaudify-template");
+  var dataButton = document.getElementById("desaudify-data");
+  var processingButton = document.getElementById("desaudify-processing");
   var importFile = document.getElementById("import-file");
   var svgFile = document.getElementById("svg-file");
+  var dataFile = document.getElementById("desaudify-data-file");
+  var processingFile = document.getElementById("desaudify-processing-file");
   var nameInput = document.getElementById("graph-name");
   var categoryInput = document.getElementById("graph-category");
   var statusNode = document.getElementById("status");
+  var availability = { graph: false, svg: false, desaudify: false };
+  var busy = false;
 
   function productFromUrl(value) {
     var url = new URL(value);
@@ -79,6 +86,14 @@
     return true;
   }
 
+  function callDesAudify(action, args) {
+    var bridge = window.DesmosPlusDesAudify;
+    if (!bridge || typeof bridge[action] !== "function") {
+      throw new Error("DesAudify injection did not load.");
+    }
+    return bridge[action].apply(bridge, args || []);
+  }
+
   function download(value, name) {
     var url = URL.createObjectURL(
       new Blob([JSON.stringify(value)], { type: "application/json" }),
@@ -94,10 +109,29 @@
     statusNode.textContent = message;
   }
 
+  function updateAvailability() {
+    exportButton.disabled = busy || !availability.graph;
+    importButton.disabled = busy || !availability.graph;
+    svgButton.disabled = busy || !availability.svg;
+    templateButton.disabled = busy || !availability.desaudify;
+    dataButton.disabled = busy || !availability.desaudify;
+    processingButton.disabled = busy || !availability.desaudify;
+  }
+
   function setBusy(value) {
-    exportButton.disabled = value;
-    importButton.disabled = value;
-    svgButton.disabled = value || svgButton.dataset.supported !== "true";
+    busy = value;
+    updateAvailability();
+  }
+
+  function selectView(view) {
+    document.querySelectorAll("[data-view]").forEach(function (button) {
+      var selected = button.dataset.view === view;
+      button.setAttribute("aria-selected", String(selected));
+      button.tabIndex = selected ? 0 : -1;
+    });
+    document.querySelectorAll("[data-panel]").forEach(function (panel) {
+      panel.hidden = panel.dataset.panel !== view;
+    });
   }
 
   async function activeTab() {
@@ -112,6 +146,27 @@
     var product = isDesmos ? productFromUrl(url.href) : "";
     if (!tab || !product) throw new Error("Open a supported Desmos calculator.");
     return { tab: tab, product: product };
+  }
+
+  async function injectDesAudify(page) {
+    await chrome.scripting.executeScript({
+      target: { tabId: page.tab.id },
+      world: "MAIN",
+      files: ["desaudify-page.js"],
+    });
+  }
+
+  async function runDesAudify(page, action, args) {
+    await injectDesAudify(page);
+    var results = await chrome.scripting.executeScript({
+      target: { tabId: page.tab.id },
+      world: "MAIN",
+      func: callDesAudify,
+      args: [action, args || []],
+    });
+    var result = results[0] && results[0].result;
+    if (!result || result.ok !== true) throw new Error("DesAudify injection failed.");
+    return result;
   }
 
   async function exportGraph() {
@@ -143,7 +198,7 @@
         },
         name,
       );
-      setStatus("Exported. Import file from DesmosPlus Library.");
+      setStatus("Exported. Import the file from DesmosPlus Library.");
     } catch (error) {
       setStatus(error.message || String(error));
     } finally {
@@ -153,7 +208,7 @@
 
   async function importGraph(file) {
     setBusy(true);
-    setStatus("Reading file...");
+    setStatus("Reading graph file...");
     try {
       var page = await inspectPage();
       var imported = JSON.parse(await file.text());
@@ -188,7 +243,7 @@
 
   async function importSvg(file) {
     setBusy(true);
-    setStatus("Reading SVG...");
+    setStatus("Converting SVG...");
     try {
       var page = await inspectPage();
       if (!DesmosPlusSvg.supportedProduct(page.product)) {
@@ -209,7 +264,51 @@
           converted.equationCount +
           " editable equation" +
           (converted.equationCount === 1 ? "" : "s") +
-          ". Use Desmos Save to keep them.",
+          ".",
+      );
+    } catch (error) {
+      setStatus(error.message || String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function loadDesAudifyTemplate() {
+    if (!window.confirm("Replace the current graph with the DesAudify player?")) return;
+    setBusy(true);
+    setStatus("Loading DesAudify player...");
+    try {
+      var page = await inspectPage();
+      if (page.product !== "2dcalculator") throw new Error("Open Desmos 2D Calculator.");
+      var response = await fetch(chrome.runtime.getURL("desaudify-template.json"));
+      if (!response.ok) throw new Error("Bundled DesAudify player could not be read.");
+      var result = await runDesAudify(page, "loadTemplate", [await response.json()]);
+      setStatus("DesAudify player loaded with " + result.expressionCount + " items.");
+    } catch (error) {
+      setStatus(error.message || String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function importDesAudifySchemas(files, kind) {
+    if (!files.length) return;
+    setBusy(true);
+    setStatus("Injecting DesAudify " + kind + "...");
+    try {
+      var page = await inspectPage();
+      if (page.product !== "2dcalculator") throw new Error("Open Desmos 2D Calculator.");
+      var total = 0;
+      for (var i = 0; i < files.length; i += 1) {
+        var result = await runDesAudify(page, "insertSchema", [
+          await files[i].text(),
+          files[i].name,
+          kind,
+        ]);
+        total += result.equationCount;
+      }
+      setStatus(
+        "Injected " + total + " DesAudify equation" + (total === 1 ? "" : "s") + ".",
       );
     } catch (error) {
       setStatus(error.message || String(error));
@@ -221,22 +320,34 @@
   async function initialize() {
     try {
       var page = await inspectPage();
-      svgButton.dataset.supported = String(DesmosPlusSvg.supportedProduct(page.product));
-      svgButton.disabled = svgButton.dataset.supported !== "true";
-      setStatus("Ready to transfer.");
+      availability.graph = true;
+      availability.svg = DesmosPlusSvg.supportedProduct(page.product);
+      availability.desaudify = page.product === "2dcalculator";
+      setStatus("Ready.");
     } catch (error) {
       setStatus(error.message || String(error));
-      exportButton.disabled = true;
-      importButton.disabled = true;
     }
+    updateAvailability();
   }
 
+  document.querySelectorAll("[data-view]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      selectView(button.dataset.view);
+    });
+  });
   exportButton.addEventListener("click", exportGraph);
   importButton.addEventListener("click", function () {
     importFile.click();
   });
   svgButton.addEventListener("click", function () {
     svgFile.click();
+  });
+  templateButton.addEventListener("click", loadDesAudifyTemplate);
+  dataButton.addEventListener("click", function () {
+    dataFile.click();
+  });
+  processingButton.addEventListener("click", function () {
+    processingFile.click();
   });
   importFile.addEventListener("change", function () {
     var file = importFile.files && importFile.files[0];
@@ -248,5 +359,15 @@
     if (file) importSvg(file);
     svgFile.value = "";
   });
+  dataFile.addEventListener("change", function () {
+    importDesAudifySchemas(Array.from(dataFile.files || []), "data");
+    dataFile.value = "";
+  });
+  processingFile.addEventListener("change", function () {
+    importDesAudifySchemas(Array.from(processingFile.files || []), "processing");
+    processingFile.value = "";
+  });
+
+  selectView("graph");
   initialize();
 })();

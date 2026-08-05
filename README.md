@@ -13,7 +13,7 @@ one dependency-free Node.js project. Calculator assets run locally, saved work
 stays in the browser, and the included Chrome extension moves graph state from
 `desmos.com` into DesmosPlus without translating or rebuilding expressions.
 It can also convert validated static SVG files into editable equations in local
-or official Desmos graphs.
+or official Desmos graphs and load DesAudify audio-resynthesis equations.
 
 > [!IMPORTANT]
 > DesmosPlus is an independent project. It is not affiliated with, endorsed by,
@@ -26,6 +26,7 @@ or official Desmos graphs.
 - Browser-local persistence with no application database.
 - Chrome MV3 extension for exporting from and injecting into Desmos calculators.
 - Static SVG import for local and official Desmos 2D and Geometry graphs.
+- DesAudify player and schema injection for local and official Desmos 2D graphs.
 - Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.
 - `.desmos` graph exports, with import compatibility for older
   `.desmosplus.json` files and raw Desmos state JSON.
@@ -50,6 +51,8 @@ or official Desmos graphs.
 - Node.js 18 or newer.
 - A current Chromium browser to use the extension.
 - No npm packages or global dependencies.
+- Python and the upstream DesAudify requirements only when generating audio
+  schema files from source audio.
 
 ## Quick Start
 
@@ -125,10 +128,9 @@ the same `http://127.0.0.1:8765` address.
 
 ## Chrome Extension
 
-The extension transfers calculator state in both directions. It reads state only
-after the user selects Export from Desmos and writes state only after the user
-selects Import into Desmos. Exported files contain the state returned by Desmos
-rather than expressions parsed from the page.
+The extension groups its tools into Graph, SVG, and DesAudify sections. It reads
+or writes the active calculator only after a user action. Exported files contain
+the state returned by Desmos rather than expressions parsed from the page.
 
 ### Install
 
@@ -177,12 +179,42 @@ Text, raster images, clipping, filters, patterns, and reusable symbols must be
 converted to paths before import. Conversion runs locally and does not upload
 the file or add image data to graph state.
 
+### DesAudify
+
+[DesAudify](https://github.com/whitecaplol/DesAudify) converts source audio into
+Desmos equation schemas. Audio analysis stays in its upstream Python CLI;
+DesmosPlus packages the player and handles schema insertion.
+
+Generate schema files with DesAudify:
+
+```sh
+git clone https://github.com/whitecaplol/DesAudify.git
+cd DesAudify
+python -m pip install -r requirements.txt
+python desaudify_cli.py input.mp3 output
+```
+
+For the local site, open the 2D Calculator, select **Audio**, load the player,
+import `data_schema.txt` or ordered `shard_*.txt` files, then import
+`processing_schema.txt`.
+
+For the extension, open an official Desmos 2D graph, choose the **DesAudify**
+section, and use the same three actions. The extension injects its packaged
+bridge into the active page's main world before calling `window.Calc`. Loading
+the player replaces the current graph; schema imports add equations in named
+folders and require the player to be present first.
+
+Each schema file is limited to 6 MB and 500 non-empty equation lines. Files are
+read locally and are not uploaded by DesmosPlus. The bundled template is pinned
+to upstream commit `e41972eb517d0a538e53dc5c4146c21264d45924`; attribution and
+the Apache 2.0 license are in [`assets/desaudify/`](assets/desaudify/).
+
 ### Permissions
 
 | Permission | Purpose |
 | --- | --- |
 | `activeTab` | Grants temporary access to the current tab after extension use. |
-| `scripting` | Reads or writes `window.Calc` or `window.Notebook` in the page's main world. |
+| `scripting` | Injects the local bridge and reads or writes `window.Calc` or `window.Notebook` in the page's main world. |
 
 The extension declares no persistent host permissions and makes no network
 requests.
@@ -275,8 +307,10 @@ server to use the packaged calculators without internet access.
 | `*calculator.html`, `geometry.html`, `notebook.html` | Product pages. |
 | `assets/build/` | Captured calculator bundles and static assets. |
 | `assets/local/` | DesmosPlus shell, storage, import, and offline guard code. |
+| `assets/desaudify/` | Pinned DesAudify player state, attribution, and license. |
 | [`assets/product-logos/`](assets/product-logos/) | PNG and ICO product logo pack for all seven calculators. |
 | `extension/` | Chrome MV3 graph import and export extension. |
+| `extension/desaudify-page.js` | Main-world DesAudify player and schema injection bridge. |
 | `extension/svg-import.js` | Shared static SVG validation and equation conversion. |
 | `scripts/serve.mjs` | Local and production Node server. |
 | `scripts/build-pages-from-har.mjs` | HAR extraction and page regeneration. |
@@ -289,6 +323,7 @@ Run syntax and manifest checks:
 node --check assets/local/offline-save.js
 node --check assets/local/offline-guard.js
 node --check extension/svg-import.js
+node --check extension/desaudify-page.js
 node --check extension/popup.js
 node --check scripts/serve.mjs
 node -e 'JSON.parse(require("fs").readFileSync("extension/manifest.json", "utf8"))'

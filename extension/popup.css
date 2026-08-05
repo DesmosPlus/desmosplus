@@ -10,7 +10,7 @@
 }
 
 body {
-  width: 320px;
+  width: 360px;
   margin: 0;
   color: #000;
   background: #fff;
@@ -36,6 +36,18 @@ main {
   }
 }
 
+@keyframes section-open {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 header {
   display: flex;
   align-items: center;
@@ -51,16 +63,6 @@ h1 {
   margin: 0;
   font-size: 18px;
   line-height: 1.2;
-}
-
-.field {
-  display: grid;
-  gap: 6px;
-}
-
-label {
-  font-size: 12px;
-  font-weight: 600;
 }
 
 input,
@@ -84,12 +86,13 @@ button {
   font-weight: 600;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   text-decoration: underline;
 }
 
 button:disabled {
   cursor: default;
+  opacity: 0.5;
 }
 
 input:focus-visible,
@@ -98,15 +101,63 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
-.actions {
+.tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #000;
+}
+
+.tabs button {
+  padding: 0 7px;
+  font-size: 13px;
+}
+
+.tabs button[aria-selected="true"] {
+  background: #000;
+  color: #fff;
+}
+
+section {
+  display: grid;
+  min-height: 132px;
+  align-content: start;
+  gap: 12px;
+  animation: section-open 160ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+section[hidden] {
+  display: none;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.actions {
+  display: grid;
   gap: 8px;
+}
+
+.two-columns {
+  grid-template-columns: repeat(2, 1fr);
   padding-top: 2px;
 }
 
+.audio-actions button,
+#import-svg {
+  width: 100%;
+}
+
 #status {
-  min-height: 36px;
+  min-height: 46px;
   margin: 0;
   padding-top: 10px;
   border-top: 1px solid #000;
@@ -114,7 +165,8 @@ button:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  main {
+  main,
+  section {
     animation: none;
   }
 }

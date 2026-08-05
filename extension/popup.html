@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DesmosPlus Transfer</title>
+    <title>DesmosPlus</title>
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
@@ -12,21 +12,44 @@
         <img src="icons/icon-48.png" width="40" height="40" alt="">
         <h1>DesmosPlus</h1>
       </header>
-      <div class="field">
-        <label for="graph-name">Name</label>
-        <input id="graph-name" value="Untitled" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="graph-category">Category</label>
-        <input id="graph-category" value="Imported" autocomplete="off">
-      </div>
-      <div class="actions">
-        <button id="export" type="button">Export</button>
-        <button id="import" type="button">Import</button>
-        <button id="import-svg" type="button" title="Convert a static SVG into editable Desmos equations" disabled>SVG</button>
-      </div>
+
+      <nav class="tabs" role="tablist" aria-label="Extension tools">
+        <button type="button" role="tab" aria-selected="true" aria-controls="graph-panel" data-view="graph">Graph</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="svg-panel" data-view="svg">SVG</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="desaudify-panel" data-view="desaudify">DesAudify</button>
+      </nav>
+
+      <section id="graph-panel" role="tabpanel" data-panel="graph">
+        <div class="field">
+          <label for="graph-name">Name</label>
+          <input id="graph-name" value="Untitled" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="graph-category">Category</label>
+          <input id="graph-category" value="Imported" autocomplete="off">
+        </div>
+        <div class="actions two-columns">
+          <button id="export" type="button" data-action>Export</button>
+          <button id="import" type="button" data-action>Import</button>
+        </div>
+      </section>
+
+      <section id="svg-panel" role="tabpanel" data-panel="svg" hidden>
+        <button id="import-svg" type="button" title="Convert a static SVG into editable Desmos equations" data-action disabled>Import SVG as equations</button>
+      </section>
+
+      <section id="desaudify-panel" role="tabpanel" data-panel="desaudify" hidden>
+        <div class="actions audio-actions">
+          <button id="desaudify-template" type="button" data-action disabled>Load player</button>
+          <button id="desaudify-data" type="button" data-action disabled>Import data</button>
+          <button id="desaudify-processing" type="button" data-action disabled>Import processing</button>
+        </div>
+      </section>
+
       <input id="import-file" type="file" accept=".desmos,.desmosplus.json,.json,application/json" hidden>
       <input id="svg-file" type="file" accept=".svg,image/svg+xml" hidden>
+      <input id="desaudify-data-file" type="file" accept=".txt,text/plain" multiple hidden>
+      <input id="desaudify-processing-file" type="file" accept=".txt,text/plain" multiple hidden>
       <p id="status" aria-live="polite">Open a Desmos calculator.</p>
     </main>
     <script src="svg-import.js"></script>

@@ -636,6 +636,9 @@
       '<span id="local-turbo-fps" title="Current animation frame rate">-- FPS</span>' +
       '<button type="button" id="local-new">New</button>' +
       '<button type="button" id="local-save">Save</button>' +
+      (product() === "2dcalculator"
+        ? '<button type="button" id="local-audio" aria-expanded="false">Audio</button>'
+        : "") +
       '<button type="button" id="local-library" aria-expanded="false">Library</button>' +
       "</div>";
     document.body.appendChild(shell);
@@ -649,6 +652,8 @@
     });
     document.getElementById("local-new").addEventListener("click", newCurrent);
     document.getElementById("local-save").addEventListener("click", saveCurrent);
+    var audioButton = document.getElementById("local-audio");
+    if (audioButton) audioButton.addEventListener("click", toggleAudioPanel);
     document.getElementById("local-library").addEventListener("click", togglePanel);
   }
 
@@ -728,6 +733,7 @@
   }
 
   function openPanel() {
+    closeAudioPanel();
     document.getElementById("local-save-panel").hidden = false;
     document.getElementById("local-library").setAttribute("aria-expanded", "true");
     render();
@@ -736,6 +742,121 @@
   function closePanel() {
     document.getElementById("local-save-panel").hidden = true;
     document.getElementById("local-library").setAttribute("aria-expanded", "false");
+  }
+
+  function buildAudioPanel() {
+    if (product() !== "2dcalculator" || document.getElementById("local-audio-panel")) return;
+
+    var panel = document.createElement("aside");
+    panel.id = "local-audio-panel";
+    panel.hidden = true;
+    panel.innerHTML =
+      '<div class="local-panel-header">' +
+      "<strong>DesAudify</strong>" +
+      '<button type="button" id="local-audio-close" aria-label="Close audio tools">Close</button>' +
+      "</div>" +
+      '<div class="local-audio-actions">' +
+      '<button type="button" id="local-audio-template">Load player</button>' +
+      '<button type="button" id="local-audio-data">Import data</button>' +
+      '<button type="button" id="local-audio-processing">Import processing</button>' +
+      '<input type="file" id="local-audio-data-file" accept=".txt,text/plain" multiple hidden>' +
+      '<input type="file" id="local-audio-processing-file" accept=".txt,text/plain" multiple hidden>' +
+      "</div>" +
+      '<div id="local-audio-status" aria-live="polite">Audio tools ready.</div>';
+    document.body.appendChild(panel);
+    isolateControls(panel);
+
+    document.getElementById("local-audio-close").addEventListener("click", closeAudioPanel);
+    document
+      .getElementById("local-audio-template")
+      .addEventListener("click", loadDesAudifyTemplate);
+    document.getElementById("local-audio-data").addEventListener("click", function () {
+      document.getElementById("local-audio-data-file").click();
+    });
+    document.getElementById("local-audio-processing").addEventListener("click", function () {
+      document.getElementById("local-audio-processing-file").click();
+    });
+    document.getElementById("local-audio-data-file").addEventListener("change", function (event) {
+      importDesAudifySchemas(Array.from(event.target.files || []), "data");
+      event.target.value = "";
+    });
+    document
+      .getElementById("local-audio-processing-file")
+      .addEventListener("change", function (event) {
+        importDesAudifySchemas(Array.from(event.target.files || []), "processing");
+        event.target.value = "";
+      });
+  }
+
+  function audioStatus(message) {
+    var node = document.getElementById("local-audio-status");
+    if (node) node.textContent = message;
+  }
+
+  function toggleAudioPanel() {
+    var panel = document.getElementById("local-audio-panel");
+    if (!panel) return;
+    if (panel.hidden) openAudioPanel();
+    else closeAudioPanel();
+  }
+
+  function openAudioPanel() {
+    var panel = document.getElementById("local-audio-panel");
+    if (!panel) return;
+    closePanel();
+    panel.hidden = false;
+    document.getElementById("local-audio").setAttribute("aria-expanded", "true");
+  }
+
+  function closeAudioPanel() {
+    var panel = document.getElementById("local-audio-panel");
+    var button = document.getElementById("local-audio");
+    if (panel) panel.hidden = true;
+    if (button) button.setAttribute("aria-expanded", "false");
+  }
+
+  function desAudifyBridge() {
+    if (!window.DesmosPlusDesAudify) {
+      throw new Error("DesAudify tools did not load. Reload the calculator.");
+    }
+    if (!apiReady()) throw new Error("Calculator is still loading.");
+    return window.DesmosPlusDesAudify;
+  }
+
+  async function loadDesAudifyTemplate() {
+    if (!window.confirm("Replace the current graph with the DesAudify player?")) return;
+    audioStatus("Loading DesAudify player...");
+    try {
+      var response = await fetch("/assets/desaudify/template-state.json");
+      if (!response.ok) throw new Error("Bundled DesAudify player could not be read.");
+      var result = desAudifyBridge().loadTemplate(await response.json());
+      loadedId = "";
+      document.getElementById("local-save-name").value = "DesAudify Audio";
+      document.getElementById("local-save-category").value = "Audio";
+      queueRecoverySnapshot();
+      audioStatus("DesAudify player loaded with " + result.expressionCount + " items.");
+    } catch (error) {
+      audioStatus(error.message || String(error));
+    }
+  }
+
+  async function importDesAudifySchemas(files, kind) {
+    if (!files.length) return;
+    audioStatus("Importing DesAudify " + kind + "...");
+    try {
+      var bridge = desAudifyBridge();
+      var total = 0;
+      for (var i = 0; i < files.length; i += 1) {
+        var result = bridge.insertSchema(await files[i].text(), files[i].name, kind);
+        total += result.equationCount;
+      }
+      queueRecoverySnapshot();
+      audioStatus(
+        "Imported " + total + " DesAudify equation" + (total === 1 ? "" : "s") + ".",
+      );
+    } catch (error) {
+      audioStatus(error.message || String(error));
+    }
   }
 
   function status(message) {
@@ -1076,6 +1197,7 @@
     clearLegacyTurboSpeed();
     setTurboSpeed(1, false);
     buildPanel();
+    buildAudioPanel();
     interceptBuiltInSave();
     setInterval(keepBuiltInSaveLocal, 500);
     var timer = setInterval(function () {
