@@ -13,3 +13,9 @@ and extension-based equation injection.
 The bundled template state is unchanged. DesmosPlus adds its own validation,
 file selection, folder naming, and main-world injection around the equation
 insertion workflow from upstream `insert.js`.
+
+The extension also includes a browser port of the schema-generation format. It
+uses local Web Audio decoding and a worker-based FFT peak pass in place of the
+Python CLI's `ssqueezepy` multi-resolution transform, then applies DesAudify's
+frequency, gain, frame-packing, chunking, and processing-schema formulas. The
+vendored FFT implementation is `fft.js` 4.0.4 under the MIT license.

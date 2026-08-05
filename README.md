@@ -26,7 +26,8 @@ or official Desmos graphs and load DesAudify audio-resynthesis equations.
 - Browser-local persistence with no application database.
 - Chrome MV3 extension for exporting from and injecting into Desmos calculators.
 - Static SVG import for local and official Desmos 2D and Geometry graphs.
-- DesAudify player and schema injection for local and official Desmos 2D graphs.
+- Automatic audio-to-DesAudify conversion and injection on official Desmos 2D graphs.
+- Manual DesAudify player and schema import on the local 2D calculator.
 - Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.
 - `.desmos` graph exports, with import compatibility for older
   `.desmosplus.json` files and raw Desmos state JSON.
@@ -51,8 +52,8 @@ or official Desmos graphs and load DesAudify audio-resynthesis equations.
 - Node.js 18 or newer.
 - A current Chromium browser to use the extension.
 - No npm packages or global dependencies.
-- Python and the upstream DesAudify requirements only when generating audio
-  schema files from source audio.
+- Python and the upstream DesAudify requirements only for the optional
+  multi-resolution CLI workflow.
 
 ## Quick Start
 
@@ -182,10 +183,18 @@ the file or add image data to graph state.
 ### DesAudify
 
 [DesAudify](https://github.com/whitecaplol/DesAudify) converts source audio into
-Desmos equation schemas. Audio analysis stays in its upstream Python CLI;
-DesmosPlus packages the player and handles schema insertion.
+Desmos equation schemas. The extension includes an offline browser port that
+decodes an audio file, performs FFT peak analysis in a worker, generates the
+packed DesAudify schemas, loads the player, and injects both schema sets.
 
-Generate schema files with DesAudify:
+In the extension's **DesAudify** section, select **Import audio**. **Auto** uses
+30 FPS, 32-voice polyphony, a 260,000-note budget, and a `0.0001` minimum
+magnitude. **Custom** exposes start/end time, FPS, polyphony, note limit, and
+minimum magnitude. Conversion supports a selected range up to five minutes and
+runs locally without uploading the audio.
+
+The upstream Python pipeline remains available for multi-resolution
+synchrosqueezed analysis or manually generated shards:
 
 ```sh
 git clone https://github.com/whitecaplol/DesAudify.git
@@ -198,16 +207,19 @@ For the local site, open the 2D Calculator, select **Audio**, load the player,
 import `data_schema.txt` or ordered `shard_*.txt` files, then import
 `processing_schema.txt`.
 
-For the extension, open an official Desmos 2D graph, choose the **DesAudify**
-section, and use the same three actions. The extension injects its packaged
-bridge into the active page's main world before calling `window.Calc`. Loading
-the player replaces the current graph; schema imports add equations in named
-folders and require the player to be present first.
+For manual extension import, open an official Desmos 2D graph, choose the
+**DesAudify** section, load the player, then import the generated schemas. The
+extension injects its packaged bridge into the active page's main world before
+calling `window.Calc`. Loading the player replaces the current graph; schema
+imports add equations in named folders and require the player to be present
+first.
 
 Each schema file is limited to 6 MB and 500 non-empty equation lines. Files are
 read locally and are not uploaded by DesmosPlus. The bundled template is pinned
 to upstream commit `e41972eb517d0a538e53dc5c4146c21264d45924`; attribution and
 the Apache 2.0 license are in [`assets/desaudify/`](assets/desaudify/).
+The browser port vendors `fft.js` 4.0.4; its MIT notice is included in
+`extension/vendor/FFTJS-NOTICE`.
 
 ### Permissions
 
@@ -310,6 +322,8 @@ server to use the packaged calculators without internet access.
 | `assets/desaudify/` | Pinned DesAudify player state, attribution, and license. |
 | [`assets/product-logos/`](assets/product-logos/) | PNG and ICO product logo pack for all seven calculators. |
 | `extension/` | Chrome MV3 graph import and export extension. |
+| `extension/desaudify-audio.js` | Browser audio decoding and worker orchestration. |
+| `extension/desaudify-audio-worker.js` | FFT analysis and DesAudify schema generation. |
 | `extension/desaudify-page.js` | Main-world DesAudify player and schema injection bridge. |
 | `extension/svg-import.js` | Shared static SVG validation and equation conversion. |
 | `scripts/serve.mjs` | Local and production Node server. |
@@ -323,6 +337,8 @@ Run syntax and manifest checks:
 node --check assets/local/offline-save.js
 node --check assets/local/offline-guard.js
 node --check extension/svg-import.js
+node --check extension/desaudify-audio.js
+node --check extension/desaudify-audio-worker.js
 node --check extension/desaudify-page.js
 node --check extension/popup.js
 node --check scripts/serve.mjs

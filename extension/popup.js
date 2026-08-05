@@ -4,13 +4,18 @@
   var exportButton = document.getElementById("export");
   var importButton = document.getElementById("import");
   var svgButton = document.getElementById("import-svg");
+  var audioImportButton = document.getElementById("desaudify-audio");
   var templateButton = document.getElementById("desaudify-template");
   var dataButton = document.getElementById("desaudify-data");
   var processingButton = document.getElementById("desaudify-processing");
   var importFile = document.getElementById("import-file");
   var svgFile = document.getElementById("svg-file");
+  var audioFile = document.getElementById("desaudify-audio-file");
   var dataFile = document.getElementById("desaudify-data-file");
   var processingFile = document.getElementById("desaudify-processing-file");
+  var modeInput = document.getElementById("desaudify-mode");
+  var customSettings = document.getElementById("desaudify-custom-settings");
+  var settingsSummary = document.getElementById("desaudify-settings-summary");
   var nameInput = document.getElementById("graph-name");
   var categoryInput = document.getElementById("graph-category");
   var statusNode = document.getElementById("status");
@@ -113,9 +118,13 @@
     exportButton.disabled = busy || !availability.graph;
     importButton.disabled = busy || !availability.graph;
     svgButton.disabled = busy || !availability.svg;
+    audioImportButton.disabled = busy || !availability.desaudify;
     templateButton.disabled = busy || !availability.desaudify;
     dataButton.disabled = busy || !availability.desaudify;
     processingButton.disabled = busy || !availability.desaudify;
+    document.querySelectorAll("[data-conversion-setting]").forEach(function (control) {
+      control.disabled = busy || !availability.desaudify;
+    });
   }
 
   function setBusy(value) {
@@ -132,6 +141,49 @@
     document.querySelectorAll("[data-panel]").forEach(function (panel) {
       panel.hidden = panel.dataset.panel !== view;
     });
+  }
+
+  function numericSetting(id, fallback) {
+    var value = Number(document.getElementById(id).value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function conversionSettings() {
+    if (modeInput.value === "auto") {
+      return {
+        mode: "auto",
+        start: 0,
+        end: 0,
+        fps: 30,
+        polyphony: 32,
+        maxNotes: 260000,
+        minimumMagnitude: 0.0001,
+      };
+    }
+    return {
+      mode: "custom",
+      start: Math.max(0, numericSetting("desaudify-start", 0)),
+      end: Math.max(0, numericSetting("desaudify-end", 0)),
+      fps: Math.max(10, Math.min(120, numericSetting("desaudify-fps", 30))),
+      polyphony: Math.max(8, Math.min(192, numericSetting("desaudify-polyphony", 32))),
+      maxNotes: Math.max(1000, Math.min(700000, numericSetting("desaudify-notes", 260000))),
+      minimumMagnitude: Math.max(
+        0.000001,
+        Math.min(1, numericSetting("desaudify-magnitude", 0.0001)),
+      ),
+    };
+  }
+
+  function updateConversionSettings() {
+    customSettings.hidden = modeInput.value !== "custom";
+    var settings = conversionSettings();
+    settingsSummary.textContent =
+      settings.fps +
+      " FPS, " +
+      settings.polyphony +
+      " voices, up to " +
+      settings.maxNotes.toLocaleString() +
+      " notes";
   }
 
   async function activeTab() {
@@ -291,6 +343,46 @@
     }
   }
 
+  async function importAudio(file) {
+    setBusy(true);
+    setStatus("Preparing audio...");
+    try {
+      var page = await inspectPage();
+      if (page.product !== "2dcalculator") throw new Error("Open Desmos 2D Calculator.");
+      if (!window.DesmosPlusAudio) throw new Error("Audio converter did not load.");
+      var converted = await window.DesmosPlusAudio.convert(
+        file,
+        chrome.runtime.getURL("desaudify-audio-worker.js"),
+        conversionSettings(),
+        setStatus,
+      );
+      setStatus("Loading player and equations...");
+      var response = await fetch(chrome.runtime.getURL("desaudify-template.json"));
+      if (!response.ok) throw new Error("Bundled DesAudify player could not be read.");
+      await runDesAudify(page, "loadTemplate", [await response.json()]);
+      await runDesAudify(page, "insertSchema", [converted.data, file.name + " data", "data"]);
+      await runDesAudify(page, "insertSchema", [
+        converted.processing,
+        file.name + " processing",
+        "processing",
+      ]);
+      nameInput.value = file.name.replace(/\.[^.]+$/, "") || "DesAudify Audio";
+      setStatus(
+        "Imported " +
+          converted.stats.notes +
+          " notes from " +
+          Math.round(converted.stats.duration) +
+          " seconds at " +
+          converted.stats.fps +
+          " FPS.",
+      );
+    } catch (error) {
+      setStatus(error.message || String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function importDesAudifySchemas(files, kind) {
     if (!files.length) return;
     setBusy(true);
@@ -343,6 +435,9 @@
     svgFile.click();
   });
   templateButton.addEventListener("click", loadDesAudifyTemplate);
+  audioImportButton.addEventListener("click", function () {
+    audioFile.click();
+  });
   dataButton.addEventListener("click", function () {
     dataFile.click();
   });
@@ -359,6 +454,11 @@
     if (file) importSvg(file);
     svgFile.value = "";
   });
+  audioFile.addEventListener("change", function () {
+    var file = audioFile.files && audioFile.files[0];
+    if (file) importAudio(file);
+    audioFile.value = "";
+  });
   dataFile.addEventListener("change", function () {
     importDesAudifySchemas(Array.from(dataFile.files || []), "data");
     dataFile.value = "";
@@ -367,7 +467,10 @@
     importDesAudifySchemas(Array.from(processingFile.files || []), "processing");
     processingFile.value = "";
   });
+  modeInput.addEventListener("change", updateConversionSettings);
+  customSettings.addEventListener("input", updateConversionSettings);
 
   selectView("graph");
+  updateConversionSettings();
   initialize();
 })();

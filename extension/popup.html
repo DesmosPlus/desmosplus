@@ -39,20 +39,44 @@
       </section>
 
       <section id="desaudify-panel" role="tabpanel" data-panel="desaudify" hidden>
-        <div class="actions audio-actions">
-          <button id="desaudify-template" type="button" data-action disabled>Load player</button>
-          <button id="desaudify-data" type="button" data-action disabled>Import data</button>
-          <button id="desaudify-processing" type="button" data-action disabled>Import processing</button>
+        <div class="field">
+          <label for="desaudify-mode">Conversion</label>
+          <select id="desaudify-mode" data-conversion-setting>
+            <option value="auto">Auto</option>
+            <option value="custom">Custom</option>
+          </select>
         </div>
+        <div id="desaudify-custom-settings" class="settings-grid" hidden>
+          <label>Start (seconds)<input id="desaudify-start" type="number" min="0" step="0.1" value="0" data-conversion-setting></label>
+          <label>End (seconds)<input id="desaudify-end" type="number" min="0" step="0.1" placeholder="Full file" data-conversion-setting></label>
+          <label>FPS<input id="desaudify-fps" type="number" min="10" max="120" step="1" value="30" data-conversion-setting></label>
+          <label>Polyphony<input id="desaudify-polyphony" type="number" min="8" max="192" step="1" value="32" data-conversion-setting></label>
+          <label>Note limit<input id="desaudify-notes" type="number" min="1000" max="700000" step="1000" value="260000" data-conversion-setting></label>
+          <label>Minimum magnitude<input id="desaudify-magnitude" type="number" min="0.000001" max="1" step="0.000001" value="0.0001" data-conversion-setting></label>
+        </div>
+        <p id="desaudify-settings-summary" class="settings-summary"></p>
+        <div class="actions audio-actions">
+          <button id="desaudify-audio" type="button" data-action disabled>Import audio</button>
+        </div>
+        <details class="advanced-actions">
+          <summary>Manual schemas</summary>
+          <div class="actions audio-actions">
+            <button id="desaudify-template" type="button" data-action disabled>Load player</button>
+            <button id="desaudify-data" type="button" data-action disabled>Import data</button>
+            <button id="desaudify-processing" type="button" data-action disabled>Import processing</button>
+          </div>
+        </details>
       </section>
 
       <input id="import-file" type="file" accept=".desmos,.desmosplus.json,.json,application/json" hidden>
       <input id="svg-file" type="file" accept=".svg,image/svg+xml" hidden>
+      <input id="desaudify-audio-file" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac,.aac" hidden>
       <input id="desaudify-data-file" type="file" accept=".txt,text/plain" multiple hidden>
       <input id="desaudify-processing-file" type="file" accept=".txt,text/plain" multiple hidden>
       <p id="status" aria-live="polite">Open a Desmos calculator.</p>
     </main>
     <script src="svg-import.js"></script>
+    <script src="desaudify-audio.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>
