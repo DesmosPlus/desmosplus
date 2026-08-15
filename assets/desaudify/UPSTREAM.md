@@ -18,6 +18,8 @@ and counters initialized to `-1`. The direct chunk extractor form and automatic
 ticker start were verified against `Society-Audio-Example.desmos`.
 The bundled player is a song-neutral copy of that example's visual state, with
 the same viewport, background, visualizer, label geometry, and click controls.
+DesmosPlus adds small right-side play and restart hints that duplicate those
+click controls without changing the player layout.
 
 The extension also includes a browser port of the schema-generation format. It
 uses local Web Audio decoding and a worker-based FFT peak pass in place of the

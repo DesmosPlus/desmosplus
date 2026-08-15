@@ -200,7 +200,8 @@ with a byte-scaled pause after each pair so Desmos can parse large lists without
 receiving the entire graph in one burst. Processing equations are paced in
 small batches into the player's existing **Processing** folder after all data
 shards are present. The ticker starts when processing finishes; click the graph
-title once to play or pause the audio.
+title once to play or pause the audio. Small instructions on the right repeat
+the title's play/pause action and the author row's restart action.
 
 The upstream Python pipeline remains available for multi-resolution
 synchrosqueezed analysis or manually generated shards:

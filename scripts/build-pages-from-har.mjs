@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
-const siteVersion = "2026-08-15-1";
+const siteVersion = "2026-08-15-2";
 
 const captures = [
   {
