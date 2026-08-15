@@ -19,14 +19,33 @@ or official Desmos graphs and load DesAudify audio-resynthesis equations.
 > DesmosPlus is an independent project. It is not affiliated with, endorsed by,
 > or maintained by Desmos Studio PBC.
 
+## Table of Contents
+
+- [Features](#features)
+- [Calculators](#calculators)
+- [Requirements](#requirements)
+- [Quick Start](#quick-start)
+- [Local Library](#local-library)
+- [Local Imports](#local-imports)
+- [Turbo Mode](#turbo-mode)
+- [Crash Recovery](#crash-recovery)
+- [Browser Extension](#browser-extension)
+- [Graph File Format](#graph-file-format)
+- [Deployment](#deployment)
+- [Offline and Privacy Model](#offline-and-privacy-model)
+- [Repository Layout](#repository-layout)
+- [Development](#development)
+- [Contributing](#contributing)
+- [Known Limitations](#known-limitations)
+- [License and Third-Party Notice](#license-and-third-party-notice)
+
 ## Features
 
 - Seven calculators behind one consistent DesmosPlus shell.
 - Local New, Save, Library, category, open, edit, and delete workflows.
 - Browser-local persistence with no application database.
-- Chrome MV3 extension for exporting from and injecting into Desmos calculators.
-- Static SVG import for local and official Desmos 2D and Geometry graphs.
-- Automatic audio-to-DesAudify conversion and injection on official Desmos 2D graphs.
+- [Chrome MV3 extension](extension.md) for graph transfer, SVG conversion, and audio import.
+- Static SVG import for local Desmos 2D and Geometry graphs.
 - Manual DesAudify player and schema import on the local 2D calculator.
 - Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.
 - `.desmos` graph exports, with import compatibility for older
@@ -50,7 +69,6 @@ or official Desmos graphs and load DesAudify audio-resynthesis equations.
 ## Requirements
 
 - Node.js 18 or newer.
-- A current Chromium browser to use the extension.
 - No npm packages or global dependencies.
 - Python and the upstream DesAudify requirements only for the optional
   multi-resolution CLI workflow.
@@ -88,6 +106,16 @@ Storage is scoped to the current browser and site origin:
 - Saves do not sync between browsers, devices, or domains.
 - Redeploying to the same origin preserves browser storage.
 - Large graph collections remain subject to browser storage quotas.
+
+## Local Imports
+
+The local 2D and Geometry calculators can convert a static SVG into editable
+equations through **Library** and **Import SVG as equations**.
+
+For manual DesAudify playback, open the local 2D calculator and select
+**Audio**. Load the player, import `data_schema.txt` or ordered `shard_*.txt`
+files, then import `processing_schema.txt`. The upstream conversion workflow is
+documented in [`extension.md`](extension.md#upstream-python-workflow).
 
 ## Turbo Mode
 
@@ -127,119 +155,11 @@ The local Node server also supervises its serving worker. A worker that exits or
 fails three consecutive health checks is replaced automatically while keeping
 the same `http://127.0.0.1:8765` address.
 
-## Chrome Extension
+## Browser Extension
 
-The extension groups its tools into Graph, SVG, and DesAudify sections. It reads
-or writes the active calculator only after a user action. Exported files contain
-the state returned by Desmos rather than expressions parsed from the page.
-
-### Install
-
-1. Open `chrome://extensions` in Chrome, Chromium, Brave, or Edge.
-2. Enable Developer mode.
-3. Select Load unpacked.
-4. Select the repository's `extension` directory.
-5. Pin DesmosPlus Transfer when frequent access is useful.
-
-### Export and Import
-
-1. Open a supported calculator on `desmos.com` and wait for it to load.
-2. Open DesmosPlus Transfer.
-3. Set the name and category, then select Export from Desmos.
-4. Open DesmosPlus and select Library.
-5. Select Import graph file and choose the exported file.
-
-Wrapped exports include the calculator product, so DesmosPlus switches to the
-matching calculator before opening the imported state. Raw Desmos state JSON can
-also be imported into the calculator currently open.
-
-### Inject into Desmos
-
-1. Open the matching calculator on `desmos.com`.
-2. Open DesmosPlus Transfer and select Import into Desmos.
-3. Choose a `.desmos` file, an older `.desmosplus.json` file, or raw Desmos
-   state JSON.
-4. Review the loaded graph, then use Desmos Save if it should remain in the
-   Desmos account or graph library.
-
-Injection changes only the active calculator state. The extension does not click
-Save, publish a graph, or access Desmos account APIs.
-
-### Convert a Static SVG
-
-In DesmosPlus, open the Library and select **Import SVG as equations**. In the
-extension, open an official Desmos 2D or Geometry graph, select **SVG**, and
-choose the file. DesmosPlus converts paths and basic SVG shapes into editable
-polygon and point-list expressions inside a named folder. Curves are sampled
-into points, centered on the graph, and retain simple fill, stroke, opacity, and
-transform information.
-
-SVG files must be 1 MB or smaller and cannot contain SMIL or CSS animation,
-scripts, embedded HTML, document entities, or embedded or external resources.
-Text, raster images, clipping, filters, patterns, and reusable symbols must be
-converted to paths before import. Conversion runs locally and does not upload
-the file or add image data to graph state.
-
-### DesAudify
-
-[DesAudify](https://github.com/whitecaplol/DesAudify) converts source audio into
-Desmos equation schemas. The extension includes an offline browser port that
-decodes an audio file, performs FFT peak analysis in a worker, generates the
-packed DesAudify schemas, loads the player, and injects both schema sets.
-
-In the extension's **DesAudify** section, select **Import audio**. **Auto** uses
-30 FPS, 32-voice polyphony, a 260,000-note budget, and a `0.0001` minimum
-magnitude. **High quality** uses 60 FPS, 144-voice polyphony, and a 1,200,000-note
-budget. **Custom** exposes start/end time, FPS, polyphony, note limit, and
-minimum magnitude. Conversion supports a selected range up to five minutes and
-runs locally without uploading the audio.
-
-Generated data is divided into shard-sized folders while remaining in the same
-graph as the player. Shard equations are injected as ordered `t_i`/`p_i` pairs,
-with a byte-scaled pause after each pair so Desmos can parse large lists without
-receiving the entire graph in one burst. Processing equations are paced in
-small batches into the player's existing **Processing** folder after all data
-shards are present. The ticker starts when processing finishes; click the graph
-title once to play or pause the audio. Small instructions on the right repeat
-the title's play/pause action and the author row's restart action.
-
-The upstream Python pipeline remains available for multi-resolution
-synchrosqueezed analysis or manually generated shards:
-
-```sh
-git clone https://github.com/whitecaplol/DesAudify.git
-cd DesAudify
-python -m pip install -r requirements.txt
-python desaudify_cli.py input.mp3 output
-```
-
-For the local site, open the 2D Calculator, select **Audio**, load the player,
-import `data_schema.txt` or ordered `shard_*.txt` files, then import
-`processing_schema.txt`.
-
-For manual extension import, open an official Desmos 2D graph, choose the
-**DesAudify** section, load the player, then import the generated schemas. The
-extension injects its packaged bridge into the active page's main world before
-calling `window.Calc`. Loading the player replaces the current graph; schema
-imports add equations in named folders and require the player to be present
-first.
-
-Each schema file is limited to 6 MB and 500 non-empty equation lines. Files are
-read locally and are not uploaded by DesmosPlus. The bundled template is pinned
-to upstream commit `e41972eb517d0a538e53dc5c4146c21264d45924`; attribution and
-the Apache 2.0 license are in [`assets/desaudify/`](assets/desaudify/).
-The browser port vendors `fft.js` 4.0.4; its MIT notice is included in
-`extension/vendor/FFTJS-NOTICE`.
-
-### Permissions
-
-| Permission | Purpose |
-| --- | --- |
-| `activeTab` | Grants temporary access to the current tab after extension use. |
-| `scripting` | Injects the local bridge and reads or writes `window.Calc` or `window.Notebook` in the page's main world. |
-
-The extension declares no persistent host permissions and makes no network
-requests.
+Installation, graph transfer, SVG conversion, DesAudify audio import,
+permissions, troubleshooting, and extension development are documented in
+[`extension.md`](extension.md).
 
 ## Graph File Format
 
@@ -314,7 +234,8 @@ existing browser-local saves to remain available.
   workers without deleting saves, categories, cookies, or recovery snapshots.
 - Local telemetry endpoints return inert responses.
 - Calculator states remain in browser storage unless the user exports a file.
-- The extension reads only the active supported Desmos tab after a user action.
+- Browser-extension privacy and permissions are documented in
+  [`extension.md`](extension.md#permissions-and-privacy).
 
 Captured bundles can still contain remote URLs as inactive strings for upstream
 help, gallery, account, thumbnail, and reporting features. A hosted deployment
@@ -331,11 +252,8 @@ server to use the packaged calculators without internet access.
 | `assets/local/` | DesmosPlus shell, storage, import, and offline guard code. |
 | `assets/desaudify/` | Pinned DesAudify player state, attribution, and license. |
 | [`assets/product-logos/`](assets/product-logos/) | PNG and ICO product logo pack for all seven calculators. |
+| [`extension.md`](extension.md) | Browser extension installation, usage, privacy, and development guide. |
 | `extension/` | Chrome MV3 graph import and export extension. |
-| `extension/desaudify-audio.js` | Browser audio decoding and worker orchestration. |
-| `extension/desaudify-audio-worker.js` | FFT analysis and DesAudify schema generation. |
-| `extension/desaudify-page.js` | Main-world DesAudify player and schema injection bridge. |
-| `extension/svg-import.js` | Shared static SVG validation and equation conversion. |
 | `scripts/serve.mjs` | Local and production Node server. |
 | `scripts/build-pages-from-har.mjs` | HAR extraction and page regeneration. |
 
@@ -346,13 +264,7 @@ Run syntax and manifest checks:
 ```sh
 node --check assets/local/offline-save.js
 node --check assets/local/offline-guard.js
-node --check extension/svg-import.js
-node --check extension/desaudify-audio.js
-node --check extension/desaudify-audio-worker.js
-node --check extension/desaudify-page.js
-node --check extension/popup.js
 node --check scripts/serve.mjs
-node -e 'JSON.parse(require("fs").readFileSync("extension/manifest.json", "utf8"))'
 ```
 
 Start the server and verify the main route:
@@ -399,8 +311,6 @@ that contain information you do not intend to publish.
 - Browser storage quotas limit very large libraries.
 - Crash checkpoints are best effort and remain subject to browser storage
   availability and quotas.
-- The extension is installed unpacked and is not published to a browser store.
-- Graphs injected into Desmos remain temporary until saved through Desmos.
 - Upstream calculator changes can require fresh captures or importer updates.
 - Turbo speed remains limited by browser and calculator evaluator throughput.
 - FPS remains limited by hardware, graph complexity, and display refresh rate.
