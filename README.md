@@ -198,7 +198,9 @@ Generated data is divided into shard-sized folders while remaining in the same
 graph as the player. Shard equations are injected as ordered `t_i`/`p_i` pairs,
 with a byte-scaled pause after each pair so Desmos can parse large lists without
 receiving the entire graph in one burst. Processing equations are paced in
-small batches after all data shards are present.
+small batches into the player's existing **Processing** folder after all data
+shards are present. The ticker starts when processing finishes; click the graph
+title once to play or pause the audio.
 
 The upstream Python pipeline remains available for multi-resolution
 synchrosqueezed analysis or manually generated shards:

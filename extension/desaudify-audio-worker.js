@@ -190,11 +190,9 @@ function processingSchema(chunkCount) {
         index +
         "}\\to-1\\right\\}\\right\\}",
     );
-    counters.push("c_{t" + index + "}=0");
+    counters.push("c_{t" + index + "}=-1");
     tones.push(
-      "c_{t" +
-        index +
-        "}\\ge0:t_{h}\\left(t_{" +
+      "t_{h}\\left(t_{" +
         index +
         "},i_{i}\\left(p_{" +
         index +
@@ -220,11 +218,7 @@ function processingSchema(chunkCount) {
     "m_{inpitch}=\\min\\left(" + minimumPitch.join(",") + "\\right)",
     "s_{upercond}=" + superConditions.join(","),
   ]
-    .concat(
-      counters.map(function (counter) {
-        return counter.replace("=0", "=-1");
-      }),
-    )
+    .concat(counters)
     .concat([toneDefinition, "d_{uration}=\\max\\left(m_{inmax}.y\\right)"])
     .join("\n");
 }

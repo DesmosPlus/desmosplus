@@ -423,13 +423,13 @@
         );
         await runDesAudify(page, "insertSchema", [
           converted.dataShards[shardIndex],
-          file.name + " Shard " + (shardIndex + 1),
+          "Shard " + (shardIndex + 1),
           "data",
         ]);
       }
-      await runDesAudify(page, "insertSchema", [
+      var processingResult = await runDesAudify(page, "insertSchema", [
         converted.processing,
-        file.name + " processing",
+        "Processing",
         "processing",
       ]);
       nameInput.value = file.name.replace(/\.[^.]+$/, "") || "DesAudify Audio";
@@ -444,7 +444,10 @@
           converted.stats.shardCount +
           " shard" +
           (converted.stats.shardCount === 1 ? "" : "s") +
-          ".",
+          ". " +
+          (processingResult.tickerPlaying
+            ? "Click the title to play."
+            : "Start the ticker, then click the title to play."),
       );
     } catch (error) {
       setStatus(error.message || String(error));

@@ -1,7 +1,7 @@
 (function (root) {
   "use strict";
 
-  var BRIDGE_VERSION = 2;
+  var BRIDGE_VERSION = 3;
   if (root.DesmosPlusDesAudify && root.DesmosPlusDesAudify.version === BRIDGE_VERSION) return;
 
   var MAX_SCHEMA_BYTES = 6 * 1024 * 1024;
@@ -120,6 +120,21 @@
     return Math.min(2500, 300 + Math.ceil(bytes / (250 * 1024)) * 250);
   }
 
+  function startTicker(instance) {
+    var current = instance || calculator();
+    var controller =
+      (current._calc && current._calc.controller) || current.controller || null;
+    if (
+      !controller ||
+      typeof controller.getTickerPlaying !== "function" ||
+      typeof controller.dispatch !== "function"
+    ) {
+      return false;
+    }
+    if (!controller.getTickerPlaying()) controller.dispatch({ type: "toggle-ticker" });
+    return controller.getTickerPlaying();
+  }
+
   async function insertSchema(text, fileName, kind) {
     if (kind !== "data" && kind !== "processing") {
       throw new Error("Unknown DesAudify schema type.");
@@ -132,20 +147,42 @@
     var lines = schemaLines(text);
     var stamp = Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
     var base = "desaudify_" + kind + "_" + stamp;
-    var title =
-      (kind === "data" ? "DesAudify data: " : "DesAudify processing: ") +
-      cleanName(fileName, kind + " schema");
-    var folder = {
-      id: base + "_folder",
-      type: "folder",
-      title: title,
-      collapsed: true,
-      hidden: kind === "data",
-    };
+    var title = cleanName(fileName, kind === "data" ? "Shard" : "Processing");
+    var existingProcessingFolder =
+      kind === "processing"
+        ? state.expressions.list.find(function (item) {
+            return (
+              item.type === "folder" &&
+              (String(item.id) === "9183" || item.title === "Processing")
+            );
+          })
+        : null;
+    var folder =
+      existingProcessingFolder ||
+      {
+        id: base + "_folder",
+        type: "folder",
+        title: title,
+        collapsed: true,
+        hidden: kind === "data",
+      };
+    var processingColors = [
+      "#2d70b3",
+      "#388c46",
+      "#6042a6",
+      "#000000",
+      "#c74440",
+    ];
     var expressions = lines.map(function (line, index) {
       return {
         id: base + "_line_" + String(index + 1),
         type: "expression",
+        color:
+          kind === "data"
+            ? index % 2 === 0
+              ? "#c74440"
+              : "#2d70b3"
+            : processingColors[index % processingColors.length],
         latex: line,
         folderId: folder.id,
       };
@@ -156,19 +193,23 @@
     if (typeof instance.setExpressions !== "function") {
       throw new Error("This Desmos calculator cannot accept paced equation batches.");
     }
-    instance.setExpressions([folder]);
-    await pause(200);
+    if (!existingProcessingFolder) {
+      instance.setExpressions([folder]);
+      await pause(200);
+    }
     for (var batchIndex = 0; batchIndex < batches.length; batchIndex += 1) {
       var batch = expressions.slice(offset, offset + batches[batchIndex].length);
       instance.setExpressions(batch);
       offset += batch.length;
       await pause(settleDelay(batches[batchIndex]));
     }
+    var tickerPlaying = kind === "processing" ? startTicker(instance) : false;
     return {
       ok: true,
       equationCount: expressions.length,
       batchCount: batches.length,
-      folderTitle: title,
+      folderTitle: folder.title,
+      tickerPlaying: tickerPlaying,
     };
   }
 
@@ -179,5 +220,8 @@
     },
     insertSchema: insertSchema,
     loadTemplate: loadTemplate,
+    startTicker: function () {
+      return { ok: true, tickerPlaying: startTicker() };
+    },
   };
 })(globalThis);

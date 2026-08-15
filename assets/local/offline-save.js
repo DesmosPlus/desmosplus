@@ -846,6 +846,7 @@
     try {
       var bridge = desAudifyBridge();
       var total = 0;
+      var tickerPlaying = false;
       for (var i = 0; i < files.length; i += 1) {
         audioStatus(
           "Importing " +
@@ -856,10 +857,20 @@
         );
         var result = await bridge.insertSchema(await files[i].text(), files[i].name, kind);
         total += result.equationCount;
+        tickerPlaying = tickerPlaying || result.tickerPlaying;
       }
       queueRecoverySnapshot();
       audioStatus(
-        "Imported " + total + " DesAudify equation" + (total === 1 ? "" : "s") + ".",
+        "Imported " +
+          total +
+          " DesAudify equation" +
+          (total === 1 ? "" : "s") +
+          "." +
+          (kind === "processing"
+            ? tickerPlaying
+              ? " Click the title to play."
+              : " Start the ticker, then click the title to play."
+            : ""),
       );
     } catch (error) {
       audioStatus(error.message || String(error));
