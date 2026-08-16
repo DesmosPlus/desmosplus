@@ -1,3 +1,5 @@
+> **Browser extension documentation:** [`EXTENSION.md`](EXTENSION.md)
+
 <p align="center">
   <img src="extension/icons/icon-128.png" width="128" height="128" alt="DesmosPlus icon">
 </p>
@@ -44,7 +46,7 @@ or official Desmos graphs and load DesAudify audio-resynthesis equations.
 - Seven calculators behind one consistent DesmosPlus shell.
 - Local New, Save, Library, category, open, edit, and delete workflows.
 - Browser-local persistence with no application database.
-- [Chrome MV3 extension](extension.md) for graph transfer, SVG conversion, and audio import.
+- [Chrome MV3 extension](EXTENSION.md) for graph transfer, SVG conversion, and audio import.
 - Static SVG import for local Desmos 2D and Geometry graphs.
 - Manual DesAudify player and schema import on the local 2D calculator.
 - Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.
@@ -116,7 +118,7 @@ equations through **Library** and **Import SVG as equations**.
 For manual DesAudify playback, open the local 2D calculator and select
 **Audio**. Load the player, import `data_schema.txt` or ordered `shard_*.txt`
 files, then import `processing_schema.txt`. The upstream conversion workflow is
-documented in [`extension.md`](extension.md#upstream-python-workflow).
+documented in [`EXTENSION.md`](EXTENSION.md#upstream-python-workflow).
 
 ## Turbo Mode
 
@@ -160,7 +162,7 @@ the same `http://127.0.0.1:8765` address.
 
 Installation, graph transfer, SVG conversion, DesAudify audio import,
 permissions, troubleshooting, and extension development are documented in
-[`extension.md`](extension.md).
+[`EXTENSION.md`](EXTENSION.md).
 
 Every future extension version must publish the standard edition without
 DesModder. A matching DesModder edition should be included when available, but
@@ -248,7 +250,7 @@ existing browser-local saves to remain available.
 - Local telemetry endpoints return inert responses.
 - Calculator states remain in browser storage unless the user exports a file.
 - Browser-extension privacy and permissions are documented in
-  [`extension.md`](extension.md#permissions-and-privacy).
+  [`EXTENSION.md`](EXTENSION.md#permissions-and-privacy).
 
 Captured bundles can still contain remote URLs as inactive strings for upstream
 help, gallery, account, thumbnail, and reporting features. A hosted deployment
@@ -265,7 +267,7 @@ server to use the packaged calculators without internet access.
 | `assets/local/` | DesmosPlus shell, storage, import, and offline guard code. |
 | `assets/desaudify/` | Pinned DesAudify player state, attribution, and license. |
 | [`assets/product-logos/`](assets/product-logos/) | PNG and ICO product logo pack for all seven calculators. |
-| [`extension.md`](extension.md) | Browser extension installation, usage, privacy, and development guide. |
+| [`EXTENSION.md`](EXTENSION.md) | Browser extension installation, usage, privacy, and development guide. |
 | [`extension.html`](extension.html) | Public extension homepage for store and project links. |
 | [`privacy.html`](privacy.html) | Browser-extension privacy policy and Limited Use disclosure. |
 | [`support.html`](support.html) | Public extension support and troubleshooting page. |
@@ -351,5 +353,5 @@ may remain subject to third-party terms. Review those rights before public or
 commercial distribution.
 
 Extension-specific notices for DesAudify, `fft.js`, and Canvas UI Flame Wrap
-are documented in [`extension.md`](extension.md) and bundled beside the
+are documented in [`EXTENSION.md`](EXTENSION.md) and bundled beside the
 corresponding extension code.

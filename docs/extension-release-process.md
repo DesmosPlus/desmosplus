@@ -17,7 +17,7 @@ and must not block the standard release.
 
 The tag and release title must both be exactly `vX.Y.Z`. When both assets are
 published, both manifests must report the same `X.Y.Z` version. The Downloads
-table in `extension.md` must have one row per available asset so users can see
+table in `EXTENSION.md` must have one row per available asset so users can see
 which package includes DesModder.
 
 Version v1.15.0 predates this rule and contains only the standard asset. Do not
@@ -115,7 +115,7 @@ still need visual verification.
 ## Publication Order
 
 1. Finish source changes and increment the shared manifest version.
-2. Add the mandatory standard row to `extension.md`, marked **No** in the
+2. Add the mandatory standard row to `EXTENSION.md`, marked **No** in the
    DesModder column. Add a **Yes** row when the optional asset is available.
 3. Build and verify the standard ZIP, then build and verify the DesModder ZIP
    when available.
