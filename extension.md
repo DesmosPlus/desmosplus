@@ -130,6 +130,11 @@ graph.
 The conversion menu is a custom themed listbox with mouse, arrow-key, Home,
 End, and Escape support.
 
+While that menu is open, the MAX option uses Canvas UI Flame Wrap with purple
+fire. Hovering or keyboard-focusing MAX changes its fire to blue. Selecting MAX
+adds the purple fire outline to the extension while the DesAudify tab remains
+open; choosing another mode or leaving the tab releases the effect.
+
 The available conversion modes are:
 
 | Mode | Settings |
@@ -246,7 +251,9 @@ node --check extension/svg-import.js
 node --check extension/desaudify-audio.js
 node --check extension/desaudify-audio-worker.js
 node --check extension/desaudify-page.js
+node --check extension/flame-effects.js
 node --check extension/popup.js
+node --check extension/vendor/flame-wrap.js
 node -e 'JSON.parse(require("fs").readFileSync("extension/manifest.json", "utf8"))'
 ```
 
@@ -262,6 +269,8 @@ The extension's main files are:
 | `extension/popup.html` | Popup structure and tool sections |
 | `extension/popup.css` | Popup styling and animations |
 | `extension/popup.js` | Active-tab detection and graph transfer orchestration |
+| `extension/flame-effects.js` | DesAudify MAX Flame Wrap lifecycle and colors |
+| `extension/vendor/flame-wrap.js` | Pinned Canvas UI Flame Wrap WebGL engine |
 | `extension/svg-import.js` | Static SVG validation and equation conversion |
 | `extension/desaudify-audio.js` | Audio decoding and worker orchestration |
 | `extension/desaudify-audio-worker.js` | FFT analysis and schema generation |
@@ -287,6 +296,10 @@ license are in [`assets/desaudify/`](assets/desaudify/).
 
 The browser port vendors `fft.js` 4.0.4. Its MIT notice is included in
 [`extension/vendor/FFTJS-NOTICE`](extension/vendor/FFTJS-NOTICE).
+
+The MAX visual effect vendors Canvas UI Flame Wrap from commit
+`f993683dc03446eead7a372153f3d22b480ec465`. Its MIT + Commons Clause notice is
+included in [`extension/vendor/CANVAS-UI-NOTICE`](extension/vendor/CANVAS-UI-NOTICE).
 
 Desmos is a trademark of Desmos Studio PBC. See the main
 [`README.md`](README.md) for the repository's license and third-party notice.

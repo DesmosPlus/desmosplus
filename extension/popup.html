@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
+    <div id="desaudify-flame-frame" aria-hidden="true"></div>
+    <canvas id="desaudify-flame-canvas" class="desaudify-flame-canvas" aria-hidden="true" hidden></canvas>
     <main>
       <header>
         <img src="icons/icon-48.png" width="40" height="40" alt="">
@@ -86,7 +88,10 @@
             >
               <button type="button" role="option" data-value="auto" aria-selected="true">Auto</button>
               <button type="button" role="option" data-value="high" aria-selected="false">High quality</button>
-              <button type="button" role="option" data-value="max" aria-selected="false">MAX (unlimited)</button>
+              <div class="popup-menu-max-wrap" id="desaudify-max-flame-wrap">
+                <button id="desaudify-max-option" type="button" role="option" data-value="max" aria-selected="false">MAX (unlimited)</button>
+                <canvas id="desaudify-max-flame-canvas" class="max-flame-canvas" aria-hidden="true" hidden></canvas>
+              </div>
               <button type="button" role="option" data-value="custom" aria-selected="false">Custom</button>
             </div>
           </div>
@@ -126,6 +131,8 @@
       <input id="desaudify-processing-file" type="file" accept=".txt,text/plain" multiple hidden>
       <p id="status" aria-live="polite">Open a Desmos calculator.</p>
     </main>
+    <script src="vendor/flame-wrap.js"></script>
+    <script src="flame-effects.js"></script>
     <script src="svg-import.js"></script>
     <script src="desaudify-audio.js"></script>
     <script src="popup.js"></script>

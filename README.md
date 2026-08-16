@@ -327,3 +327,7 @@ accepting outside contributions or redistributing the project.
 Desmos is a trademark of Desmos Studio PBC. Captured calculator code and assets
 may remain subject to third-party terms. Review those rights before public or
 commercial distribution.
+
+Extension-specific notices for DesAudify, `fft.js`, and Canvas UI Flame Wrap
+are documented in [`extension.md`](extension.md) and bundled beside the
+corresponding extension code.

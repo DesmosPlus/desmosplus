@@ -146,9 +146,16 @@
     return Array.from(modeMenu.querySelectorAll("[role=option]"));
   }
 
+  function updateFlameEffects(next) {
+    if (window.DesmosPlusFlameEffects) {
+      window.DesmosPlusFlameEffects.setState(next);
+    }
+  }
+
   function closeModeMenu(restoreFocus) {
     document.getElementById("desaudify-mode-options").hidden = true;
     modeButton.setAttribute("aria-expanded", "false");
+    updateFlameEffects({ menuOpen: false });
     if (restoreFocus) modeButton.focus();
   }
 
@@ -157,6 +164,7 @@
     var options = modeOptions();
     document.getElementById("desaudify-mode-options").hidden = false;
     modeButton.setAttribute("aria-expanded", "true");
+    updateFlameEffects({ menuOpen: true });
     var selectedIndex = options.findIndex(function (option) {
       return option.getAttribute("aria-selected") === "true";
     });
@@ -175,6 +183,7 @@
     modeOptions().forEach(function (option) {
       option.setAttribute("aria-selected", option === selected ? "true" : "false");
     });
+    updateFlameEffects({ maxActive: value === "max" });
     updateConversionSettings();
   }
 
@@ -229,6 +238,7 @@
       panel.hidden = panel.dataset.panel !== view;
     });
     desaudifyProjectLink.hidden = view !== "desaudify";
+    updateFlameEffects({ view: view });
     if (view !== "desaudify") closeModeMenu(false);
   }
 
