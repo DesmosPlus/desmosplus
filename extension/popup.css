@@ -34,10 +34,6 @@ body {
   pointer-events: none;
 }
 
-body[data-desaudify-view="true"][data-max-flame="true"] {
-  box-shadow: inset 0 0 0 2px #a701ff;
-}
-
 main {
   display: grid;
   gap: 14px;
