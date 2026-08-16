@@ -5,6 +5,7 @@
   var importButton = document.getElementById("import");
   var svgButton = document.getElementById("import-svg");
   var audioImportButton = document.getElementById("desaudify-audio");
+  var audioDownloadButton = document.getElementById("desaudify-download");
   var templateButton = document.getElementById("desaudify-template");
   var dataButton = document.getElementById("desaudify-data");
   var processingButton = document.getElementById("desaudify-processing");
@@ -28,6 +29,7 @@
   var statusNode = document.getElementById("status");
   var availability = { graph: false, svg: false, desaudify: false, desmodder: false };
   var busy = false;
+  var audioAction = "import";
   var MAX_MODE_CONFIRMATION =
     "MAX is not an originally supported mode for DesAudify. It removes " +
     "DesmosPlus safety limits and may exhaust CPU or RAM, freeze or crash the " +
@@ -122,6 +124,15 @@
     URL.revokeObjectURL(url);
   }
 
+  function downloadBlob(blob, name) {
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = name;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   function setStatus(message) {
     statusNode.textContent = message;
   }
@@ -131,13 +142,14 @@
     importButton.disabled = busy || !availability.graph;
     svgButton.disabled = busy || !availability.svg;
     audioImportButton.disabled = busy || !availability.desaudify;
+    audioDownloadButton.disabled = busy;
     templateButton.disabled = busy || !availability.desaudify;
     dataButton.disabled = busy || !availability.desaudify;
     processingButton.disabled = busy || !availability.desaudify;
     desmodderInjectButton.disabled = busy || !availability.desmodder;
     desmodderAutoInject.disabled = busy;
     document.querySelectorAll("[data-conversion-setting]").forEach(function (control) {
-      control.disabled = busy || !availability.desaudify;
+      control.disabled = busy;
     });
     if (modeButton.disabled) closeModeMenu(false);
   }
@@ -319,7 +331,8 @@
       " notes";
   }
 
-  function prepareDesAudifyTemplate(template, file, stats) {
+  function prepareDesAudifyTemplate(template, file, stats, options) {
+    options = options || {};
     var state = JSON.parse(JSON.stringify(template));
     var items = state.expressions.list;
     var byId = function (id) {
@@ -327,20 +340,26 @@
         return String(item.id) === String(id);
       });
     };
-    var title = file.name.replace(/\.[^.]+$/, "") || "DesAudify Audio";
+    var title = options.title || file.name.replace(/\.[^.]+$/, "") || "DesAudify Audio";
+    var chunkIds =
+      options.chunkIds ||
+      Array.from({ length: stats.chunkCount }, function (_, index) {
+        return index + 1;
+      });
     var countExpression = byId("8647");
     var countParts = [];
-    for (var index = 1; index <= stats.chunkCount; index += 1) {
-      countParts.push("c_{ount}\\left(t_{" + index + "}\\right)");
-    }
+    chunkIds.forEach(function (id) {
+      countParts.push("c_{ount}\\left(t_{" + id + "}\\right)");
+    });
 
     byId("8901").text =
       "Data\n\n" +
-      stats.chunkCount +
-      " chunks in " +
-      stats.shardCount +
-      " injected shard" +
-      (stats.shardCount === 1 ? "" : "s");
+      (options.description ||
+        stats.chunkCount +
+          " chunks in " +
+          stats.shardCount +
+          " injected shard" +
+          (stats.shardCount === 1 ? "" : "s"));
     byId("8512").title = "Aux (Total " + stats.notes.toLocaleString() + ")";
     byId("8512").collapsed = true;
     countExpression.latex = countParts.join("+");
@@ -657,6 +676,50 @@
     }
   }
 
+  async function downloadAudioBundle(file) {
+    var settings = conversionSettings();
+    if (settings.unlimited && !window.confirm(MAX_MODE_CONFIRMATION)) return;
+    setBusy(true);
+    setStatus("Preparing audio for download...");
+    try {
+      if (!window.DesmosPlusAudio) throw new Error("Audio converter did not load.");
+      if (!window.DesmosPlusDesAudifyExport) throw new Error("Shard exporter did not load.");
+      var converted = await window.DesmosPlusAudio.convert(
+        file,
+        chrome.runtime.getURL("desaudify-audio-worker.js"),
+        settings,
+        setStatus,
+      );
+      var response = await fetch(chrome.runtime.getURL("desaudify-template.json"));
+      if (!response.ok) throw new Error("Bundled DesAudify player could not be read.");
+      var template = await response.json();
+      var title = file.name.replace(/\.[^.]+$/, "") || "DesAudify Audio";
+      var result = await window.DesmosPlusDesAudifyExport.createBundle({
+        template: template,
+        converted: converted,
+        title: title,
+        sourceName: file.name,
+        settings: settings,
+        onProgress: setStatus,
+        prepareTemplate: function (state, options) {
+          return prepareDesAudifyTemplate(state, file, converted.stats, options);
+        },
+      });
+      downloadBlob(result.blob, fileName(title) + "-desaudify-shards.zip");
+      setStatus(
+        "Downloaded player UI and " +
+          result.shardCount +
+          " copy-ready shard folder" +
+          (result.shardCount === 1 ? "" : "s") +
+          ".",
+      );
+    } catch (error) {
+      setStatus(error.message || String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function importDesAudifySchemas(files, kind) {
     if (!files.length) return;
     setBusy(true);
@@ -716,6 +779,11 @@
   });
   templateButton.addEventListener("click", loadDesAudifyTemplate);
   audioImportButton.addEventListener("click", function () {
+    audioAction = "import";
+    audioFile.click();
+  });
+  audioDownloadButton.addEventListener("click", function () {
+    audioAction = "download";
     audioFile.click();
   });
   dataButton.addEventListener("click", function () {
@@ -738,7 +806,10 @@
   });
   audioFile.addEventListener("change", function () {
     var file = audioFile.files && audioFile.files[0];
-    if (file) importAudio(file);
+    if (file) {
+      if (audioAction === "download") downloadAudioBundle(file);
+      else importAudio(file);
+    }
     audioFile.value = "";
   });
   dataFile.addEventListener("change", function () {

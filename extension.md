@@ -16,6 +16,7 @@ or maintained by Desmos Studio PBC.
 - [Graph Transfer](#graph-transfer)
 - [SVG Import](#svg-import)
 - [DesAudify Audio Import](#desaudify-audio-import)
+  - [Downloadable Shard ZIP](#downloadable-shard-zip)
 - [DesModder Injection](#desmodder-injection)
 - [Permissions and Privacy](#permissions-and-privacy)
 - [File Formats and Limits](#file-formats-and-limits)
@@ -129,6 +130,27 @@ graph.
    play or pause.
 7. Click the author row or its right-side instruction to restart the song.
 
+### Downloadable Shard ZIP
+
+Select **Download shard ZIP** instead of **Import audio** to convert the audio
+without changing the open graph. DesmosPlus downloads one ZIP containing:
+
+- `01-player-ui.desmos`, with the player UI and processing equations.
+- `shards/NNN-shard.desmos`, with exactly one data folder per file.
+- `00-manifest.json`, with conversion details and ordered shard names.
+- `README.txt`, with the native copy-and-paste assembly steps.
+
+To assemble the graph, import `01-player-ui.desmos` into an official Desmos 2D
+tab using the extension's **Graph** section. Import a numbered shard into a
+second Desmos 2D tab, focus its folder, and copy it with `Ctrl+C` on Windows or
+`Command+C` on macOS. Focus a blank expression line in the player graph and
+paste with `Ctrl+V` or `Command+V`. Desmos inserts the copied item as a folder.
+Repeat in numerical order for every shard.
+
+The shard graphs contain only their folder and `t_i`/`p_i` equations. Shared
+player and processing expressions stay in the UI graph, so they are not
+duplicated in every download.
+
 The conversion menu is a custom themed listbox with mouse, arrow-key, Home,
 End, and Escape support.
 
@@ -240,6 +262,7 @@ site access and is off by default.
 | `.json` | Raw Desmos state or wrapped graph state |
 | `.svg` | Static vector import, up to 1 MB |
 | Audio | Browser-decodable audio; standard modes allow 100 MB and five minutes, while MAX removes those extension caps |
+| `.zip` | DesAudify-only player UI and individually copyable `.desmos` shard graphs |
 | `.txt` | DesAudify schemas, up to 6 MB and 500 non-empty equations per file |
 
 The browser's media decoder determines which audio codecs can be opened.
@@ -281,6 +304,7 @@ Run the extension checks from the repository root:
 node --check extension/svg-import.js
 node --check extension/desaudify-audio.js
 node --check extension/desaudify-audio-worker.js
+node --check extension/desaudify-export.js
 node --check extension/desaudify-page.js
 node --check extension/background.js
 node --check extension/desmodder-loader.js
@@ -321,6 +345,7 @@ The extension's main files are:
 | `extension/svg-import.js` | Static SVG validation and equation conversion |
 | `extension/desaudify-audio.js` | Audio decoding and worker orchestration |
 | `extension/desaudify-audio-worker.js` | FFT analysis and schema generation |
+| `extension/desaudify-export.js` | DesAudify shard graph and local ZIP generation |
 | `extension/desaudify-page.js` | Main-world player and paced schema injection bridge |
 | `extension/desaudify-template.json` | Bundled DesAudify player state |
 | `scripts/update-desmodder.mjs` | Syncs the latest stable DesModder Chrome release |
