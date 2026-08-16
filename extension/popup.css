@@ -2,6 +2,8 @@
   --popup-control-height: 36px;
   --popup-radius: 6px;
   --popup-font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --flame-frame-inset: 9px;
+  --flame-content-inset: 11px;
 }
 
 * {
@@ -18,9 +20,22 @@ body {
   font: 14px var(--popup-font);
 }
 
+body[data-desaudify-view="true"][data-max-flame="true"] {
+  background: transparent;
+}
+
+body[data-desaudify-view="true"][data-max-flame="true"]::before {
+  content: "";
+  position: fixed;
+  inset: var(--flame-content-inset);
+  z-index: 0;
+  background: #fff;
+  pointer-events: none;
+}
+
 #desaudify-flame-frame {
   position: fixed;
-  inset: 9px;
+  inset: var(--flame-frame-inset);
   pointer-events: none;
   visibility: hidden;
 }
@@ -35,6 +50,8 @@ body {
 }
 
 main {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 14px;
   padding: 16px;
