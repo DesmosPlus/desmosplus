@@ -29,7 +29,7 @@ or maintained by Desmos Studio PBC.
 ## Requirements
 
 - Chrome, Chromium, Brave, or Edge with Manifest V3 support.
-- A local checkout of DesmosPlus.
+- A downloaded DesmosPlus release ZIP or a local repository checkout.
 - Developer mode enabled on the browser extensions page.
 
 No package installation or build step is required.
@@ -60,14 +60,47 @@ DesmosPlus code.
 
 ## Installation
 
-1. Open `chrome://extensions`.
-2. Enable **Developer mode**.
-3. Select **Load unpacked**.
-4. Select the repository's `extension` directory.
-5. Pin **DesmosPlus** for easier access.
+### Install a Release ZIP
 
-After pulling an update, return to `chrome://extensions` and select **Reload**
-on the DesmosPlus extension card.
+1. Sign in to GitHub with an account that can access the repository.
+2. Download the latest package from the [Downloads](#downloads) table.
+3. Create a permanent folder for the extension, such as
+   `DesmosPlus Extension`.
+4. Extract the ZIP into that folder. `manifest.json` must be directly inside
+   the selected folder, not inside another nested directory.
+5. Open the browser's extension manager:
+   - Chrome and Chromium: `chrome://extensions`
+   - Edge: `edge://extensions`
+   - Brave: `brave://extensions`
+6. Enable **Developer mode**.
+7. Select **Load unpacked** and choose the extracted extension folder.
+8. Pin **DesmosPlus** from the browser's extensions menu.
+9. Open a supported Desmos calculator and select the DesmosPlus toolbar icon.
+
+Keep the extracted folder after installation. The browser loads the extension
+from that location and cannot use the ZIP directly.
+
+### Install from the Repository
+
+1. Clone or download the DesmosPlus repository.
+2. Open the browser's extension manager and enable **Developer mode**.
+3. Select **Load unpacked**.
+4. Choose the repository's `extension` directory.
+5. Pin **DesmosPlus** from the browser's extensions menu.
+
+### Update an Existing Installation
+
+1. Download the newest release ZIP.
+2. Empty the existing extracted extension folder without deleting the folder
+   itself.
+3. Extract the new package into that same folder and confirm that
+   `manifest.json` is at its root.
+4. Return to the browser's extension manager.
+5. Select **Reload** on the DesmosPlus extension card.
+6. Close and reopen the DesmosPlus popup.
+
+Using the same folder keeps the unpacked extension identity stable. Replacing
+its package files does not remove settings stored by the browser extension.
 
 ## Supported Calculators
 
