@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "DesmosPlus Transfer",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Transfer graphs, convert SVG or audio files, and inject bundled DesModder tools into Desmos.",
   "permissions": ["activeTab", "scripting", "storage", "declarativeNetRequest"],
   "host_permissions": ["https://*.desmos.com/*", "https://wakatime.com/*"],

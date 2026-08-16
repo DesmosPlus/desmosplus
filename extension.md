@@ -42,7 +42,8 @@ private, so GitHub must be signed in with an account that has access.
 
 | Version | Package | Release |
 | --- | --- | --- |
-| **v1.13.0 (latest)** | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.13.0/DesmosPlus-Extension-v1.13.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.13.0) |
+| **v1.14.0 (latest)** | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.14.0/DesmosPlus-Extension-v1.14.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.14.0) |
+| v1.13.0 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.13.0/DesmosPlus-Extension-v1.13.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.13.0) |
 | v1.12.1 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.12.1/DesmosPlus-Extension-v1.12.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.12.1) |
 | v1.12.0 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.12.0/DesmosPlus-Extension-v1.12.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.12.0) |
 | v1.11.1 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.11.1/DesmosPlus-Extension-v1.11.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.11.1) |
@@ -51,6 +52,11 @@ private, so GitHub must be signed in with an account that has access.
 
 The complete release history is available on the
 [GitHub Releases page](https://github.com/loleksyuk/desmosplus/releases).
+
+Every release ZIP includes `DESMOSPLUS-BUILD.txt`. DesmosPlus-owned HTML, CSS,
+and JavaScript also carry a comment with the package version and source URL.
+Files under `vendor/` retain their upstream attribution and are not stamped as
+DesmosPlus code.
 
 ## Installation
 
