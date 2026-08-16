@@ -1,9 +1,36 @@
 {
   "manifest_version": 3,
   "name": "DesmosPlus Transfer",
-  "version": "1.10.0",
-  "description": "Transfer graphs and automatically convert SVG or audio files into Desmos equations.",
-  "permissions": ["activeTab", "scripting"],
+  "version": "1.11.0",
+  "description": "Transfer graphs, convert SVG or audio files, and inject bundled DesModder tools into Desmos.",
+  "permissions": ["activeTab", "scripting", "storage", "declarativeNetRequest"],
+  "host_permissions": ["https://*.desmos.com/*", "https://wakatime.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.desmos.com/calculator*",
+        "*://*.desmos.com/geometry*",
+        "*://*.desmos.com/3d*",
+        "*://*.desmos.com/notebook*"
+      ],
+      "run_at": "document_start",
+      "js": ["desmodder-loader.js"],
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "vendor/desmodder/script.css",
+        "vendor/desmodder/script.js",
+        "vendor/desmodder/preload/script.js"
+      ],
+      "matches": ["*://*.desmos.com/*"]
+    }
+  ],
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",

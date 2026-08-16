@@ -44,6 +44,7 @@
         <button type="button" role="tab" aria-selected="true" aria-controls="graph-panel" data-view="graph">Graph</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="svg-panel" data-view="svg">SVG</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="desaudify-panel" data-view="desaudify">DesAudify</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="settings-panel" data-view="settings">Settings</button>
       </nav>
 
       <section id="graph-panel" role="tabpanel" data-panel="graph">
@@ -59,6 +60,25 @@
           <button id="export" type="button" data-action>Export</button>
           <button id="import" type="button" data-action>Import</button>
         </div>
+      </section>
+
+      <section id="settings-panel" role="tabpanel" data-panel="settings" hidden>
+        <div class="settings-heading">
+          <div>
+            <h2>DesModder</h2>
+            <p id="desmodder-version">Bundled release</p>
+          </div>
+          <a href="https://github.com/DesModder/DesModder" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+        <label class="setting-row" for="desmodder-auto-inject">
+          <span>
+            <strong>Auto-inject on Desmos</strong>
+            <small>Loads DesModder before supported calculators start.</small>
+          </span>
+          <input id="desmodder-auto-inject" type="checkbox">
+        </label>
+        <button id="desmodder-inject" type="button" data-action>Inject in this tab</button>
+        <p class="settings-summary">Injection reloads the active calculator once.</p>
       </section>
 
       <section id="svg-panel" role="tabpanel" data-panel="svg" hidden>

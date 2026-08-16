@@ -8,6 +8,9 @@
   var templateButton = document.getElementById("desaudify-template");
   var dataButton = document.getElementById("desaudify-data");
   var processingButton = document.getElementById("desaudify-processing");
+  var desmodderInjectButton = document.getElementById("desmodder-inject");
+  var desmodderAutoInject = document.getElementById("desmodder-auto-inject");
+  var desmodderVersion = document.getElementById("desmodder-version");
   var importFile = document.getElementById("import-file");
   var svgFile = document.getElementById("svg-file");
   var audioFile = document.getElementById("desaudify-audio-file");
@@ -23,7 +26,7 @@
   var nameInput = document.getElementById("graph-name");
   var categoryInput = document.getElementById("graph-category");
   var statusNode = document.getElementById("status");
-  var availability = { graph: false, svg: false, desaudify: false };
+  var availability = { graph: false, svg: false, desaudify: false, desmodder: false };
   var busy = false;
   var MAX_MODE_CONFIRMATION =
     "MAX is not an originally supported mode for DesAudify. It removes " +
@@ -131,6 +134,8 @@
     templateButton.disabled = busy || !availability.desaudify;
     dataButton.disabled = busy || !availability.desaudify;
     processingButton.disabled = busy || !availability.desaudify;
+    desmodderInjectButton.disabled = busy || !availability.desmodder;
+    desmodderAutoInject.disabled = busy;
     document.querySelectorAll("[data-conversion-setting]").forEach(function (control) {
       control.disabled = busy || !availability.desaudify;
     });
@@ -358,6 +363,83 @@
   async function activeTab() {
     var tabs = await chrome.tabs.query({ active: true, currentWindow: true });
     return tabs[0];
+  }
+
+  function sendExtensionMessage(message) {
+    return new Promise(function (resolve, reject) {
+      chrome.runtime.sendMessage(message, function (response) {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+          return;
+        }
+        if (!response || response.ok !== true) {
+          reject(new Error((response && response.error) || "Extension did not respond."));
+          return;
+        }
+        resolve(response.result);
+      });
+    });
+  }
+
+  function supportsDesModder(product) {
+    return ["2dcalculator", "3dcalculator", "geometry", "notebook"].includes(product);
+  }
+
+  async function loadDesModderSettings() {
+    var state = await sendExtensionMessage({
+      type: "desmosplus-desmodder-get-state",
+    });
+    desmodderAutoInject.checked = state.autoInject === true;
+    desmodderVersion.textContent = "Bundled v" + state.version;
+  }
+
+  async function setDesModderAutoInject() {
+    setBusy(true);
+    setStatus("Updating DesModder startup...");
+    try {
+      var enabled = desmodderAutoInject.checked;
+      await sendExtensionMessage({
+        type: "desmosplus-desmodder-set-auto",
+        enabled: enabled,
+      });
+      var page;
+      try {
+        page = await inspectPage();
+      } catch (error) {}
+      if (page && supportsDesModder(page.product)) {
+        setStatus("Reloading Desmos to apply the setting...");
+        await chrome.tabs.reload(page.tab.id);
+        window.close();
+        return;
+      }
+      setStatus(enabled ? "DesModder auto-inject is on." : "DesModder auto-inject is off.");
+    } catch (error) {
+      desmodderAutoInject.checked = !desmodderAutoInject.checked;
+      setStatus(error.message || String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function injectDesModderInTab() {
+    setBusy(true);
+    setStatus("Preparing DesModder...");
+    try {
+      var page = await inspectPage();
+      if (!supportsDesModder(page.product)) {
+        throw new Error("Open Desmos Calculator, Geometry, 3D, or Notebook.");
+      }
+      await sendExtensionMessage({
+        type: "desmosplus-desmodder-enable-tab",
+        tabId: page.tab.id,
+      });
+      setStatus("Reloading Desmos with DesModder...");
+      await chrome.tabs.reload(page.tab.id);
+      window.close();
+    } catch (error) {
+      setStatus(error.message || String(error));
+      setBusy(false);
+    }
   }
 
   async function inspectPage() {
@@ -603,10 +685,16 @@
 
   async function initialize() {
     try {
+      await loadDesModderSettings();
+    } catch (error) {
+      desmodderVersion.textContent = "Bundled release unavailable";
+    }
+    try {
       var page = await inspectPage();
       availability.graph = true;
       availability.svg = DesmosPlusSvg.supportedProduct(page.product);
       availability.desaudify = page.product === "2dcalculator";
+      availability.desmodder = supportsDesModder(page.product);
       setStatus("Ready.");
     } catch (error) {
       setStatus(error.message || String(error));
@@ -636,6 +724,8 @@
   processingButton.addEventListener("click", function () {
     processingFile.click();
   });
+  desmodderAutoInject.addEventListener("change", setDesModderAutoInject);
+  desmodderInjectButton.addEventListener("click", injectDesModderInTab);
   importFile.addEventListener("change", function () {
     var file = importFile.files && importFile.files[0];
     if (file) importGraph(file);
