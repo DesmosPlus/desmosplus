@@ -11,6 +11,10 @@
   letter-spacing: 0;
 }
 
+html {
+  background: transparent;
+}
+
 body {
   position: relative;
   width: 360px;
