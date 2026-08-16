@@ -16,11 +16,18 @@
   var modeInput = document.getElementById("desaudify-mode");
   var customSettings = document.getElementById("desaudify-custom-settings");
   var settingsSummary = document.getElementById("desaudify-settings-summary");
+  var maxWarning = document.getElementById("desaudify-max-warning");
+  var desaudifyProjectLink = document.getElementById("desaudify-project-link");
   var nameInput = document.getElementById("graph-name");
   var categoryInput = document.getElementById("graph-category");
   var statusNode = document.getElementById("status");
   var availability = { graph: false, svg: false, desaudify: false };
   var busy = false;
+  var MAX_MODE_CONFIRMATION =
+    "MAX is not an originally supported mode for DesAudify. It removes " +
+    "DesmosPlus safety limits and may exhaust CPU or RAM, freeze or crash the " +
+    "browser or Desmos, and lose unsaved work. The extension owner is not " +
+    "responsible for anything that happens beyond this point. Continue?";
 
   function productFromUrl(value) {
     var url = new URL(value);
@@ -141,6 +148,7 @@
     document.querySelectorAll("[data-panel]").forEach(function (panel) {
       panel.hidden = panel.dataset.panel !== view;
     });
+    desaudifyProjectLink.hidden = view !== "desaudify";
   }
 
   function numericSetting(id, fallback) {
@@ -171,6 +179,18 @@
         minimumMagnitude: 0.0001,
       };
     }
+    if (modeInput.value === "max") {
+      return {
+        mode: "max",
+        unlimited: true,
+        start: 0,
+        end: 0,
+        fps: 120,
+        polyphony: 1024,
+        maxNotes: Number.MAX_SAFE_INTEGER,
+        minimumMagnitude: 0,
+      };
+    }
     return {
       mode: "custom",
       start: Math.max(0, numericSetting("desaudify-start", 0)),
@@ -187,7 +207,13 @@
 
   function updateConversionSettings() {
     customSettings.hidden = modeInput.value !== "custom";
+    maxWarning.hidden = modeInput.value !== "max";
     var settings = conversionSettings();
+    if (settings.unlimited) {
+      settingsSummary.textContent =
+        "120 FPS, all detected voices, no file, duration, or note limit";
+      return;
+    }
     settingsSummary.textContent =
       settings.fps +
       " FPS, " +
@@ -396,6 +422,8 @@
   }
 
   async function importAudio(file) {
+    var settings = conversionSettings();
+    if (settings.unlimited && !window.confirm(MAX_MODE_CONFIRMATION)) return;
     setBusy(true);
     setStatus("Preparing audio...");
     try {
@@ -405,7 +433,7 @@
       var converted = await window.DesmosPlusAudio.convert(
         file,
         chrome.runtime.getURL("desaudify-audio-worker.js"),
-        conversionSettings(),
+        settings,
         setStatus,
       );
       setStatus("Loading player and equations...");

@@ -17,7 +17,9 @@
 
   async function decode(file, options, onProgress) {
     if (!file || typeof file.arrayBuffer !== "function") throw new Error("Select an audio file.");
-    if (file.size > MAX_AUDIO_BYTES) throw new Error("Audio files must be 100 MB or smaller.");
+    if (!options.unlimited && file.size > MAX_AUDIO_BYTES) {
+      throw new Error("Audio files must be 100 MB or smaller.");
+    }
     onProgress("Decoding audio...");
     var context = audioContext();
     try {
@@ -30,7 +32,7 @@
         throw new Error("End time must be after start time.");
       }
       var end = Math.min(buffer.duration, requestedEnd > 0 ? requestedEnd : buffer.duration);
-      if (end - start > MAX_AUDIO_SECONDS) {
+      if (!options.unlimited && end - start > MAX_AUDIO_SECONDS) {
         throw new Error("Automatic audio import supports selections up to 5 minutes.");
       }
       var startSample = Math.floor(start * buffer.sampleRate);
@@ -76,6 +78,7 @@
           polyphony: options.polyphony,
           maxNotes: options.maxNotes,
           minimumMagnitude: options.minimumMagnitude,
+          unlimited: options.unlimited === true,
         },
         [decoded.samples.buffer],
       );

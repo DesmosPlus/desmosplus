@@ -133,10 +133,22 @@ The available conversion modes are:
 | --- | --- |
 | Auto | 30 FPS, 32 voices, 260,000-note limit, `0.0001` minimum magnitude |
 | High quality | 60 FPS, 144 voices, 1,200,000-note limit |
+| MAX | 120 FPS, all detected FFT voices, full file duration, and no retained-note or file-size cap |
 | Custom | Start, end, FPS, polyphony, note limit, and minimum magnitude controls |
 
-Conversion supports a selected range up to five minutes. Higher settings use
-more memory and take longer for Desmos to parse.
+Auto, High quality, and Custom support files up to 100 MB and a selected range
+up to five minutes. MAX removes those extension safeguards and retains every
+detected note. Browser memory, CPU, codec, and Desmos evaluator limits still
+apply.
+
+MAX is not an originally supported DesAudify mode. The popup displays a warning
+and requires confirmation before conversion. It may freeze or crash the browser
+or Desmos and may lose unsaved work. The extension owner is not responsible for
+anything that happens beyond the confirmation point.
+
+The DesAudify tab also displays a GitHub logo in the upper-right corner. It
+links directly to the [DesAudify repository](https://github.com/whitecaplol/DesAudify)
+and is hidden on the Graph and SVG tabs.
 
 Generated data is divided into shard-sized folders. Ordered `t_i` and `p_i`
 pairs are inserted with byte-scaled pauses, followed by small processing
@@ -187,7 +199,7 @@ extension makes no network requests of its own.
 | `.desmosplus.json` | Legacy wrapped graph format |
 | `.json` | Raw Desmos state or wrapped graph state |
 | `.svg` | Static vector import, up to 1 MB |
-| Audio | Browser-decodable audio, including common MP3, WAV, M4A, OGG, FLAC, and AAC selections |
+| Audio | Browser-decodable audio; standard modes allow 100 MB and five minutes, while MAX removes those extension caps |
 | `.txt` | DesAudify schemas, up to 6 MB and 500 non-empty equations per file |
 
 The browser's media decoder determines which audio codecs can be opened.
@@ -214,7 +226,7 @@ store it in the account or graph library.
 
 Keep the Desmos tab active and use **Auto** for a smaller graph. Long selections,
 high FPS, high polyphony, and large note limits increase conversion and parsing
-time.
+time. MAX can exhaust browser memory or remain busy for a very long time.
 
 ### Audio Is Silent
 
@@ -260,6 +272,8 @@ The extension's main files are:
 - Very large SVG or audio conversions remain limited by browser memory and
   Desmos evaluator throughput.
 - Audio codec support varies by Chromium build and operating system.
+- MAX removes DesmosPlus safeguards, not the physical limits of the browser,
+  computer, or Desmos calculator.
 
 ## Third-Party Notices
 

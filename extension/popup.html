@@ -11,6 +11,18 @@
       <header>
         <img src="icons/icon-48.png" width="40" height="40" alt="">
         <h1>DesmosPlus</h1>
+        <a
+          id="desaudify-project-link"
+          class="project-link"
+          href="https://github.com/whitecaplol/DesAudify"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Open DesAudify on GitHub"
+          title="DesAudify on GitHub"
+          hidden
+        >
+          <img src="icons/github-mark.png" width="30" height="30" alt="">
+        </a>
       </header>
 
       <nav class="tabs" role="tablist" aria-label="Extension tools">
@@ -44,6 +56,7 @@
           <select id="desaudify-mode" data-conversion-setting>
             <option value="auto">Auto</option>
             <option value="high">High quality</option>
+            <option value="max">MAX (unlimited)</option>
             <option value="custom">Custom</option>
           </select>
         </div>
@@ -56,6 +69,12 @@
           <label>Minimum magnitude<input id="desaudify-magnitude" type="number" min="0.000001" max="1" step="0.000001" value="0.0001" data-conversion-setting></label>
         </div>
         <p id="desaudify-settings-summary" class="settings-summary"></p>
+        <p id="desaudify-max-warning" class="mode-warning" hidden>
+          <strong>Warning:</strong> MAX is not an originally supported DesAudify mode.
+          It removes DesmosPlus safety limits and may exhaust CPU or RAM, freeze or
+          crash the browser or Desmos, and lose unsaved work. The extension owner is
+          not responsible for anything that happens beyond this point.
+        </p>
         <div class="actions audio-actions">
           <button id="desaudify-audio" type="button" data-action disabled>Import audio</button>
         </div>

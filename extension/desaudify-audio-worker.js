@@ -305,16 +305,25 @@ self.onmessage = function (event) {
     var fps = Number(payload.fps) || DEFAULT_FPS;
     var polyphony = Number(payload.polyphony) || DEFAULT_POLYPHONY;
     var maxNotes = Number(payload.maxNotes) || DEFAULT_MAX_NOTES;
-    var minimumMagnitude = Number(payload.minimumMagnitude) || DEFAULT_MIN_MAGNITUDE;
+    var minimumMagnitude = Number(payload.minimumMagnitude);
+    var unlimited = payload.unlimited === true;
+    if (!Number.isFinite(minimumMagnitude)) minimumMagnitude = DEFAULT_MIN_MAGNITUDE;
     if (!samples.length || !Number.isFinite(sampleRate) || sampleRate <= 0) {
       throw new Error("Decoded audio was empty.");
     }
 
     progress(0, "Starting audio analysis");
-    fps = clamp(Math.round(fps), 10, 120);
-    polyphony = clamp(Math.round(polyphony), 8, 192);
-    maxNotes = clamp(Math.round(maxNotes), 1000, 1500000);
-    minimumMagnitude = clamp(minimumMagnitude, 0.000001, 1);
+    if (unlimited) {
+      fps = Math.max(10, Math.round(fps));
+      polyphony = Math.max(1, Math.round(polyphony));
+      maxNotes = Infinity;
+      minimumMagnitude = clamp(minimumMagnitude, 0, 1);
+    } else {
+      fps = clamp(Math.round(fps), 10, 120);
+      polyphony = clamp(Math.round(polyphony), 8, 192);
+      maxNotes = clamp(Math.round(maxNotes), 1000, 1500000);
+      minimumMagnitude = clamp(minimumMagnitude, 0.000001, 1);
+    }
     var analysis = analyze(samples, sampleRate, fps, polyphony, maxNotes);
     var encoded = encodeFrames(
       analysis.frames,
@@ -335,6 +344,7 @@ self.onmessage = function (event) {
         polyphony: polyphony,
         maxNotes: maxNotes,
         minimumMagnitude: minimumMagnitude,
+        unlimited: unlimited,
         chunkCount: schemas.chunkCount,
         shardCount: schemas.dataShards.length,
       },
