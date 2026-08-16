@@ -147,8 +147,9 @@ or Desmos and may lose unsaved work. The extension owner is not responsible for
 anything that happens beyond the confirmation point.
 
 The DesAudify tab also displays a GitHub logo in the upper-right corner. It
-links directly to the [DesAudify repository](https://github.com/whitecaplol/DesAudify)
-and is hidden on the Graph and SVG tabs.
+changes to the supplied blue version on hover or keyboard focus, links directly
+to the [DesAudify repository](https://github.com/whitecaplol/DesAudify), and is
+hidden on the Graph and SVG tabs.
 
 Generated data is divided into shard-sized folders. Ordered `t_i` and `p_i`
 pairs are inserted with byte-scaled pauses, followed by small processing

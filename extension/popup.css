@@ -60,6 +60,7 @@ header img {
 }
 
 .project-link {
+  position: relative;
   display: grid;
   width: 32px;
   height: 32px;
@@ -71,8 +72,24 @@ header img {
   display: none;
 }
 
-.project-link:hover img {
-  opacity: 0.72;
+.project-logo {
+  position: absolute;
+  inset: 1px;
+  transition: opacity 120ms ease;
+}
+
+.project-logo-hover {
+  opacity: 0;
+}
+
+.project-link:hover .project-logo-default,
+.project-link:focus-visible .project-logo-default {
+  opacity: 0;
+}
+
+.project-link:hover .project-logo-hover,
+.project-link:focus-visible .project-logo-hover {
+  opacity: 1;
 }
 
 .project-link:focus-visible {
@@ -245,7 +262,9 @@ label {
 
 @media (prefers-reduced-motion: reduce) {
   main,
-  section {
+  section,
+  .project-logo {
     animation: none;
+    transition: none;
   }
 }
