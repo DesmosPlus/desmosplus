@@ -162,6 +162,12 @@ Installation, graph transfer, SVG conversion, DesAudify audio import,
 permissions, troubleshooting, and extension development are documented in
 [`extension.md`](extension.md).
 
+Public extension information is available in [`extension.html`](extension.html),
+with the browser-extension privacy policy in [`privacy.html`](privacy.html) and
+support instructions in [`support.html`](support.html). The complete Chrome Web
+Store submission worksheet and prepared graphic assets are under
+[`docs/chrome-web-store/`](docs/chrome-web-store/).
+
 ## Graph File Format
 
 DesmosPlus wraps the raw calculator state with minimal routing metadata:
@@ -254,6 +260,10 @@ server to use the packaged calculators without internet access.
 | `assets/desaudify/` | Pinned DesAudify player state, attribution, and license. |
 | [`assets/product-logos/`](assets/product-logos/) | PNG and ICO product logo pack for all seven calculators. |
 | [`extension.md`](extension.md) | Browser extension installation, usage, privacy, and development guide. |
+| [`extension.html`](extension.html) | Public extension homepage for store and project links. |
+| [`privacy.html`](privacy.html) | Browser-extension privacy policy and Limited Use disclosure. |
+| [`support.html`](support.html) | Public extension support and troubleshooting page. |
+| [`docs/chrome-web-store/`](docs/chrome-web-store/) | Store submission worksheet and compliant listing graphics. |
 | `extension/` | Chrome MV3 graph import and export extension. |
 | `scripts/serve.mjs` | Local and production Node server. |
 | `scripts/build-pages-from-har.mjs` | HAR extraction and page regeneration. |

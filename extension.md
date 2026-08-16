@@ -343,6 +343,12 @@ site access and is off by default.
 
 The browser's media decoder determines which audio codecs can be opened.
 
+The public [extension overview](extension.html), [privacy policy](privacy.html),
+and [support page](support.html) are included with the DesmosPlus site. The
+Chrome Web Store fields, permission justifications, reviewer instructions, and
+prepared listing graphics are in the
+[publishing kit](docs/chrome-web-store/PUBLISHING.md).
+
 ## Troubleshooting
 
 ### Buttons Are Disabled
