@@ -233,6 +233,10 @@ several calculator-specific sections. No account credentials are required.
 
 ## Package Choice
 
+The repository-wide dual-edition rules are in
+[`../extension-release-process.md`](../extension-release-process.md). This
+Chrome Web Store guide applies only to the standard edition.
+
 The current release choices are:
 
 - **v1.15.0 Web Store edition:** Graph, SVG, and DesAudify only, with the

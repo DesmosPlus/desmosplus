@@ -12,6 +12,7 @@ or maintained by Desmos Studio PBC.
 
 - [Requirements](#requirements)
 - [Downloads](#downloads)
+- [Release Process](#release-process)
 - [Screenshots](#screenshots)
 - [Installation](#installation)
 - [Supported Calculators](#supported-calculators)
@@ -54,6 +55,18 @@ private, so GitHub must be signed in with an account that has access.
 
 The complete release history is available on the
 [GitHub Releases page](https://github.com/loleksyuk/desmosplus/releases).
+
+## Release Process
+
+Starting with the next version after v1.15.0, every version must provide a
+standard ZIP without DesModder. A separately named GitHub ZIP with DesModder
+should also be provided when available, using the same version and a separate
+row in the table above. The optional package must not block the standard
+release.
+
+Maintainers must follow the complete
+[dual-edition release process](docs/extension-release-process.md) before
+changing the version or publishing a tag.
 
 Every release ZIP includes `DESMOSPLUS-BUILD.txt`. DesmosPlus-owned HTML, CSS,
 and JavaScript also carry a comment with the package version and source URL.

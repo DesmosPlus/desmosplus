@@ -162,6 +162,12 @@ Installation, graph transfer, SVG conversion, DesAudify audio import,
 permissions, troubleshooting, and extension development are documented in
 [`extension.md`](extension.md).
 
+Every future extension version must publish the standard edition without
+DesModder. A matching DesModder edition should be included when available, but
+must not block the standard release. Naming, testing, packaging, and GitHub
+verification steps are documented in
+[`docs/extension-release-process.md`](docs/extension-release-process.md).
+
 Public extension information is available in [`extension.html`](extension.html),
 with the browser-extension privacy policy in [`privacy.html`](privacy.html) and
 support instructions in [`support.html`](support.html). The complete Chrome Web
@@ -264,6 +270,7 @@ server to use the packaged calculators without internet access.
 | [`privacy.html`](privacy.html) | Browser-extension privacy policy and Limited Use disclosure. |
 | [`support.html`](support.html) | Public extension support and troubleshooting page. |
 | [`docs/chrome-web-store/`](docs/chrome-web-store/) | Store submission worksheet and compliant listing graphics. |
+| [`docs/extension-release-process.md`](docs/extension-release-process.md) | Standard and optional DesModder extension release checklist. |
 | `extension/` | Chrome MV3 graph import and export extension. |
 | `scripts/serve.mjs` | Local and production Node server. |
 | `scripts/build-pages-from-har.mjs` | HAR extraction and page regeneration. |
@@ -312,6 +319,10 @@ When changing local CSS, guards, or save behavior, bump `siteVersion` in
 4. Keep UI changes restrained, accessible, unrounded, and responsive.
 5. Run the checks above and test affected calculators before opening a pull
    request.
+
+Extension version changes must also follow the release process in
+[`docs/extension-release-process.md`](docs/extension-release-process.md). The
+standard edition is the required minimum; the DesModder edition is optional.
 
 Bug reports should include the calculator route, browser version, reproduction
 steps, and console error text. Do not attach private HAR files or graph exports
