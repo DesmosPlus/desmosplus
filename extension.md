@@ -12,6 +12,7 @@ or maintained by Desmos Studio PBC.
 
 - [Requirements](#requirements)
 - [Downloads](#downloads)
+- [Screenshots](#screenshots)
 - [Installation](#installation)
 - [Supported Calculators](#supported-calculators)
 - [Graph Transfer](#graph-transfer)
@@ -58,6 +59,22 @@ Every release ZIP includes `DESMOSPLUS-BUILD.txt`. DesmosPlus-owned HTML, CSS,
 and JavaScript also carry a comment with the package version and source URL.
 Files under `vendor/` retain their upstream attribution and are not stamped as
 DesmosPlus code.
+
+## Screenshots
+
+The screenshots follow the extension's normal workflow order.
+
+| 1. Graph transfer | 2. SVG import |
+| --- | --- |
+| ![DesmosPlus Graph transfer tab](docs/screenshots/extension/01-graph.png) | ![DesmosPlus SVG import tab](docs/screenshots/extension/02-svg.png) |
+
+| 3. DesAudify Auto | 4. DesAudify conversion menu |
+| --- | --- |
+| ![DesAudify Auto conversion mode](docs/screenshots/extension/03-desaudify-auto.png) | ![DesAudify conversion mode menu](docs/screenshots/extension/04-desaudify-conversion-menu.png) |
+
+| 5. DesAudify MAX | 6. DesAudify Custom |
+| --- | --- |
+| ![DesAudify MAX mode with flame frame](docs/screenshots/extension/05-desaudify-max.png) | ![DesAudify Custom conversion controls](docs/screenshots/extension/06-desaudify-custom.png) |
 
 ## Installation
 
