@@ -134,8 +134,9 @@ End, and Escape support.
 
 While that menu is open, the MAX option uses Canvas UI Flame Wrap with purple
 fire. Hovering or keyboard-focusing MAX changes its fire to blue. Selecting MAX
-adds the purple fire outline to the extension while the DesAudify tab remains
-open; choosing another mode or leaving the tab releases the effect.
+adds tall flames above the extension with a narrow rim along its sides and
+bottom while the DesAudify tab remains open; choosing another mode or leaving
+the tab releases the effect.
 
 The available conversion modes are:
 
