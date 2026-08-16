@@ -8,6 +8,11 @@ before each submission.
 
 ## Ready Files
 
+Reusable draft screenshots and other local submission materials can be kept in
+`docs/chrome-web-store/local-assets/`. That directory is intentionally ignored
+by Git so each release can reuse working files without publishing drafts or
+account-specific material.
+
 | Item | Repository path |
 | --- | --- |
 | Upload package | Pending Web Store build without DesModder |
