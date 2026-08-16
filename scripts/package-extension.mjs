@@ -5,6 +5,12 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const extension = path.join(root, "extension");
+
+execFileSync(process.execPath, [path.join(root, "scripts", "update-desmodder.mjs")], {
+  cwd: root,
+  stdio: "inherit",
+});
+
 const manifest = JSON.parse(
   fs.readFileSync(path.join(extension, "manifest.json"), "utf8"),
 );

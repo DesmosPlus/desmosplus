@@ -211,8 +211,8 @@ DesmosPlus never executes JavaScript downloaded from a GitHub release at
 runtime. `scripts/update-desmodder.mjs` downloads the latest official Chrome
 release during repository maintenance, validates its version, bundles the
 required files, records the archive checksum, and preserves the upstream MIT
-license. The scheduled GitHub workflow runs that updater daily and publishes a
-new patch release only when the bundled upstream release changes.
+license. The extension packager runs that updater automatically, so a future
+upstream release does not require a source edit or a hard-coded URL change.
 
 ## Permissions and Privacy
 
@@ -289,7 +289,8 @@ node --check extension/vendor/flame-wrap.js
 node -e 'JSON.parse(require("fs").readFileSync("extension/manifest.json", "utf8"))'
 ```
 
-Update and package the bundled extension with:
+Update the bundled files directly, or package the extension and update them as
+one command:
 
 ```sh
 node scripts/update-desmodder.mjs
