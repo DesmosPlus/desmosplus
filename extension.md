@@ -11,6 +11,7 @@ or maintained by Desmos Studio PBC.
 ## Table of Contents
 
 - [Requirements](#requirements)
+- [Downloads](#downloads)
 - [Installation](#installation)
 - [Supported Calculators](#supported-calculators)
 - [Graph Transfer](#graph-transfer)
@@ -32,6 +33,24 @@ or maintained by Desmos Studio PBC.
 - Developer mode enabled on the browser extensions page.
 
 No package installation or build step is required.
+
+## Downloads
+
+Published extension packages are listed newest first. Each ZIP extracts directly
+into a folder that can be selected with **Load unpacked**. The repository is
+private, so GitHub must be signed in with an account that has access.
+
+| Version | Package | Release |
+| --- | --- | --- |
+| **v1.13.0 (latest)** | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.13.0/DesmosPlus-Extension-v1.13.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.13.0) |
+| v1.12.1 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.12.1/DesmosPlus-Extension-v1.12.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.12.1) |
+| v1.12.0 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.12.0/DesmosPlus-Extension-v1.12.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.12.0) |
+| v1.11.1 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.11.1/DesmosPlus-Extension-v1.11.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.11.1) |
+| v1.11.0 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.11.0/DesmosPlus-Extension-v1.11.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.11.0) |
+| v1.10.0 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.10.0/DesmosPlus-Extension-v1.10.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.10.0) |
+
+The complete release history is available on the
+[GitHub Releases page](https://github.com/loleksyuk/desmosplus/releases).
 
 ## Installation
 
