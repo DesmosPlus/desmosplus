@@ -97,7 +97,8 @@ reporting routes.
 
 Each calculator exposes New, Save, and Library controls. A saved instance keeps
 the complete calculator state and can be reopened, edited, recategorized, and
-saved again.
+saved again. Calculator, Turbo, filter, and editable category menus use the same
+custom keyboard-accessible controls instead of browser-native dropdowns.
 
 Storage is scoped to the current browser and site origin:
 

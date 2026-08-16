@@ -32,7 +32,6 @@
 
 #desmosplus-shell a,
 #desmosplus-shell button,
-#desmosplus-shell select,
 .desmosplus-menu {
   height: var(--desmosplus-control-height);
   background: #fff;
@@ -42,14 +41,12 @@
 
 #desmosplus-shell a,
 #desmosplus-shell button,
-#desmosplus-shell select,
 .desmosplus-menu-button {
   border: 1px solid #000;
   border-radius: var(--desmosplus-radius);
 }
 
-#desmosplus-shell button,
-#desmosplus-shell select {
+#desmosplus-shell button {
   padding: 0 12px;
 }
 
@@ -59,17 +56,14 @@
 }
 
 #desmosplus-shell a:hover,
-#desmosplus-shell button:hover,
-#desmosplus-shell select:hover {
+#desmosplus-shell button:hover {
   text-decoration: underline;
 }
 
 #desmosplus-shell a:focus-visible,
 #desmosplus-shell button:focus-visible,
-#desmosplus-shell select:focus-visible,
 #local-save-panel button:focus-visible,
 #local-save-panel input:focus-visible,
-#local-save-panel select:focus-visible,
 #local-audio-panel button:focus-visible,
 .desmosplus-home nav a:focus-visible {
   outline: 2px solid #000;
@@ -163,6 +157,8 @@
   right: 0;
   z-index: 100001;
   min-width: 100%;
+  max-height: 220px;
+  overflow-y: auto;
   padding: 4px;
   border: 1px solid #000;
   border-radius: var(--desmosplus-radius);
@@ -267,7 +263,6 @@
 
 #local-save-panel button,
 #local-save-panel input,
-#local-save-panel select,
 #local-audio-panel button {
   min-height: var(--desmosplus-control-height);
   border: 1px solid #000;
@@ -288,8 +283,7 @@
   text-decoration: underline;
 }
 
-#local-save-panel input,
-#local-save-panel select {
+#local-save-panel input {
   width: 100%;
   padding: 6px 9px;
 }
@@ -312,6 +306,26 @@
   margin-top: 2px;
   font-size: 12px;
   font-weight: 600;
+}
+
+.local-filters .desmosplus-menu,
+.local-editable-menu {
+  position: relative;
+  width: 100%;
+}
+
+.local-filters .desmosplus-menu {
+  height: var(--desmosplus-control-height);
+}
+
+.local-filters .desmosplus-menu-options,
+.local-category-options {
+  right: 0;
+  left: 0;
+}
+
+.local-category-options:empty {
+  display: none;
 }
 
 #local-save-form button:first-of-type {

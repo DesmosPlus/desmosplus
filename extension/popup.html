@@ -65,13 +65,31 @@
 
       <section id="desaudify-panel" role="tabpanel" data-panel="desaudify" hidden>
         <div class="field">
-          <label for="desaudify-mode">Conversion</label>
-          <select id="desaudify-mode" data-conversion-setting>
-            <option value="auto">Auto</option>
-            <option value="high">High quality</option>
-            <option value="max">MAX (unlimited)</option>
-            <option value="custom">Custom</option>
-          </select>
+          <label for="desaudify-mode-button">Conversion</label>
+          <input id="desaudify-mode" type="hidden" value="auto">
+          <div class="popup-menu" id="desaudify-mode-menu" data-value="auto">
+            <button
+              id="desaudify-mode-button"
+              class="popup-menu-trigger"
+              type="button"
+              role="combobox"
+              aria-expanded="false"
+              aria-controls="desaudify-mode-options"
+              aria-haspopup="listbox"
+              data-conversion-setting
+            >Auto</button>
+            <div
+              id="desaudify-mode-options"
+              class="popup-menu-options"
+              role="listbox"
+              hidden
+            >
+              <button type="button" role="option" data-value="auto" aria-selected="true">Auto</button>
+              <button type="button" role="option" data-value="high" aria-selected="false">High quality</button>
+              <button type="button" role="option" data-value="max" aria-selected="false">MAX (unlimited)</button>
+              <button type="button" role="option" data-value="custom" aria-selected="false">Custom</button>
+            </div>
+          </div>
         </div>
         <div id="desaudify-custom-settings" class="settings-grid" hidden>
           <label>Start (seconds)<input id="desaudify-start" type="number" min="0" step="0.1" value="0" data-conversion-setting></label>

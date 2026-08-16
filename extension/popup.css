@@ -104,7 +104,6 @@ h1 {
 }
 
 input,
-select,
 button {
   min-height: var(--popup-control-height);
   border: 1px solid #000;
@@ -114,8 +113,7 @@ button {
   font: inherit;
 }
 
-input,
-select {
+input {
   width: 100%;
   padding: 6px 10px;
 }
@@ -136,7 +134,6 @@ button:disabled {
 }
 
 input:focus-visible,
-select:focus-visible,
 button:focus-visible {
   outline: 2px solid #000;
   outline-offset: 2px;
@@ -170,6 +167,80 @@ section {
 
 section[hidden] {
   display: none;
+}
+
+.popup-menu {
+  position: relative;
+  width: 100%;
+}
+
+.popup-menu-trigger {
+  position: relative;
+  width: 100%;
+  padding: 0 34px 0 10px;
+  overflow: hidden;
+  font-weight: 400;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popup-menu-trigger::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: 13px;
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  transform: rotate(45deg);
+}
+
+.popup-menu-options {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  z-index: 10;
+  padding: 4px;
+  border: 1px solid #000;
+  border-radius: var(--popup-radius);
+  background: #fff;
+  transform-origin: top;
+  animation: popup-menu-open 140ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.popup-menu-options[hidden] {
+  display: none;
+}
+
+.popup-menu-options button {
+  display: block;
+  width: 100%;
+  min-height: 32px;
+  padding: 0 8px;
+  border: 0;
+  font-weight: 400;
+  text-align: left;
+}
+
+.popup-menu-options button[aria-selected="true"] {
+  background: #000;
+  color: #fff;
+  font-weight: 600;
+}
+
+@keyframes popup-menu-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .settings-grid {
@@ -263,6 +334,7 @@ label {
 @media (prefers-reduced-motion: reduce) {
   main,
   section,
+  .popup-menu-options,
   .project-logo {
     animation: none;
     transition: none;

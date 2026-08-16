@@ -403,6 +403,22 @@
     queueRecoverySnapshot();
   }
 
+  function dropdownOptionsHtml(value, options) {
+    return options
+      .map(function (option) {
+        return (
+          '<button type="button" role="option" data-value="' +
+          escapeHtml(option[0]) +
+          '" aria-selected="' +
+          (option[0] === value ? "true" : "false") +
+          '">' +
+          escapeHtml(option[1]) +
+          "</button>"
+        );
+      })
+      .join("");
+  }
+
   function dropdownHtml(id, value, options) {
     var selected = options.find(function (option) {
       return option[0] === value;
@@ -423,19 +439,7 @@
       '<div class="desmosplus-menu-options" id="' +
       id +
       '-options" role="listbox" hidden>' +
-      options
-        .map(function (option) {
-          return (
-            '<button type="button" role="option" data-value="' +
-            escapeHtml(option[0]) +
-            '" aria-selected="' +
-            (option[0] === value ? "true" : "false") +
-            '">' +
-            escapeHtml(option[1]) +
-            "</button>"
-          );
-        })
-        .join("") +
+      dropdownOptionsHtml(value, options) +
       "</div></div>"
     );
   }
@@ -443,13 +447,30 @@
   function setDropdownValue(id, value) {
     var dropdown = document.getElementById(id);
     if (!dropdown) return;
-    var selected = dropdown.querySelector('[data-value="' + value + '"]');
+    var selected = Array.from(dropdown.querySelectorAll("[role=option]")).find(
+      function (option) {
+        return option.getAttribute("data-value") === value;
+      },
+    );
     if (!selected) return;
     dropdown.setAttribute("data-value", value);
     document.getElementById(id + "-button").textContent = selected.textContent;
     dropdown.querySelectorAll("[role=option]").forEach(function (option) {
       option.setAttribute("aria-selected", option === selected ? "true" : "false");
     });
+  }
+
+  function setDropdownOptions(id, value, options) {
+    var dropdown = document.getElementById(id);
+    if (!dropdown || !options.length) return;
+    var nextValue = options.some(function (option) {
+      return option[0] === value;
+    })
+      ? value
+      : options[0][0];
+    dropdown.querySelector(".desmosplus-menu-options").innerHTML =
+      dropdownOptionsHtml(nextValue, options);
+    setDropdownValue(id, nextValue);
   }
 
   function closeDropdown(dropdown, restoreFocus) {
@@ -462,10 +483,13 @@
   function setupDropdown(id, onSelect) {
     var dropdown = document.getElementById(id);
     var button = dropdown.querySelector(".desmosplus-menu-button");
-    var options = Array.from(dropdown.querySelectorAll("[role=option]"));
+    var list = dropdown.querySelector(".desmosplus-menu-options");
+
+    function options() {
+      return Array.from(dropdown.querySelectorAll("[role=option]"));
+    }
 
     button.addEventListener("click", function () {
-      var list = dropdown.querySelector(".desmosplus-menu-options");
       document.querySelectorAll(".desmosplus-menu").forEach(function (other) {
         if (other !== dropdown) closeDropdown(other, false);
       });
@@ -473,22 +497,32 @@
       button.setAttribute("aria-expanded", list.hidden ? "false" : "true");
     });
 
-    options.forEach(function (option, index) {
-      option.addEventListener("click", function () {
-        setDropdownValue(id, option.getAttribute("data-value"));
+    list.addEventListener("click", function (event) {
+      var option = event.target.closest("[role=option]");
+      if (!option) return;
+      var value = option.getAttribute("data-value");
+      setDropdownValue(id, value);
+      closeDropdown(dropdown, true);
+      onSelect(value);
+    });
+
+    list.addEventListener("keydown", function (event) {
+      var currentOptions = options();
+      var index = currentOptions.indexOf(event.target);
+      if (event.key === "Escape") {
+        event.preventDefault();
         closeDropdown(dropdown, true);
-        onSelect(option.getAttribute("data-value"));
-      });
-      option.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") {
-          event.preventDefault();
-          closeDropdown(dropdown, true);
-        } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-          event.preventDefault();
-          var step = event.key === "ArrowDown" ? 1 : -1;
-          options[(index + step + options.length) % options.length].focus();
-        }
-      });
+      } else if (
+        index !== -1 &&
+        (event.key === "ArrowDown" || event.key === "ArrowUp")
+      ) {
+        event.preventDefault();
+        var step = event.key === "ArrowDown" ? 1 : -1;
+        currentOptions[(index + step + currentOptions.length) % currentOptions.length].focus();
+      } else if (event.key === "Home" || event.key === "End") {
+        event.preventDefault();
+        currentOptions[event.key === "Home" ? 0 : currentOptions.length - 1].focus();
+      }
     });
 
     button.addEventListener("keydown", function (event) {
@@ -496,16 +530,20 @@
         closeDropdown(dropdown, false);
       } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
-        var list = dropdown.querySelector(".desmosplus-menu-options");
+        var currentOptions = options();
         list.hidden = false;
         button.setAttribute("aria-expanded", "true");
-        options[event.key === "ArrowDown" ? 0 : options.length - 1].focus();
+        currentOptions[event.key === "ArrowDown" ? 0 : currentOptions.length - 1].focus();
       }
     });
 
-    document.addEventListener("click", function () {
-      closeDropdown(dropdown, false);
-    });
+    document.addEventListener(
+      "click",
+      function (event) {
+        if (!dropdown.contains(event.target)) closeDropdown(dropdown, false);
+      },
+      true,
+    );
   }
 
   function isolateControls(container) {
@@ -672,8 +710,10 @@
       '<label for="local-save-name">Name</label>' +
       '<input id="local-save-name" value="Untitled" autocomplete="off">' +
       '<label for="local-save-category">Category</label>' +
-      '<input id="local-save-category" list="local-save-categories" autocomplete="off">' +
-      '<datalist id="local-save-categories"></datalist>' +
+      '<div class="local-editable-menu" id="local-save-category-menu">' +
+      '<input id="local-save-category" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="local-save-category-options" autocomplete="off">' +
+      '<div class="desmosplus-menu-options local-category-options" id="local-save-category-options" role="listbox" hidden></div>' +
+      "</div>" +
       '<button type="submit">Save instance</button>' +
       '<button type="button" id="local-import">Import graph file</button>' +
       '<input type="file" id="local-import-file" accept=".desmos,.desmosplus.json,.json,application/json" hidden>' +
@@ -681,10 +721,14 @@
       '<input type="file" id="local-import-svg-file" accept=".svg,image/svg+xml" hidden>' +
       "</form>" +
       '<div class="local-filters">' +
-      '<label for="local-product-filter">Calculator</label>' +
-      '<select id="local-product-filter"><option value="">All calculators</option></select>' +
-      '<label for="local-category-filter">Category</label>' +
-      '<select id="local-category-filter"><option value="">All categories</option></select>' +
+      '<label for="local-product-filter-button">Calculator</label>' +
+      dropdownHtml(
+        "local-product-filter",
+        "",
+        [["", "All calculators"]].concat(PRODUCTS),
+      ) +
+      '<label for="local-category-filter-button">Category</label>' +
+      dropdownHtml("local-category-filter", "", [["", "All categories"]]) +
       "</div>" +
       '<div id="local-save-list"></div>' +
       '<div id="local-save-status" aria-live="polite"></div>';
@@ -692,6 +736,7 @@
     isolateControls(panel);
 
     document.getElementById("local-save-category").value = productName(product());
+    setupEditableCategoryMenu();
     document.getElementById("local-save-form").addEventListener("submit", function (event) {
       event.preventDefault();
       saveCurrent();
@@ -721,8 +766,8 @@
       event.target.value = "";
     });
     document.getElementById("local-close").addEventListener("click", closePanel);
-    document.getElementById("local-product-filter").addEventListener("change", render);
-    document.getElementById("local-category-filter").addEventListener("change", render);
+    setupDropdown("local-product-filter", render);
+    setupDropdown("local-category-filter", render);
     render();
   }
 
@@ -740,7 +785,14 @@
   }
 
   function closePanel() {
-    document.getElementById("local-save-panel").hidden = true;
+    var panel = document.getElementById("local-save-panel");
+    panel.querySelectorAll(".desmosplus-menu").forEach(function (dropdown) {
+      closeDropdown(dropdown, false);
+    });
+    var categoryInput = document.getElementById("local-save-category");
+    document.getElementById("local-save-category-options").hidden = true;
+    categoryInput.setAttribute("aria-expanded", "false");
+    panel.hidden = true;
     document.getElementById("local-library").setAttribute("aria-expanded", "false");
   }
 
@@ -1058,55 +1110,120 @@
     return Object.keys(seen).sort();
   }
 
+  function setupEditableCategoryMenu() {
+    var menu = document.getElementById("local-save-category-menu");
+    var input = document.getElementById("local-save-category");
+    var list = document.getElementById("local-save-category-options");
+    var ignoreNextFocus = false;
+
+    function options() {
+      return Array.from(list.querySelectorAll("[role=option]"));
+    }
+
+    function close(restoreFocus) {
+      list.hidden = true;
+      input.setAttribute("aria-expanded", "false");
+      if (restoreFocus) {
+        ignoreNextFocus = true;
+        input.focus();
+      }
+    }
+
+    function open() {
+      var query = input.value.trim().toLowerCase();
+      var matches = categories(readStore(), "").filter(function (category) {
+        return !query || category.toLowerCase().indexOf(query) !== -1;
+      });
+      list.innerHTML = dropdownOptionsHtml(
+        "",
+        matches.map(function (category) {
+          return [category, category];
+        }),
+      );
+      list.hidden = !matches.length;
+      input.setAttribute("aria-expanded", matches.length ? "true" : "false");
+    }
+
+    input.addEventListener("focus", function () {
+      if (ignoreNextFocus) {
+        ignoreNextFocus = false;
+        return;
+      }
+      open();
+    });
+    input.addEventListener("input", open);
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        close(false);
+      } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        open();
+        var currentOptions = options();
+        if (!currentOptions.length) return;
+        event.preventDefault();
+        currentOptions[event.key === "ArrowDown" ? 0 : currentOptions.length - 1].focus();
+      }
+    });
+    list.addEventListener("click", function (event) {
+      var option = event.target.closest("[role=option]");
+      if (!option) return;
+      input.value = option.getAttribute("data-value");
+      close(true);
+    });
+    list.addEventListener("keydown", function (event) {
+      var currentOptions = options();
+      var index = currentOptions.indexOf(event.target);
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close(true);
+      } else if (
+        index !== -1 &&
+        (event.key === "ArrowDown" || event.key === "ArrowUp")
+      ) {
+        event.preventDefault();
+        var step = event.key === "ArrowDown" ? 1 : -1;
+        currentOptions[(index + step + currentOptions.length) % currentOptions.length].focus();
+      } else if (event.key === "Home" || event.key === "End") {
+        event.preventDefault();
+        currentOptions[event.key === "Home" ? 0 : currentOptions.length - 1].focus();
+      }
+    });
+    document.addEventListener(
+      "click",
+      function (event) {
+        if (!menu.contains(event.target)) close(false);
+      },
+      true,
+    );
+  }
+
   function render() {
     var store = readStore();
     var productFilter = document.getElementById("local-product-filter");
     var categoryFilter = document.getElementById("local-category-filter");
-    var datalist = document.getElementById("local-save-categories");
     var list = document.getElementById("local-save-list");
-    if (!productFilter || !categoryFilter || !datalist || !list) return;
+    if (!productFilter || !categoryFilter || !list) return;
 
-    var selectedProduct = productFilter.value;
-    var selectedCategory = categoryFilter.value;
-    productFilter.innerHTML =
-      '<option value="">All calculators</option>' +
-      PRODUCTS.map(function (entry) {
-        return (
-          '<option value="' +
-          escapeHtml(entry[0]) +
-          '">' +
-          escapeHtml(entry[1]) +
-          "</option>"
-        );
-      }).join("");
-    productFilter.value = selectedProduct;
+    var selectedProduct = productFilter.getAttribute("data-value") || "";
+    var selectedCategory = categoryFilter.getAttribute("data-value") || "";
+    setDropdownValue("local-product-filter", selectedProduct);
 
     var cats = categories(store, selectedProduct);
-    datalist.innerHTML = cats
-      .map(function (category) {
-        return '<option value="' + escapeHtml(category) + '"></option>';
-      })
-      .join("");
-    categoryFilter.innerHTML =
-      '<option value="">All categories</option>' +
-      cats
-        .map(function (category) {
-          return (
-            '<option value="' +
-            escapeHtml(category) +
-            '">' +
-            escapeHtml(category) +
-            "</option>"
-          );
-        })
-        .join("");
-    categoryFilter.value = cats.indexOf(selectedCategory) === -1 ? "" : selectedCategory;
+    var nextCategory = cats.indexOf(selectedCategory) === -1 ? "" : selectedCategory;
+    setDropdownOptions(
+      "local-category-filter",
+      nextCategory,
+      [["", "All categories"]].concat(
+        cats.map(function (category) {
+          return [category, category];
+        }),
+      ),
+    );
 
     var saves = store.saves
       .filter(function (save) {
         return (
-          (!productFilter.value || save.product === productFilter.value) &&
-          (!categoryFilter.value || save.category === categoryFilter.value)
+          (!selectedProduct || save.product === selectedProduct) &&
+          (!nextCategory || save.category === nextCategory)
         );
       })
       .sort(function (a, b) {

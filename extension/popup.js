@@ -14,6 +14,8 @@
   var dataFile = document.getElementById("desaudify-data-file");
   var processingFile = document.getElementById("desaudify-processing-file");
   var modeInput = document.getElementById("desaudify-mode");
+  var modeMenu = document.getElementById("desaudify-mode-menu");
+  var modeButton = document.getElementById("desaudify-mode-button");
   var customSettings = document.getElementById("desaudify-custom-settings");
   var settingsSummary = document.getElementById("desaudify-settings-summary");
   var maxWarning = document.getElementById("desaudify-max-warning");
@@ -132,11 +134,89 @@
     document.querySelectorAll("[data-conversion-setting]").forEach(function (control) {
       control.disabled = busy || !availability.desaudify;
     });
+    if (modeButton.disabled) closeModeMenu(false);
   }
 
   function setBusy(value) {
     busy = value;
     updateAvailability();
+  }
+
+  function modeOptions() {
+    return Array.from(modeMenu.querySelectorAll("[role=option]"));
+  }
+
+  function closeModeMenu(restoreFocus) {
+    document.getElementById("desaudify-mode-options").hidden = true;
+    modeButton.setAttribute("aria-expanded", "false");
+    if (restoreFocus) modeButton.focus();
+  }
+
+  function openModeMenu(focusLast) {
+    if (modeButton.disabled) return;
+    var options = modeOptions();
+    document.getElementById("desaudify-mode-options").hidden = false;
+    modeButton.setAttribute("aria-expanded", "true");
+    var selectedIndex = options.findIndex(function (option) {
+      return option.getAttribute("aria-selected") === "true";
+    });
+    var index = focusLast ? options.length - 1 : Math.max(0, selectedIndex);
+    options[index].focus();
+  }
+
+  function setMode(value) {
+    var selected = modeOptions().find(function (option) {
+      return option.getAttribute("data-value") === value;
+    });
+    if (!selected) return;
+    modeInput.value = value;
+    modeMenu.setAttribute("data-value", value);
+    modeButton.textContent = selected.textContent;
+    modeOptions().forEach(function (option) {
+      option.setAttribute("aria-selected", option === selected ? "true" : "false");
+    });
+    updateConversionSettings();
+  }
+
+  function setupModeMenu() {
+    var list = document.getElementById("desaudify-mode-options");
+
+    modeButton.addEventListener("click", function () {
+      if (list.hidden) openModeMenu(false);
+      else closeModeMenu(false);
+    });
+    modeButton.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeModeMenu(false);
+      } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        openModeMenu(event.key === "ArrowUp");
+      }
+    });
+    list.addEventListener("click", function (event) {
+      var option = event.target.closest("[role=option]");
+      if (!option) return;
+      setMode(option.getAttribute("data-value"));
+      closeModeMenu(true);
+    });
+    list.addEventListener("keydown", function (event) {
+      var options = modeOptions();
+      var index = options.indexOf(event.target);
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeModeMenu(true);
+      } else if (index !== -1 && (event.key === "ArrowDown" || event.key === "ArrowUp")) {
+        event.preventDefault();
+        var step = event.key === "ArrowDown" ? 1 : -1;
+        options[(index + step + options.length) % options.length].focus();
+      } else if (event.key === "Home" || event.key === "End") {
+        event.preventDefault();
+        options[event.key === "Home" ? 0 : options.length - 1].focus();
+      }
+    });
+    document.addEventListener("click", function (event) {
+      if (!modeMenu.contains(event.target)) closeModeMenu(false);
+    });
   }
 
   function selectView(view) {
@@ -149,6 +229,7 @@
       panel.hidden = panel.dataset.panel !== view;
     });
     desaudifyProjectLink.hidden = view !== "desaudify";
+    if (view !== "desaudify") closeModeMenu(false);
   }
 
   function numericSetting(id, fallback) {
@@ -568,9 +649,9 @@
     importDesAudifySchemas(Array.from(processingFile.files || []), "processing");
     processingFile.value = "";
   });
-  modeInput.addEventListener("change", updateConversionSettings);
   customSettings.addEventListener("input", updateConversionSettings);
 
+  setupModeMenu();
   selectView("graph");
   updateConversionSettings();
   initialize();

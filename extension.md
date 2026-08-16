@@ -127,6 +127,9 @@ graph.
    play or pause.
 7. Click the author row or its right-side instruction to restart the song.
 
+The conversion menu is a custom themed listbox with mouse, arrow-key, Home,
+End, and Escape support.
+
 The available conversion modes are:
 
 | Mode | Settings |
