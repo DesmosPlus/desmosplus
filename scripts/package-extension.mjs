@@ -11,14 +11,25 @@ import {
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const extension = path.join(root, "extension");
 
-execFileSync(process.execPath, [path.join(root, "scripts", "update-desmodder.mjs")], {
-  cwd: root,
-  stdio: "inherit",
-});
-
 const manifest = JSON.parse(
   fs.readFileSync(path.join(extension, "manifest.json"), "utf8"),
 );
+const forbiddenManifestKeys = [
+  "background",
+  "content_scripts",
+  "host_permissions",
+  "web_accessible_resources",
+];
+if (forbiddenManifestKeys.some((key) => key in manifest)) {
+  throw new Error("Web Store package contains a DesModder-related manifest key.");
+}
+if (
+  manifest.permissions.some((permission) =>
+    ["storage", "declarativeNetRequest"].includes(permission),
+  )
+) {
+  throw new Error("Web Store package contains a DesModder-related permission.");
+}
 const output = path.resolve(
   process.argv[2] ||
     path.join(root, "dist", `DesmosPlus-Extension-v${manifest.version}.zip`),
@@ -61,6 +72,9 @@ if (!members.includes("DESMOSPLUS-BUILD.txt")) {
 }
 if (members.some((member) => member.includes(".DS_Store") || member.endsWith(".zip"))) {
   throw new Error("Packaged extension contains excluded metadata or archives.");
+}
+if (members.some((member) => member.toLowerCase().includes("desmodder"))) {
+  throw new Error("Packaged extension contains DesModder files.");
 }
 
 const firstPartySource = execFileSync("unzip", ["-p", output, "popup.js"], {

@@ -44,7 +44,7 @@ or official Desmos graphs and load DesAudify audio-resynthesis equations.
 - Seven calculators behind one consistent DesmosPlus shell.
 - Local New, Save, Library, category, open, edit, and delete workflows.
 - Browser-local persistence with no application database.
-- [Chrome MV3 extension](extension.md) for graph transfer, SVG conversion, audio import, and optional DesModder injection.
+- [Chrome MV3 extension](extension.md) for graph transfer, SVG conversion, and audio import.
 - Static SVG import for local Desmos 2D and Geometry graphs.
 - Manual DesAudify player and schema import on the local 2D calculator.
 - Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.
@@ -267,7 +267,6 @@ server to use the packaged calculators without internet access.
 | `extension/` | Chrome MV3 graph import and export extension. |
 | `scripts/serve.mjs` | Local and production Node server. |
 | `scripts/build-pages-from-har.mjs` | HAR extraction and page regeneration. |
-| `scripts/update-desmodder.mjs` | Bundles the latest stable DesModder release for the extension. |
 | `scripts/package-extension.mjs` | Creates a clean versioned extension ZIP. |
 
 ## Development

@@ -19,7 +19,6 @@ or maintained by Desmos Studio PBC.
 - [SVG Import](#svg-import)
 - [DesAudify Audio Import](#desaudify-audio-import)
   - [Downloadable Shard ZIP](#downloadable-shard-zip)
-- [DesModder Injection](#desmodder-injection)
 - [Permissions and Privacy](#permissions-and-privacy)
 - [File Formats and Limits](#file-formats-and-limits)
 - [Troubleshooting](#troubleshooting)
@@ -41,16 +40,17 @@ Published extension packages are listed newest first. Each ZIP extracts directly
 into a folder that can be selected with **Load unpacked**. The repository is
 private, so GitHub must be signed in with an account that has access.
 
-| Version | Package | Release |
-| --- | --- | --- |
-| **v1.14.1 (latest)** | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.14.1/DesmosPlus-Extension-v1.14.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.14.1) |
-| v1.14.0 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.14.0/DesmosPlus-Extension-v1.14.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.14.0) |
-| v1.13.0 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.13.0/DesmosPlus-Extension-v1.13.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.13.0) |
-| v1.12.1 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.12.1/DesmosPlus-Extension-v1.12.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.12.1) |
-| v1.12.0 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.12.0/DesmosPlus-Extension-v1.12.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.12.0) |
-| v1.11.1 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.11.1/DesmosPlus-Extension-v1.11.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.11.1) |
-| v1.11.0 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.11.0/DesmosPlus-Extension-v1.11.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.11.0) |
-| v1.10.0 | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.10.0/DesmosPlus-Extension-v1.10.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.10.0) |
+| Version | DesModder included | Package | Release |
+| --- | --- | --- | --- |
+| **v1.15.0 (latest)** | **No** | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.15.0/DesmosPlus-Extension-v1.15.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.15.0) |
+| v1.14.1 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.14.1/DesmosPlus-Extension-v1.14.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.14.1) |
+| v1.14.0 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.14.0/DesmosPlus-Extension-v1.14.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.14.0) |
+| v1.13.0 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.13.0/DesmosPlus-Extension-v1.13.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.13.0) |
+| v1.12.1 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.12.1/DesmosPlus-Extension-v1.12.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.12.1) |
+| v1.12.0 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.12.0/DesmosPlus-Extension-v1.12.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.12.0) |
+| v1.11.1 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.11.1/DesmosPlus-Extension-v1.11.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.11.1) |
+| v1.11.0 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.11.0/DesmosPlus-Extension-v1.11.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.11.0) |
+| v1.10.0 | No | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.10.0/DesmosPlus-Extension-v1.10.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.10.0) |
 
 The complete release history is available on the
 [GitHub Releases page](https://github.com/loleksyuk/desmosplus/releases).
@@ -62,7 +62,9 @@ DesmosPlus code.
 
 ## Screenshots
 
-The screenshots follow the extension's normal workflow order.
+These reference screenshots were captured from v1.14.1 and may show its
+DesModder Settings tab. Version 1.15.0 keeps the Graph, SVG, and DesAudify tabs
+but does not include Settings or DesModder.
 
 | 1. Graph transfer | 2. SVG import |
 | --- | --- |
@@ -117,8 +119,7 @@ from that location and cannot use the ZIP directly.
 5. Select **Reload** on the DesmosPlus extension card.
 6. Close and reopen the DesmosPlus popup.
 
-Using the same folder keeps the unpacked extension identity stable. Replacing
-its package files does not remove settings stored by the browser extension.
+Using the same folder keeps the unpacked extension identity stable.
 
 ## Supported Calculators
 
@@ -136,8 +137,7 @@ routes:
 | Scientific | `/scientific` |
 
 The **SVG** section supports 2D Graphing and Geometry. The **DesAudify** section
-supports 2D Graphing. The bundled **DesModder** injector supports 2D Graphing,
-Geometry, 3D Graphing, and Notebook.
+supports 2D Graphing.
 
 ## Graph Transfer
 
@@ -289,45 +289,16 @@ python -m pip install -r requirements.txt
 python desaudify_cli.py input.mp3 output
 ```
 
-## DesModder Injection
-
-The Settings tab includes the latest bundled stable release of
-[DesModder](https://github.com/DesModder/DesModder). DesModder must start before
-the calculator bundle, so both controls reload the active supported Desmos tab
-after their startup rules are ready.
-
-- **Inject in this tab** enables DesModder for the current browser tab until the
-  tab closes or another tab is selected for manual injection.
-- **Auto-inject on Desmos** enables DesModder for every supported official
-  Desmos page. The setting remains enabled until it is switched off.
-
-DesModder plugin choices and plugin settings use extension sync storage. The
-DesmosPlus auto-inject choice uses local extension storage. DesModder's optional
-WakaTime plugin can contact WakaTime only after it is configured inside
-DesModder.
-
-DesmosPlus never executes JavaScript downloaded from a GitHub release at
-runtime. `scripts/update-desmodder.mjs` downloads the latest official Chrome
-release during repository maintenance, validates its version, bundles the
-required files, records the archive checksum, and preserves the upstream MIT
-license. The extension packager runs that updater automatically, so a future
-upstream release does not require a source edit or a hard-coded URL change.
-
 ## Permissions and Privacy
 
 | Permission | Purpose |
 | --- | --- |
 | `activeTab` | Grants temporary access to the current tab after the user opens the extension. |
 | `scripting` | Injects packaged code that reads or writes `window.Calc` or `window.Notebook` in the active page. |
-| `storage` | Stores the DesModder auto-inject choice and DesModder plugin settings. |
-| `declarativeNetRequest` | Lets bundled DesModder prepare the calculator script before Desmos starts. |
-| `https://*.desmos.com/*` | Runs the optional DesModder loader on supported official calculators. |
-| `https://wakatime.com/*` | Supports DesModder's optional WakaTime plugin when the user configures it. |
 
 Selected graph, SVG, schema, and audio files are processed locally and are not
-uploaded by DesmosPlus. Graph transfer, SVG conversion, and DesAudify still run
-only after a user action. DesModder auto-injection is the only persistent Desmos
-site access and is off by default.
+uploaded by DesmosPlus. Graph transfer, SVG conversion, and DesAudify run only
+after a user action.
 
 ## File Formats and Limits
 
@@ -388,24 +359,19 @@ node --check extension/desaudify-audio.js
 node --check extension/desaudify-audio-worker.js
 node --check extension/desaudify-export.js
 node --check extension/desaudify-page.js
-node --check extension/background.js
-node --check extension/desmodder-loader.js
 node --check extension/flame-effects.js
 node --check extension/popup.js
 node --check extension/vendor/flame-wrap.js
 node -e 'JSON.parse(require("fs").readFileSync("extension/manifest.json", "utf8"))'
 ```
 
-Update the bundled files directly, or package the extension and update them as
-one command:
+Update the bundled files directly, then package the extension:
 
 ```sh
-node scripts/update-desmodder.mjs
 node scripts/package-extension.mjs
 ```
 
-The updater requires network access plus the standard `unzip` command. The
-packager requires the standard `zip` and `unzip` commands.
+The packager requires the standard `zip` and `unzip` commands.
 
 After changing extension files, increment the version in
 `extension/manifest.json`, reload the unpacked extension, and test the affected
@@ -416,31 +382,24 @@ The extension's main files are:
 | Path | Purpose |
 | --- | --- |
 | `extension/manifest.json` | Manifest V3 metadata and permissions |
-| `extension/background.js` | Conditional DesModder startup rules and settings messages |
-| `extension/desmodder-loader.js` | Early DesModder page bridge for supported Desmos routes |
 | `extension/popup.html` | Popup structure and tool sections |
 | `extension/popup.css` | Popup styling and animations |
 | `extension/popup.js` | Active-tab detection and graph transfer orchestration |
 | `extension/flame-effects.js` | DesAudify MAX Flame Wrap lifecycle and colors |
 | `extension/vendor/flame-wrap.js` | Pinned Canvas UI Flame Wrap WebGL engine |
-| `extension/vendor/desmodder/` | Pinned DesModder runtime, metadata, checksum, and MIT license |
 | `extension/svg-import.js` | Static SVG validation and equation conversion |
 | `extension/desaudify-audio.js` | Audio decoding and worker orchestration |
 | `extension/desaudify-audio-worker.js` | FFT analysis and schema generation |
 | `extension/desaudify-export.js` | DesAudify shard graph and local ZIP generation |
 | `extension/desaudify-page.js` | Main-world player and paced schema injection bridge |
 | `extension/desaudify-template.json` | Bundled DesAudify player state |
-| `scripts/update-desmodder.mjs` | Syncs the latest stable DesModder Chrome release |
 | `scripts/package-extension.mjs` | Creates a clean versioned extension ZIP |
 
 ## Known Limitations
 
 - The extension is installed unpacked and is not published to a browser store.
-- A ZIP-installed or unpacked extension does not update itself; install the new
-  DesmosPlus release generated when the bundled DesModder version changes.
-- DesModder works by preparing Desmos's own calculator bundle during page load.
-  Browser-store review policies may treat that mechanism differently from a
-  normal packaged content script.
+- A ZIP-installed or unpacked extension does not update itself; install each
+  new DesmosPlus release manually.
 - Graphs injected into Desmos remain temporary until saved through Desmos.
 - Desmos page changes can require updates to calculator detection or injection.
 - Very large SVG or audio conversions remain limited by browser memory and
@@ -461,12 +420,6 @@ The browser port vendors `fft.js` 4.0.4. Its MIT notice is included in
 The MAX visual effect vendors Canvas UI Flame Wrap from commit
 `f993683dc03446eead7a372153f3d22b480ec465`. Its MIT + Commons Clause notice is
 included in [`extension/vendor/CANVAS-UI-NOTICE`](extension/vendor/CANVAS-UI-NOTICE).
-
-The extension bundles the latest stable Chrome release of
-[DesModder](https://github.com/DesModder/DesModder). Its version, source release,
-and archive checksum are recorded in
-[`extension/vendor/desmodder/metadata.json`](extension/vendor/desmodder/metadata.json),
-and its MIT license is included beside the runtime.
 
 Desmos is a trademark of Desmos Studio PBC. See the main
 [`README.md`](README.md) for the repository's license and third-party notice.

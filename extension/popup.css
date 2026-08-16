@@ -195,7 +195,7 @@ button:focus-visible {
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
   padding-bottom: 14px;
   border-bottom: 1px solid #000;
@@ -382,53 +382,6 @@ label {
 h2 {
   margin: 0;
   font-size: 16px;
-}
-
-.settings-heading {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.settings-heading p {
-  margin: 3px 0 0;
-  font-size: 12px;
-}
-
-.settings-heading a {
-  color: #000;
-  line-height: 20px;
-}
-
-.setting-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 20px;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
-  cursor: pointer;
-}
-
-.setting-row span {
-  display: grid;
-  gap: 3px;
-}
-
-.setting-row small {
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.35;
-}
-
-.setting-row input {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  padding: 0;
-  accent-color: #000;
 }
 
 .actions {

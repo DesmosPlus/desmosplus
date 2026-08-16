@@ -15,7 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | Pending Web Store build without DesModder |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.15.0.zip` |
+| SHA-256 | `0f2b92055916aca6952fbe46fea1f4678962068a8aac283c5ddaca896532514e` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -25,10 +26,10 @@ account-specific material.
 | Public support page | `/support.html` |
 
 > [!WARNING]
-> Do not upload the current v1.14.1 release ZIP to the Chrome Web Store. It
-> contains the GitHub DesModder integration. The official Web Store package
-> will be built later without DesModder, its Settings tab, background loader,
-> WakaTime access, or related permissions.
+> Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
+> contain the GitHub DesModder integration. Use v1.15.0, which excludes
+> DesModder, its Settings tab, background loader, WakaTime access, and related
+> permissions.
 
 ## Account Setup
 
@@ -49,9 +50,8 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload the future Web Store ZIP after the DesModder-free package variant is
-built and tested. It must be a Manifest V3 extension, remain below the 2 GB
-package limit, and have `manifest.json` at the archive root.
+Upload `DesmosPlus-Extension-v1.15.0.zip` after completing the unpacked browser
+tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
 and test every user-facing feature. Manifest metadata cannot be edited in the
@@ -109,9 +109,9 @@ testimonials.
 
 ## Graphic Assets
 
-Recapture up to five 1280x800 screenshots after the Web Store package removes
-the DesModder Settings tab. Do not upload the earlier screenshots that show
-Settings, because they would not match the official package.
+Recapture up to five 1280x800 screenshots from v1.15.0. Do not upload the
+earlier screenshots that show Settings, because they do not match the official
+package.
 
 Use `assets/small-promo-440x280.png` for the required small promotional image.
 Use `assets/marquee-1400x560.png` for the optional marquee image. The extension
@@ -213,7 +213,7 @@ several calculator-specific sections. No account credentials are required.
 - [ ] 2-Step Verification enabled.
 - [ ] Developer contact email verified and monitored.
 - [ ] Public HTTPS homepage, privacy, and support pages deployed.
-- [ ] DesModder-free Web Store ZIP built and checksum recorded.
+- [x] DesModder-free Web Store ZIP built and checksum recorded.
 - [ ] ZIP tested through **Load unpacked** using the matching source version.
 - [ ] Graph export and import tested on a supported Desmos page.
 - [ ] SVG import tested.
@@ -231,14 +231,15 @@ several calculator-specific sections. No account credentials are required.
 - [ ] Final item preview checked for spelling, image order, and independence disclaimer.
 - [ ] Submitted for review.
 
-## Planned GitHub Package Choice
+## Package Choice
 
-The package split will be implemented in a later extension change:
+The current release choices are:
 
-- **Chrome Web Store edition:** Graph, SVG, and DesAudify only, with the
+- **v1.15.0 Web Store edition:** Graph, SVG, and DesAudify only, with the
   narrowest required permissions and no DesModder or WakaTime code.
-- **GitHub DesModder edition:** the same core tools plus the optional bundled
-  DesModder integration, clearly named as a separate download.
+- **Older GitHub editions:** v1.11.0 through v1.14.1 include DesModder. A future
+  current-version DesModder build must be published as a clearly separate
+  download.
 
 Do not represent the GitHub DesModder edition as the package submitted to the
 Chrome Web Store.
