@@ -2,8 +2,9 @@
   --popup-control-height: 36px;
   --popup-radius: 6px;
   --popup-font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --flame-frame-inset: 9px;
-  --flame-content-inset: 11px;
+  --flame-frame-inset: 0px;
+  --flame-content-inset: 2px;
+  --flame-canvas-overscan: 28px;
 }
 
 * {
@@ -42,10 +43,10 @@ body[data-desaudify-view="true"][data-max-flame="true"]::before {
 
 .desaudify-flame-canvas {
   position: fixed;
-  inset: 0;
+  inset: calc(0px - var(--flame-canvas-overscan));
   z-index: 30;
-  width: 100%;
-  height: 100%;
+  width: calc(100% + var(--flame-canvas-overscan) + var(--flame-canvas-overscan));
+  height: calc(100% + var(--flame-canvas-overscan) + var(--flame-canvas-overscan));
   pointer-events: none;
 }
 
