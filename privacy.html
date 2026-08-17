@@ -26,7 +26,7 @@
       <h2>Information Handled</h2>
 
       <h3>Graph and website content</h3>
-      <p>When a user requests an import or export, Desmos+ reads or writes the active supported Desmos calculator state. That state can include expressions, folders, tables, notes, sliders, viewport settings, graph titles, and other user-generated graph content. The extension also reads the active tab URL to identify the calculator type and include source information in an exported file.</p>
+      <p>When a user requests an import or export, Desmos+ reads or writes the active supported Desmos calculator state. That state can include expressions, folders, tables, notes, sliders, viewport settings, graph titles, and other user-generated graph content. The extension also reads the active tab URL to identify the calculator type, offer graph window options on unsupported pages, and include source information in an exported file.</p>
 
       <h3>Files selected by the user</h3>
       <p>Desmos+ processes graph files, SVG files, audio files, and DesAudify schema files that the user explicitly selects. Processing occurs locally in browser memory. Generated graph files and shard ZIPs are downloaded only when the user requests them.</p>
@@ -57,7 +57,7 @@
       </table>
 
       <h2>Remote Code</h2>
-      <p>Desmos+ does not download and execute remote JavaScript. Desmos+, DesAudify, Canvas UI Flame Wrap, and FFT executable code used by the extension is included in the extension package submitted for review. External release information is used during development and packaging, not as runtime code.</p>
+      <p>Desmos+ does not download remote JavaScript into the extension or execute it with extension privileges. DesAudify, Canvas UI Flame Wrap, FFT, and the code used to add the in-page overlay are included in the extension package submitted for review. The optional graph window and overlay display the documented DesmosPlus calculator as a separate web page. That cross-origin page does not receive access to Chrome extension APIs or the surrounding website.</p>
 
       <h2>Chrome Web Store Limited Use</h2>
       <p>Desmos+ uses information received from Chrome APIs only to provide and improve the user-facing features described in this policy. It does not transfer that information except as necessary to provide a user-enabled feature, for security purposes, to comply with applicable law, or as part of a merger or acquisition. It does not use or transfer information for personalized advertising, creditworthiness, or lending purposes. Humans do not read user data unless the user gives specific consent for support, access is required for security or legal reasons, or the information has been aggregated and anonymized for internal operations.</p>

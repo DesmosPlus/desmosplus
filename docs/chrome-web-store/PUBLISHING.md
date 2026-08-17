@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.15.0.zip` |
-| SHA-256 | `0f2b92055916aca6952fbe46fea1f4678962068a8aac283c5ddaca896532514e` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.16.0.zip` |
+| SHA-256 | `4fc5de778612a0201945fb3d859928d2951a99847d401b688506a7e873f60fb5` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,7 +27,7 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.15.0, which excludes
+> contain the GitHub DesModder integration. Use v1.16.0, which excludes
 > DesModder, its Settings tab, background loader, WakaTime access, and related
 > permissions.
 
@@ -50,7 +50,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.15.0.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.16.0.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
@@ -86,6 +86,9 @@ Export and import complete Desmos graphs while preserving expressions, folders, 
 
 • Native .desmos files
 Save graphs in a portable format and reopen them later in Desmos+ or a compatible calculator.
+
+• Graph pop-out
+Open a separate DesmosPlus 2D calculator window or show an isolated calculator overlay while browsing an unrelated website.
 
 • SVG-to-equation conversion
 Convert static SVG artwork into editable Desmos polygons, points, and equations.
@@ -128,7 +131,7 @@ Upload the graphic assets in this order:
 | Small promo tile | `assets/small-promo-440x280.png` |
 | Marquee promo tile | `assets/marquee-1400x560.png` |
 
-The screenshots are opaque 1280x800 PNGs captured from the v1.15.0 standard
+The screenshots are opaque 1280x800 PNGs captured from the v1.16.0 standard
 edition. The small and marquee promotional images are opaque 24-bit PNGs at
 the exact dashboard dimensions. Do not upload the older reference screenshots
 that show Settings, because they depict the GitHub edition with DesModder.
@@ -153,13 +156,13 @@ be presented as parts of this one purpose.
 **activeTab**
 
 ```text
-Desmos+ needs temporary access to the active tab after the user opens the extension so a requested graph export, graph import, SVG import, or audio conversion can read or update the current supported Desmos calculator. It does not use activeTab for background browsing surveillance.
+Desmos+ needs temporary access to the active tab after the user opens the extension so a requested graph export, graph import, SVG import, audio conversion, or in-page graph overlay can run on that tab. It does not use activeTab for background browsing surveillance.
 ```
 
 **scripting**
 
 ```text
-Desmos+ injects packaged functions into the active supported Desmos page to call the calculator's getState, setState, and expression APIs for user-requested graph, SVG, and audio operations. No remotely downloaded script is executed.
+Desmos+ injects packaged functions into an active supported calculator to call its getState, setState, and expression APIs for user-requested graph, SVG, and audio operations. On an unrelated website it can inject the packaged graph-overlay interface after the user selects Show graph on this page. No remotely downloaded script is executed with extension privileges.
 ```
 
 ### Remote Code
@@ -170,9 +173,11 @@ Select:
 No, I am not using remote code.
 ```
 
-All executable extension logic, including DesAudify, FFT, and Flame Wrap code,
-is inside the submitted package. The installed Web Store extension does not
-download or execute remote code.
+All executable extension logic, including the overlay, DesAudify, FFT, and
+Flame Wrap code, is inside the submitted package. The optional graph window and
+overlay display the documented DesmosPlus calculator as a separate cross-origin
+web page without extension API access; no remote script is imported into or
+executed by the extension.
 
 ### Data Types
 
@@ -255,8 +260,8 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.15.0 Web Store edition:** Graph, SVG, and DesAudify only, with the
-  narrowest required permissions and no DesModder or WakaTime code.
+- **v1.16.0 Web Store edition:** Graph, pop-out, SVG, and DesAudify only, with
+  the narrowest required permissions and no DesModder or WakaTime code.
 - **Older GitHub editions:** v1.11.0 through v1.14.1 include DesModder. A future
   current-version DesModder build must be published as a clearly separate
   download.

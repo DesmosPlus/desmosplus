@@ -16,6 +16,7 @@ or maintained by Desmos Studio PBC.
 - [Screenshots](#screenshots)
 - [Installation](#installation)
 - [Supported Calculators](#supported-calculators)
+- [Graph Pop-Out](#graph-pop-out)
 - [Graph Transfer](#graph-transfer)
 - [SVG Import](#svg-import)
 - [DesAudify Audio Import](#desaudify-audio-import)
@@ -43,7 +44,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.15.0 (latest)** | **No** | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.15.0/DesmosPlus-Extension-v1.15.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.15.0) |
+| **v1.16.0 (latest)** | **No** | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.16.0/DesmosPlus-Extension-v1.16.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.16.0) |
+| v1.15.0 | No | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.15.0/DesmosPlus-Extension-v1.15.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.15.0) |
 | v1.14.1 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.14.1/DesmosPlus-Extension-v1.14.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.14.1) |
 | v1.14.0 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.14.0/DesmosPlus-Extension-v1.14.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.14.0) |
 | v1.13.0 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.13.0/DesmosPlus-Extension-v1.13.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.13.0) |
@@ -76,7 +78,7 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.15.0 keeps the Graph, SVG, and DesAudify tabs
+DesModder Settings tab. Version 1.16.0 keeps the Graph, SVG, and DesAudify tabs
 but does not include Settings or DesModder.
 
 | 1. Graph transfer | 2. SVG import |
@@ -150,6 +152,26 @@ routes:
 
 The **SVG** section supports 2D Graphing and Geometry. The **DesAudify** section
 supports 2D Graphing.
+
+The hosted DesmosPlus 2D calculator at
+`https://desmosplus.pages.dev/2dcalculator` is also recognized as a supported
+graph page.
+
+## Graph Pop-Out
+
+When DesmosPlus is opened on a website that is not a supported calculator, the
+popup offers two options:
+
+- **Open graph window** opens the hosted DesmosPlus 2D calculator in a separate
+  1200x800 browser window.
+- **Show graph on this page** places the calculator in an isolated overlay on
+  the current website. Use its close button or press Escape to remove it.
+
+Open DesmosPlus again from the separate graph window to use Graph, SVG, and
+DesAudify tools on that calculator. Browser-protected pages and websites with
+restrictive frame policies may block the in-page overlay; use the separate
+window on those pages. Neither option adds a background process or extension
+permission.
 
 ## Graph Transfer
 

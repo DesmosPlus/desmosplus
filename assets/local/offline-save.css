@@ -5,6 +5,11 @@
   --desmosplus-font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+html,
+body {
+  background: #fff;
+}
+
 #desmosplus-shell,
 #desmosplus-shell *,
 #local-save-panel,

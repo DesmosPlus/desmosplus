@@ -21,12 +21,17 @@
   var settingsSummary = document.getElementById("desaudify-settings-summary");
   var maxWarning = document.getElementById("desaudify-max-warning");
   var desaudifyProjectLink = document.getElementById("desaudify-project-link");
+  var tabsNode = document.querySelector(".tabs");
+  var popoutPanel = document.getElementById("popout-panel");
+  var popoutButton = document.getElementById("open-popout");
+  var overlayButton = document.getElementById("open-overlay");
   var nameInput = document.getElementById("graph-name");
   var categoryInput = document.getElementById("graph-category");
   var statusNode = document.getElementById("status");
   var availability = { graph: false, svg: false, desaudify: false };
   var busy = false;
   var audioAction = "import";
+  var POPOUT_URL = "https://desmosplus.pages.dev/2dcalculator";
   var MAX_MODE_CONFIRMATION =
     "MAX is not an originally supported mode for DesAudify. It removes " +
     "DesmosPlus safety limits and may exhaust CPU or RAM, freeze or crash the " +
@@ -36,6 +41,8 @@
   function productFromUrl(value) {
     var url = new URL(value);
     var path = url.pathname.toLowerCase();
+    if (path.indexOf("/2dcalculator") === 0) return "2dcalculator";
+    if (path.indexOf("/3dcalculator") === 0) return "3dcalculator";
     if (path.indexOf("/3d") === 0) return "3dcalculator";
     if (path.indexOf("/geometry") === 0) return "geometry";
     if (path.indexOf("/notebook") === 0) return "notebook";
@@ -44,6 +51,17 @@
     if (path.indexOf("/scientific") === 0) return "scientific";
     if (path.indexOf("/calculator") === 0) return "2dcalculator";
     return "";
+  }
+
+  function supportedCalculatorHost(url) {
+    var hostname = url.hostname.toLowerCase();
+    return (
+      hostname === "desmos.com" ||
+      hostname.endsWith(".desmos.com") ||
+      hostname === "desmosplus.pages.dev" ||
+      hostname === "localhost" ||
+      hostname === "127.0.0.1"
+    );
   }
 
   function safeName(value, fallback) {
@@ -382,10 +400,59 @@
   async function inspectPage() {
     var tab = await activeTab();
     var url = tab && tab.url ? new URL(tab.url) : null;
-    var isDesmos = url && (url.hostname === "desmos.com" || url.hostname.endsWith(".desmos.com"));
-    var product = isDesmos ? productFromUrl(url.href) : "";
+    var product = url && supportedCalculatorHost(url) ? productFromUrl(url.href) : "";
     if (!tab || !product) throw new Error("Open a supported Desmos calculator.");
     return { tab: tab, product: product };
+  }
+
+  function showPopoutState() {
+    tabsNode.hidden = true;
+    document.querySelectorAll("[data-panel]").forEach(function (panel) {
+      panel.hidden = true;
+    });
+    popoutPanel.hidden = false;
+    desaudifyProjectLink.hidden = true;
+    updateFlameEffects({ view: "graph", menuOpen: false, maxActive: false });
+    setStatus("Choose where to open the graph.");
+  }
+
+  async function openGraphPopout() {
+    popoutButton.disabled = true;
+    setStatus("Opening graph pop-out...");
+    try {
+      await chrome.windows.create({
+        url: POPOUT_URL,
+        type: "popup",
+        width: 1200,
+        height: 800,
+        focused: true,
+      });
+      popoutButton.disabled = false;
+      setStatus("Graph pop-out opened.");
+    } catch (error) {
+      popoutButton.disabled = false;
+      setStatus(error.message || String(error));
+    }
+  }
+
+  async function openGraphOverlay() {
+    overlayButton.disabled = true;
+    setStatus("Opening graph on this page...");
+    try {
+      var tab = await activeTab();
+      if (!tab || typeof tab.id !== "number") throw new Error("The active tab is unavailable.");
+      var results = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ["graph-overlay.js"],
+      });
+      var result = results[0] && results[0].result;
+      if (!result || result.state !== "opened") throw new Error("The graph overlay did not open.");
+      setStatus("Graph opened on this page.");
+    } catch (error) {
+      setStatus("This page blocks in-page tools. Use Open graph window.");
+    } finally {
+      overlayButton.disabled = false;
+    }
   }
 
   async function injectDesAudify(page) {
@@ -672,7 +739,7 @@
       availability.desaudify = page.product === "2dcalculator";
       setStatus("Ready.");
     } catch (error) {
-      setStatus(error.message || String(error));
+      showPopoutState();
     }
     updateAvailability();
   }
@@ -683,6 +750,8 @@
     });
   });
   exportButton.addEventListener("click", exportGraph);
+  popoutButton.addEventListener("click", openGraphPopout);
+  overlayButton.addEventListener("click", openGraphOverlay);
   importButton.addEventListener("click", function () {
     importFile.click();
   });

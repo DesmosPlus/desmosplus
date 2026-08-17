@@ -212,6 +212,10 @@ button:focus-visible {
   color: #fff;
 }
 
+.tabs[hidden] {
+  display: none;
+}
+
 section {
   display: grid;
   min-height: 132px;
@@ -222,6 +226,10 @@ section {
 
 section[hidden] {
   display: none;
+}
+
+.popout-panel p {
+  margin: 0;
 }
 
 .popup-menu {
