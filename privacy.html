@@ -21,7 +21,7 @@
       <h1>Desmos+ Extension Privacy Policy</h1>
       <p><strong>Effective date:</strong> August 16, 2026<br><strong>Last updated:</strong> August 16, 2026</p>
 
-      <p>This policy applies to the Desmos+ edition distributed through the Chrome Web Store. It explains how the extension handles information. Desmos+ is designed so its graph transfer, dark mode, SVG conversion, and audio conversion features run locally in the browser. The developer does not operate a server that receives those files or graph contents.</p>
+      <p>This policy applies to the Desmos+ edition distributed through the Chrome Web Store. It explains how the extension handles information. Desmos+ is designed so its graph transfer, autosave, dark mode, SVG conversion, and audio conversion features run locally in the browser. The developer does not operate a server that receives those files or graph contents.</p>
 
       <h2>Information Handled</h2>
 
@@ -31,8 +31,8 @@
       <h3>Files selected by the user</h3>
       <p>Desmos+ processes graph files, SVG files, audio files, and DesAudify schema files that the user explicitly selects. Processing occurs locally in browser memory. Generated graph files and shard ZIPs are downloaded only when the user requests them.</p>
 
-      <h3>Extension preference</h3>
-      <p>Desmos+ stores one local on/off preference for dark mode. The preference is not sent to the developer and can be removed by turning dark mode off, clearing the extension's stored data, or uninstalling the extension.</p>
+      <h3>Extension preferences</h3>
+      <p>Desmos+ stores local on/off preferences for dark mode and autosave. These preferences are not sent to the developer and can be removed by turning the features off, clearing the extension's stored data, or uninstalling the extension.</p>
 
       <h2>How Information Is Used</h2>
       <ul>
@@ -40,14 +40,15 @@
         <li>To convert selected SVG and audio files into editable Desmos content.</li>
         <li>To create user-requested downloads.</li>
         <li>To apply the user's dark-mode preference on supported Desmos pages.</li>
+        <li>To request periodic saves on eligible official Desmos graphs when the user enables autosave.</li>
       </ul>
 
       <h2>Collection, Sharing, and Sale</h2>
       <p>Desmos+ does not send graph state, selected files, extension usage analytics, or personal information to the Desmos+ developer. The developer does not sell user information, use it for advertising, or share it with data brokers.</p>
-      <p>Opening external links or using the official Desmos website can cause the browser to communicate with those services under their own policies. Desmos+ does not initiate a transfer of graph state or selected files to a third-party service.</p>
+      <p>Opening external links or using the official Desmos website can cause the browser to communicate with those services under their own policies. Desmos+ does not send graph state or selected files to the Desmos+ developer or an independent DesmosPlus service. When autosave requests Desmos's native save action, the official Desmos website may store that graph in the signed-in Desmos account under Desmos's own privacy policy.</p>
 
       <h2>Storage and Deletion</h2>
-      <p>Selected files and conversion data are normally retained only in browser memory for the active operation. User-requested downloads remain wherever the user saves them. The Chrome Web Store edition does not retain graph, SVG, audio, or schema contents in extension storage. It retains only the dark-mode preference described above.</p>
+      <p>Selected files and conversion data are normally retained only in browser memory for the active operation. User-requested downloads remain wherever the user saves them. The Chrome Web Store edition does not retain graph, SVG, audio, or schema contents in extension storage. It retains only the dark-mode and autosave preferences described above.</p>
 
       <h2>Permissions</h2>
       <table>
@@ -57,8 +58,8 @@
         <tbody>
           <tr><td><code>activeTab</code></td><td>Temporarily accesses the current tab after the user opens Desmos+ so a requested graph, SVG, or audio action can run.</td></tr>
           <tr><td><code>scripting</code></td><td>Runs packaged Desmos+ code in the active supported calculator to read or update calculator state.</td></tr>
-          <tr><td><code>storage</code></td><td>Stores the local dark-mode on/off preference.</td></tr>
-          <tr><td>Desmos site access</td><td>Applies packaged dark-mode styles on official Desmos and hosted DesmosPlus pages when the user enables the feature.</td></tr>
+          <tr><td><code>storage</code></td><td>Stores the local dark-mode and autosave on/off preferences.</td></tr>
+          <tr><td>Desmos site access</td><td>Applies packaged dark-mode files on supported pages and runs the opt-in autosave timer on saved official 2D graphs.</td></tr>
         </tbody>
       </table>
 

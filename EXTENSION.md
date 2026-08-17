@@ -2,8 +2,9 @@
 
 The DesmosPlus browser extension transfers complete graph state between the
 official Desmos calculators and DesmosPlus. It also converts static SVG artwork
-and audio files into editable Desmos equations. Processing happens locally in
-the browser.
+and audio files into editable Desmos equations, adds a dark theme, and can
+periodically save signed-in Desmos graphs. Processing happens locally in the
+browser.
 
 DesmosPlus is an independent project. It is not affiliated with, endorsed by,
 or maintained by Desmos Studio PBC.
@@ -17,6 +18,7 @@ or maintained by Desmos Studio PBC.
 - [Installation](#installation)
 - [Supported Calculators](#supported-calculators)
 - [Graph Pop-Out](#graph-pop-out)
+- [Autosave](#autosave)
 - [Graph Transfer](#graph-transfer)
 - [SVG Import](#svg-import)
 - [DesAudify Audio Import](#desaudify-audio-import)
@@ -44,7 +46,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.17.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.17.0/DesmosPlus-Extension-v1.17.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.17.0) |
+| **v1.18.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.18.0/DesmosPlus-Extension-v1.18.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.18.0) |
+| v1.17.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.17.0/DesmosPlus-Extension-v1.17.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.17.0) |
 | v1.16.2 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.16.2/DesmosPlus-Extension-v1.16.2.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.16.2) |
 | v1.16.1 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.16.1/DesmosPlus-Extension-v1.16.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.16.1) |
 | v1.16.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.16.0/DesmosPlus-Extension-v1.16.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.16.0) |
@@ -81,8 +84,8 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.17.0 has a Settings tab for dark mode, but it
-does not include DesModder.
+DesModder Settings tab. Version 1.18.0 uses Settings for dark mode and autosave,
+but it does not include DesModder.
 
 | 1. Graph transfer | 2. SVG import |
 | --- | --- |
@@ -190,6 +193,19 @@ Dark mode uses packaged CSS and does not download a theme or send the setting
 anywhere. Turning it off removes the DesmosPlus theme flag and restores the
 page's normal appearance.
 
+## Autosave
+
+Open **Settings** and switch **Autosave** on to request a save every 60 seconds.
+Autosave is off by default and applies only to saved official Desmos 2D graphs
+opened while signed in. Unsaved calculator pages, signed-out sessions, and
+graphs whose Save control is already disabled are skipped.
+
+The setting takes effect immediately and remains selected after a browser
+restart. DesmosPlus sends the normal platform save shortcut to the page; it does
+not inspect credentials or retain graph contents in extension storage. Desmos's
+native save may store the graph in the signed-in Desmos account under Desmos's
+own privacy policy.
+
 ## Graph Transfer
 
 ### Export from Desmos
@@ -211,8 +227,8 @@ regressions, viewport settings, and supported animation state are preserved.
 4. Review the imported graph.
 5. Use Desmos **Save** when the graph should remain in the Desmos account.
 
-Import replaces the active calculator state. It does not automatically save or
-publish the graph and does not access Desmos account APIs.
+Import replaces the active calculator state. It is not saved or published unless
+the user saves it or Autosave is enabled on an existing signed-in graph.
 
 ### Import into the Local Site
 
@@ -346,8 +362,8 @@ python desaudify_cli.py input.mp3 output
 | --- | --- |
 | `activeTab` | Grants temporary access to the current tab after the user opens the extension. |
 | `scripting` | Injects packaged code that reads or writes `window.Calc` or `window.Notebook` in the active page. |
-| `storage` | Stores the local dark-mode on/off preference. |
-| Desmos site access | Runs the packaged dark-mode stylesheet and toggle listener only on official Desmos and hosted DesmosPlus pages. |
+| `storage` | Stores the local dark-mode and autosave on/off preferences. |
+| Desmos site access | Runs the packaged dark-mode files on supported pages and the autosave timer on saved official 2D graphs. |
 
 Selected graph, SVG, schema, and audio files are processed locally and are not
 uploaded by DesmosPlus. Graph transfer, SVG conversion, and DesAudify run only
@@ -388,8 +404,9 @@ reopen the extension popup afterward.
 
 ### A Graph Imports but Is Not Saved
 
-Injection changes only the current calculator state. Select Desmos **Save** to
-store it in the account or graph library.
+Injection changes only the current calculator state. Select Desmos **Save**, or
+enable Autosave after opening an existing signed-in graph, to store it in the
+account or graph library.
 
 ### Audio Conversion Is Slow
 
@@ -414,6 +431,7 @@ node --check extension/desaudify-export.js
 node --check extension/desaudify-page.js
 node --check extension/flame-effects.js
 node --check extension/dark-mode.js
+node --check extension/autosave.js
 node --check extension/popup.js
 node --check extension/vendor/flame-wrap.js
 node -e 'JSON.parse(require("fs").readFileSync("extension/manifest.json", "utf8"))'
@@ -441,6 +459,7 @@ The extension's main files are:
 | `extension/popup.js` | Active-tab detection and graph transfer orchestration |
 | `extension/dark-mode.js` | Stored dark-mode preference and live page toggle |
 | `extension/dark-mode.css` | Page-scoped Desmos dark theme |
+| `extension/autosave.js` | Opt-in 60-second save timer for saved official 2D graphs |
 | `extension/flame-effects.js` | DesAudify MAX Flame Wrap lifecycle and colors |
 | `extension/vendor/flame-wrap.js` | Pinned Canvas UI Flame Wrap WebGL engine |
 | `extension/svg-import.js` | Static SVG validation and equation conversion |

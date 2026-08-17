@@ -402,6 +402,11 @@ h2 {
   border-bottom: 1px solid #000;
 }
 
+.setting-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
 .setting-copy {
   display: grid;
   gap: 4px;

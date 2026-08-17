@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.17.0.zip` |
-| SHA-256 | `55e86ad3c2c17d2619c29699aaac062f75a1e307c15c51608b53d82268c7332e` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.18.0.zip` |
+| SHA-256 | `fa387692fe5dbc89c124f96e713da04895901ff5e57aa35833f06472f4cdefe7` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,9 +27,9 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.17.0, which excludes
+> contain the GitHub DesModder integration. Use v1.18.0, which excludes
 > DesModder, its injection settings, background loader, WakaTime access, and
-> related permissions. The v1.17.0 Settings tab controls only dark mode.
+> related permissions. The v1.18.0 Settings tab controls dark mode and autosave.
 
 ## Account Setup
 
@@ -50,7 +50,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.17.0.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.18.0.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
@@ -77,7 +77,7 @@ dashboard. Any package change requires a higher manifest version and a new ZIP.
 Paste this as plain text:
 
 ```text
-Desmos+ adds graph transfer, SVG conversion, and audio creation tools directly to supported Desmos calculators.
+Desmos+ adds graph transfer, autosave, SVG conversion, and audio creation tools directly to supported Desmos calculators.
 
 KEY FEATURES
 
@@ -92,6 +92,9 @@ Open a separate DesmosPlus 2D calculator window or use a movable, resizable in-p
 
 • Toggleable dark mode
 Apply a locally stored dark theme to supported official Desmos and hosted DesmosPlus pages, then switch back instantly.
+
+• Optional autosave
+Request a save every 60 seconds on eligible saved, signed-in Desmos 2D graphs. Autosave is off by default and can be disabled instantly.
 
 • SVG-to-equation conversion
 Convert static SVG artwork into editable Desmos polygons, points, and equations.
@@ -148,7 +151,7 @@ not reveal private graphs, files, or account data.
 ### Single Purpose
 
 ```text
-Enhance supported Desmos calculators with graph transfer, local SVG and audio conversion, and an optional dark theme.
+Enhance supported Desmos calculators with graph transfer, optional autosave, local SVG and audio conversion, and an optional dark theme.
 ```
 
 All listed features operate on supported Desmos calculator content and should
@@ -171,13 +174,13 @@ Desmos+ injects packaged functions into an active supported calculator to call i
 **storage**
 
 ```text
-Desmos+ stores one local Boolean preference recording whether the user enabled dark mode. It does not store graph, SVG, audio, schema, browsing-history, account, or analytics data in extension storage.
+Desmos+ stores two local Boolean preferences recording whether the user enabled dark mode and autosave. It does not store graph, SVG, audio, schema, browsing-history, account, or analytics data in extension storage.
 ```
 
 **Host access**
 
 ```text
-Desmos+ runs its packaged dark-mode stylesheet and preference listener only on official Desmos pages and the hosted DesmosPlus calculator. This access is required so the user's saved dark-mode choice applies on page load and can be removed immediately when disabled. It is not used to monitor unrelated websites or transmit page content.
+Desmos+ runs its packaged dark-mode files only on official Desmos pages and the hosted DesmosPlus calculator. It also runs a packaged autosave timer only on official saved 2D calculator URLs when the user enables autosave. Autosave requests Desmos's native save shortcut; any resulting account storage is performed by the official Desmos site. This access does not monitor unrelated websites or send page content to the Desmos+ developer.
 ```
 
 ### Remote Code
@@ -242,6 +245,7 @@ several calculator-specific sections. No account credentials are required.
 4. In SVG, select Import SVG as equations and choose a small static SVG. Confirm that a named folder of editable equations is added.
 5. In DesAudify, use a short browser-decodable audio file and Auto mode. Confirm that conversion finishes and equations are injected. MAX mode is intentionally resource intensive and is not required for review.
 6. Open Settings and enable Dark mode. Confirm that the calculator becomes dark, reload the page, and confirm the preference remains active. Disable it and confirm the normal appearance returns.
+7. While signed in, open a previously saved 2D graph, enable Autosave in Settings, edit the graph, and wait 60 seconds. Confirm Desmos saves it. Disable Autosave and confirm no further automatic save is requested. Autosave does not run on the new unsaved calculator page.
 ```
 
 ## Final Submission Checklist
@@ -256,6 +260,7 @@ several calculator-specific sections. No account credentials are required.
 - [ ] SVG import tested.
 - [ ] DesAudify Auto tested with a short non-private audio file.
 - [ ] Dark mode tested on, off, and after a page reload.
+- [ ] Autosave tested on a saved signed-in graph and confirmed inactive after disabling.
 - [ ] Listing description matches actual behavior.
 - [ ] Icon, at least one screenshot, and small promotional tile uploaded.
 - [ ] Category set to Education and language set to English.
@@ -277,8 +282,8 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.17.0 Web Store edition:** Graph, pop-out, dark mode, SVG, and DesAudify,
-  with no DesModder or WakaTime code.
+- **v1.18.0 Web Store edition:** Graph, pop-out, autosave, dark mode, SVG, and
+  DesAudify, with no DesModder or WakaTime code.
 - **Older GitHub editions:** v1.11.0 through v1.14.1 include DesModder. A future
   current-version DesModder build must be published as a clearly separate
   download.

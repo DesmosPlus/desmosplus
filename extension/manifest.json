@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Desmos+",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "description": "Transfer graphs, make songs in Desmos, convert SVGs into Desmos graphs, and so much more!",
   "permissions": ["activeTab", "scripting", "storage"],
   "content_scripts": [
@@ -14,6 +14,14 @@
       "css": ["dark-mode.css"],
       "js": ["dark-mode.js"],
       "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://desmos.com/calculator/*",
+        "https://*.desmos.com/calculator/*"
+      ],
+      "js": ["autosave.js"],
+      "run_at": "document_idle"
     }
   ],
   "icons": {

@@ -10,6 +10,15 @@ import {
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const extension = path.join(root, "extension");
+const archiveTimestamp = new Date("2000-01-01T00:00:00Z");
+
+function normalizeArchiveTimestamps(directory) {
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const child = path.join(directory, entry.name);
+    if (entry.isDirectory()) normalizeArchiveTimestamps(child);
+    fs.utimesSync(child, archiveTimestamp, archiveTimestamp);
+  }
+}
 
 const manifest = JSON.parse(
   fs.readFileSync(path.join(extension, "manifest.json"), "utf8"),
@@ -26,14 +35,28 @@ const allowedPermissions = new Set(["activeTab", "scripting", "storage"]);
 if (manifest.permissions.some((permission) => !allowedPermissions.has(permission))) {
   throw new Error("Web Store package contains an unexpected permission.");
 }
-const darkModeScripts = manifest.content_scripts || [];
+const expectedContentScripts = [
+  {
+    matches: [
+      "https://desmos.com/*",
+      "https://*.desmos.com/*",
+      "https://desmosplus.pages.dev/*",
+    ],
+    css: ["dark-mode.css"],
+    js: ["dark-mode.js"],
+    run_at: "document_start",
+  },
+  {
+    matches: [
+      "https://desmos.com/calculator/*",
+      "https://*.desmos.com/calculator/*",
+    ],
+    js: ["autosave.js"],
+    run_at: "document_idle",
+  },
+];
 if (
-  darkModeScripts.length !== 1 ||
-  darkModeScripts[0].js?.join(",") !== "dark-mode.js" ||
-  darkModeScripts[0].css?.join(",") !== "dark-mode.css" ||
-  darkModeScripts[0].matches.some(
-    (match) => !/^https:\/\/(?:\*\.)?(?:desmos\.com|desmosplus\.pages\.dev)\/\*$/.test(match),
-  )
+  JSON.stringify(manifest.content_scripts) !== JSON.stringify(expectedContentScripts)
 ) {
   throw new Error("Web Store package contains an unexpected content script.");
 }
@@ -49,6 +72,7 @@ const staging = fs.mkdtempSync(path.join(os.tmpdir(), "desmosplus-extension-"));
 try {
   fs.cpSync(extension, staging, { recursive: true });
   watermarkExtensionDirectory(staging, manifest.version);
+  normalizeArchiveTimestamps(staging);
   execFileSync(
     "zip",
     [

@@ -29,12 +29,15 @@
   var categoryInput = document.getElementById("graph-category");
   var darkModeToggle = document.getElementById("dark-mode-toggle");
   var darkModeState = document.getElementById("dark-mode-state");
+  var autosaveToggle = document.getElementById("autosave-toggle");
+  var autosaveState = document.getElementById("autosave-state");
   var statusNode = document.getElementById("status");
   var availability = { graph: false, svg: false, desaudify: false };
   var busy = false;
   var audioAction = "import";
   var POPOUT_URL = "https://desmosplus.pages.dev/2dcalculator";
   var DARK_MODE_KEY = "desmosPlusDarkModeEnabled";
+  var AUTOSAVE_KEY = "desmosPlusAutosaveEnabled";
   var MAX_MODE_CONFIRMATION =
     "MAX is not an originally supported mode for DesAudify. It removes " +
     "DesmosPlus safety limits and may exhaust CPU or RAM, freeze or crash the " +
@@ -174,9 +177,38 @@
       setStatus(enabled ? "Dark mode enabled." : "Dark mode disabled.");
     } catch (error) {
       showDarkModeState(!enabled);
-      setStatus("Dark mode could not be changed.");
+      setStatus("Reload DesmosPlus, then reopen this popup.");
     } finally {
       darkModeToggle.disabled = false;
+    }
+  }
+
+  function showAutosaveState(enabled) {
+    autosaveToggle.checked = enabled;
+    autosaveState.textContent = enabled ? "Every 60 seconds" : "Off";
+  }
+
+  async function loadAutosaveSetting() {
+    var stored = await chrome.storage.local.get(AUTOSAVE_KEY);
+    showAutosaveState(stored[AUTOSAVE_KEY] === true);
+  }
+
+  async function saveAutosaveSetting() {
+    var enabled = autosaveToggle.checked;
+    autosaveToggle.disabled = true;
+    try {
+      await chrome.storage.local.set({ [AUTOSAVE_KEY]: enabled });
+      showAutosaveState(enabled);
+      setStatus(
+        enabled
+          ? "Autosave enabled for saved Desmos graphs."
+          : "Autosave disabled.",
+      );
+    } catch (error) {
+      showAutosaveState(!enabled);
+      setStatus("Reload DesmosPlus, then reopen this popup.");
+    } finally {
+      autosaveToggle.disabled = false;
     }
   }
 
@@ -831,12 +863,18 @@
   });
   customSettings.addEventListener("input", updateConversionSettings);
   darkModeToggle.addEventListener("change", saveDarkModeSetting);
+  autosaveToggle.addEventListener("change", saveAutosaveSetting);
 
   setupModeMenu();
   selectView("graph");
   updateConversionSettings();
   loadDarkModeSetting().catch(function () {
     showDarkModeState(false);
+    setStatus("Reload DesmosPlus, then reopen this popup.");
+  });
+  loadAutosaveSetting().catch(function () {
+    showAutosaveState(false);
+    setStatus("Reload DesmosPlus, then reopen this popup.");
   });
   initialize();
 })();

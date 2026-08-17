@@ -46,7 +46,8 @@ or official Desmos graphs and load DesAudify audio-resynthesis equations.
 - Seven calculators behind one consistent DesmosPlus shell.
 - Local New, Save, Library, category, open, edit, and delete workflows.
 - Browser-local persistence with no application database.
-- [Chrome MV3 extension](EXTENSION.md) for graph transfer, SVG conversion, and audio import.
+- [Chrome MV3 extension](EXTENSION.md) for graph transfer, autosave, dark mode,
+  SVG conversion, and audio import.
 - Static SVG import for local Desmos 2D and Geometry graphs.
 - Manual DesAudify player and schema import on the local 2D calculator.
 - Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.
@@ -162,7 +163,7 @@ the same `http://127.0.0.1:8765` address.
 
 Installation, graph transfer, the movable and resizable unsupported-site graph
 pop-out and minimized icon, toggleable dark mode, SVG conversion, DesAudify
-audio import, permissions, troubleshooting, and extension development are documented in
+audio import, opt-in autosave, permissions, troubleshooting, and extension development are documented in
 [`EXTENSION.md`](EXTENSION.md).
 
 Every future extension version must publish the standard edition without
