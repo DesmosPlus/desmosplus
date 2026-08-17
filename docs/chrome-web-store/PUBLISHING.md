@@ -75,7 +75,7 @@ dashboard. Any package change requires a higher manifest version and a new ZIP.
 Paste this as plain text:
 
 ```text
-Desmos+ adds powerful graph transfer, SVG conversion, audio creation, and customization tools directly to Desmos.
+Desmos+ adds graph transfer, SVG conversion, and audio creation tools directly to supported Desmos calculators.
 
 KEY FEATURES
 
@@ -100,7 +100,11 @@ Transfer graphs across supported Desmos Graphing, Geometry, 3D, Notebook, Matrix
 • Local processing
 Graph, SVG, and audio processing runs locally in your browser.
 
-Desmos+ is an independent open-source project. It is not affiliated with, endorsed by, or maintained by Desmos Studio PBC.
+PRIVACY
+
+Desmos+ does not sell user data, run advertising analytics, or send selected graph, SVG, or audio files to the developer. Its executable code is included in the extension package and is not downloaded remotely at runtime.
+
+Desmos+ is an independent project. It is not affiliated with, endorsed by, or maintained by Desmos Studio PBC.
 ```
 
 Do not describe Desmos+ as an official Desmos extension. Keep the listing free
