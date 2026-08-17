@@ -2,9 +2,9 @@
 
 The DesmosPlus browser extension transfers complete graph state between the
 official Desmos calculators and DesmosPlus. It also converts static SVG artwork
-and audio files into editable Desmos equations, adds a dark theme, and can
-periodically save signed-in Desmos graphs. Processing happens locally in the
-browser.
+and audio files into editable Desmos equations, adds reusable function
+definitions, adds a dark theme, and can periodically save signed-in Desmos
+graphs. Processing happens locally in the browser.
 
 DesmosPlus is an independent project. It is not affiliated with, endorsed by,
 or maintained by Desmos Studio PBC.
@@ -21,6 +21,7 @@ or maintained by Desmos Studio PBC.
 - [Autosave](#autosave)
 - [Graph Transfer](#graph-transfer)
 - [SVG Import](#svg-import)
+- [Function Library](#function-library)
 - [DesAudify Audio Import](#desaudify-audio-import)
   - [Downloadable Shard ZIP](#downloadable-shard-zip)
 - [Permissions and Privacy](#permissions-and-privacy)
@@ -46,7 +47,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.18.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.18.0/DesmosPlus-Extension-v1.18.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.18.0) |
+| **v1.19.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.19.0/DesmosPlus-Extension-v1.19.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.19.0) |
+| v1.18.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.18.0/DesmosPlus-Extension-v1.18.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.18.0) |
 | v1.17.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.17.0/DesmosPlus-Extension-v1.17.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.17.0) |
 | v1.16.2 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.16.2/DesmosPlus-Extension-v1.16.2.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.16.2) |
 | v1.16.1 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.16.1/DesmosPlus-Extension-v1.16.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.16.1) |
@@ -84,7 +86,7 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.18.0 uses Settings for dark mode and autosave,
+DesModder Settings tab. Version 1.19.0 uses Settings for dark mode and autosave,
 but it does not include DesModder.
 
 | 1. Graph transfer | 2. SVG import |
@@ -254,6 +256,23 @@ embedded HTML, document entities, and embedded or external resources. Text,
 raster images, clipping, filters, patterns, and reusable symbols must be
 converted to paths before import.
 
+## Function Library
+
+1. Open the official Desmos 2D Graphing Calculator.
+2. Open DesmosPlus and select **Functions**.
+3. Select **Add library**.
+4. Open the new **Desmos+ Functions** folder to inspect or edit the definitions.
+
+The library adds normalized sinc, clamp, linear interpolation, fractional part,
+hypotenuse, logistic, sign, decimal-place rounding, versine, haversine, range
+wrapping, and the inverse hyperbolic sine, cosine, and tangent. Calls use Desmos
+subscript names, such as `f_{sinc}(x)` and `f_{clamp}(x,a,b)`.
+
+Every definition is an ordinary Desmos expression. It is saved and exported as
+part of the graph, can be edited directly, and does not require a runtime patch.
+Selecting **Add library** again replaces the DesmosPlus-owned definitions with
+the current set. **Remove library** deletes only that folder and its contents.
+
 ## DesAudify Audio Import
 
 [DesAudify](https://github.com/whitecaplol/DesAudify) represents audio with
@@ -361,13 +380,13 @@ python desaudify_cli.py input.mp3 output
 | Permission | Purpose |
 | --- | --- |
 | `activeTab` | Grants temporary access to the current tab after the user opens the extension. |
-| `scripting` | Injects packaged code that reads or writes `window.Calc` or `window.Notebook` in the active page. |
+| `scripting` | Injects packaged code that reads or writes calculator state for graph, SVG, function-library, and audio actions. |
 | `storage` | Stores the local dark-mode and autosave on/off preferences. |
 | Desmos site access | Runs the packaged dark-mode files on supported pages and the autosave timer on saved official 2D graphs. |
 
 Selected graph, SVG, schema, and audio files are processed locally and are not
-uploaded by DesmosPlus. Graph transfer, SVG conversion, and DesAudify run only
-after a user action.
+uploaded by DesmosPlus. Graph transfer, SVG conversion, function-library
+changes, and DesAudify run only after a user action.
 
 ## File Formats and Limits
 

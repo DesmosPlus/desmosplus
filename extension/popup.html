@@ -43,6 +43,7 @@
       <nav class="tabs" role="tablist" aria-label="Extension tools">
         <button type="button" role="tab" aria-selected="true" aria-controls="graph-panel" data-view="graph">Graph</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="svg-panel" data-view="svg">SVG</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="functions-panel" data-view="functions">Functions</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="desaudify-panel" data-view="desaudify">DesAudify</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="settings-panel" data-view="settings">Settings</button>
       </nav>
@@ -72,6 +73,33 @@
 
       <section id="svg-panel" role="tabpanel" data-panel="svg" hidden>
         <button id="import-svg" type="button" title="Convert a static SVG into editable Desmos equations" data-action disabled>Import SVG as equations</button>
+      </section>
+
+      <section id="functions-panel" role="tabpanel" data-panel="functions" hidden>
+        <div class="function-library-copy">
+          <h2>Function library</h2>
+          <p>Add editable definitions that Desmos does not provide natively.</p>
+        </div>
+        <div class="function-list" aria-label="Included functions">
+          <code>f_sinc(x)</code>
+          <code>f_clamp(x,a,b)</code>
+          <code>f_lerp(a,b,t)</code>
+          <code>f_frac(x)</code>
+          <code>f_hypot(x,y)</code>
+          <code>f_logistic(x)</code>
+          <code>f_sign(x)</code>
+          <code>f_roundto(x,n)</code>
+          <code>f_versin(x)</code>
+          <code>f_haversin(x)</code>
+          <code>f_asinh(x)</code>
+          <code>f_acosh(x)</code>
+          <code>f_atanh(x)</code>
+          <code>f_wrap(x,a,b)</code>
+        </div>
+        <div class="actions two-columns">
+          <button id="functions-add" type="button" data-action disabled>Add library</button>
+          <button id="functions-remove" type="button" data-action disabled>Remove library</button>
+        </div>
       </section>
 
       <section id="desaudify-panel" role="tabpanel" data-panel="desaudify" hidden>

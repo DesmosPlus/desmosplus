@@ -195,7 +195,7 @@ button:focus-visible {
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 6px;
   padding-bottom: 14px;
   border-bottom: 1px solid #000;
@@ -380,6 +380,32 @@ section[hidden] {
 .field {
   display: grid;
   gap: 6px;
+}
+
+.function-library-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.function-library-copy p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.function-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+}
+
+.function-list code {
+  min-width: 0;
+  padding: 6px 8px;
+  overflow-wrap: anywhere;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  font-size: 11px;
 }
 
 label {

@@ -4,6 +4,8 @@
   var exportButton = document.getElementById("export");
   var importButton = document.getElementById("import");
   var svgButton = document.getElementById("import-svg");
+  var functionsAddButton = document.getElementById("functions-add");
+  var functionsRemoveButton = document.getElementById("functions-remove");
   var audioImportButton = document.getElementById("desaudify-audio");
   var audioDownloadButton = document.getElementById("desaudify-download");
   var templateButton = document.getElementById("desaudify-template");
@@ -32,12 +34,30 @@
   var autosaveToggle = document.getElementById("autosave-toggle");
   var autosaveState = document.getElementById("autosave-state");
   var statusNode = document.getElementById("status");
-  var availability = { graph: false, svg: false, desaudify: false };
+  var availability = { graph: false, svg: false, functions: false, desaudify: false };
   var busy = false;
   var audioAction = "import";
   var POPOUT_URL = "https://desmosplus.pages.dev/2dcalculator";
   var DARK_MODE_KEY = "desmosPlusDarkModeEnabled";
   var AUTOSAVE_KEY = "desmosPlusAutosaveEnabled";
+  var FUNCTION_FOLDER_ID = "desmosplus-functions-folder";
+  var FUNCTION_ID_PREFIX = "desmosplus-function-";
+  var FUNCTION_DEFINITIONS = [
+    { id: "sinc", latex: "f_{sinc}\\left(x\\right)=\\left\\{x=0:1,\\frac{\\sin\\left(\\pi x\\right)}{\\pi x}\\right\\}" },
+    { id: "clamp", latex: "f_{clamp}\\left(x,a,b\\right)=\\min\\left(\\max\\left(x,a\\right),b\\right)" },
+    { id: "lerp", latex: "f_{lerp}\\left(a,b,t\\right)=a+\\left(b-a\\right)t" },
+    { id: "frac", latex: "f_{frac}\\left(x\\right)=x-\\floor\\left(x\\right)" },
+    { id: "hypot", latex: "f_{hypot}\\left(x,y\\right)=\\sqrt{x^2+y^2}" },
+    { id: "logistic", latex: "f_{logistic}\\left(x\\right)=\\frac{1}{1+e^{-x}}" },
+    { id: "sign", latex: "f_{sign}\\left(x\\right)=\\left\\{x>0:1,x<0:-1,0\\right\\}" },
+    { id: "roundto", latex: "f_{roundto}\\left(x,n\\right)=\\frac{\\round\\left(10^n x\\right)}{10^n}" },
+    { id: "versin", latex: "f_{versin}\\left(x\\right)=1-\\cos\\left(x\\right)" },
+    { id: "haversin", latex: "f_{haversin}\\left(x\\right)=\\sin^2\\left(\\frac{x}{2}\\right)" },
+    { id: "asinh", latex: "f_{asinh}\\left(x\\right)=\\ln\\left(x+\\sqrt{x^2+1}\\right)" },
+    { id: "acosh", latex: "f_{acosh}\\left(x\\right)=\\ln\\left(x+\\sqrt{x^2-1}\\right)" },
+    { id: "atanh", latex: "f_{atanh}\\left(x\\right)=\\frac{1}{2}\\ln\\left(\\frac{1+x}{1-x}\\right)" },
+    { id: "wrap", latex: "f_{wrap}\\left(x,a,b\\right)=a+\\mod\\left(x-a,b-a\\right)" },
+  ];
   var MAX_MODE_CONFIRMATION =
     "MAX is not an originally supported mode for DesAudify. It removes " +
     "DesmosPlus safety limits and may exhaust CPU or RAM, freeze or crash the " +
@@ -124,6 +144,52 @@
     Array.prototype.push.apply(state.expressions.list, expressions);
     calculator.setState(state, { allowUndo: true });
     return true;
+  }
+
+  function updateFunctionLibrary(action, definitions, folderId, idPrefix) {
+    var calculator = window.Calc;
+    if (
+      !calculator ||
+      typeof calculator.getState !== "function" ||
+      typeof calculator.setState !== "function"
+    ) {
+      throw new Error("Graphing Calculator API is not ready.");
+    }
+    var state = calculator.getState();
+    if (!state.expressions || !Array.isArray(state.expressions.list)) {
+      throw new Error("This calculator cannot accept function definitions.");
+    }
+    var removed = 0;
+    state.expressions.list = state.expressions.list.filter(function (item) {
+      var owned =
+        String(item.id || "") === folderId ||
+        String(item.id || "").indexOf(idPrefix) === 0 ||
+        String(item.folderId || "") === folderId;
+      if (owned) removed += 1;
+      return !owned;
+    });
+    if (action === "add") {
+      state.expressions.list.push({
+        id: folderId,
+        type: "folder",
+        title: "Desmos+ Functions",
+        collapsed: true,
+      });
+      definitions.forEach(function (definition) {
+        state.expressions.list.push({
+          id: idPrefix + definition.id,
+          folderId: folderId,
+          type: "expression",
+          color: "#2d70b3",
+          hidden: true,
+          latex: definition.latex,
+        });
+      });
+    } else if (action !== "remove") {
+      throw new Error("Unknown function library action.");
+    }
+    calculator.setState(state, { allowUndo: true });
+    return { added: action === "add" ? definitions.length : 0, removed: removed };
   }
 
   function callDesAudify(action, args) {
@@ -216,6 +282,8 @@
     exportButton.disabled = busy || !availability.graph;
     importButton.disabled = busy || !availability.graph;
     svgButton.disabled = busy || !availability.svg;
+    functionsAddButton.disabled = busy || !availability.functions;
+    functionsRemoveButton.disabled = busy || !availability.functions;
     audioImportButton.disabled = busy || !availability.desaudify;
     audioDownloadButton.disabled = busy;
     templateButton.disabled = busy || !availability.desaudify;
@@ -642,6 +710,36 @@
     }
   }
 
+  async function applyFunctionLibrary(action) {
+    setBusy(true);
+    setStatus(action === "add" ? "Adding function library..." : "Removing function library...");
+    try {
+      var page = await inspectPage();
+      if (page.product !== "2dcalculator") throw new Error("Open Desmos 2D Calculator.");
+      var results = await chrome.scripting.executeScript({
+        target: { tabId: page.tab.id },
+        world: "MAIN",
+        func: updateFunctionLibrary,
+        args: [action, FUNCTION_DEFINITIONS, FUNCTION_FOLDER_ID, FUNCTION_ID_PREFIX],
+      });
+      var result = results[0] && results[0].result;
+      if (!result || typeof result.added !== "number") {
+        throw new Error("Desmos rejected the function library.");
+      }
+      setStatus(
+        action === "add"
+          ? "Added " + result.added + " editable function definitions."
+          : result.removed > 0
+            ? "Removed the Desmos+ function library."
+            : "The Desmos+ function library was not in this graph.",
+      );
+    } catch (error) {
+      setStatus(error.message || String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function loadDesAudifyTemplate() {
     if (!window.confirm("Replace the current graph with the DesAudify player?")) return;
     setBusy(true);
@@ -798,6 +896,7 @@
       var page = await inspectPage();
       availability.graph = true;
       availability.svg = DesmosPlusSvg.supportedProduct(page.product);
+      availability.functions = page.product === "2dcalculator";
       availability.desaudify = page.product === "2dcalculator";
       setStatus("Ready.");
     } catch (error) {
@@ -819,6 +918,12 @@
   });
   svgButton.addEventListener("click", function () {
     svgFile.click();
+  });
+  functionsAddButton.addEventListener("click", function () {
+    applyFunctionLibrary("add");
+  });
+  functionsRemoveButton.addEventListener("click", function () {
+    applyFunctionLibrary("remove");
   });
   templateButton.addEventListener("click", loadDesAudifyTemplate);
   audioImportButton.addEventListener("click", function () {

@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.18.0.zip` |
-| SHA-256 | `fa387692fe5dbc89c124f96e713da04895901ff5e57aa35833f06472f4cdefe7` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.19.0.zip` |
+| SHA-256 | `3154058de03dce76af3bcbc8965d529d1fbb5781d98cdf831787ce44db44409e` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,9 +27,9 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.18.0, which excludes
+> contain the GitHub DesModder integration. Use v1.19.0, which excludes
 > DesModder, its injection settings, background loader, WakaTime access, and
-> related permissions. The v1.18.0 Settings tab controls dark mode and autosave.
+> related permissions. The v1.19.0 Settings tab controls dark mode and autosave.
 
 ## Account Setup
 
@@ -50,7 +50,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.18.0.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.19.0.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
@@ -77,7 +77,7 @@ dashboard. Any package change requires a higher manifest version and a new ZIP.
 Paste this as plain text:
 
 ```text
-Desmos+ adds graph transfer, autosave, SVG conversion, and audio creation tools directly to supported Desmos calculators.
+Desmos+ adds graph transfer, reusable functions, autosave, SVG conversion, and audio creation tools directly to supported Desmos calculators.
 
 KEY FEATURES
 
@@ -98,6 +98,9 @@ Request a save every 60 seconds on eligible saved, signed-in Desmos 2D graphs. A
 
 • SVG-to-equation conversion
 Convert static SVG artwork into editable Desmos polygons, points, and equations.
+
+• Reusable function library
+Add editable definitions for normalized sinc, clamping, interpolation, inverse hyperbolic functions, and other helpers that Desmos does not provide natively.
 
 • DesAudify audio tools
 Turn audio files into playable Desmos graphs using automatic, high-quality, MAX, or fully custom conversion settings.
@@ -151,7 +154,7 @@ not reveal private graphs, files, or account data.
 ### Single Purpose
 
 ```text
-Enhance supported Desmos calculators with graph transfer, optional autosave, local SVG and audio conversion, and an optional dark theme.
+Enhance supported Desmos calculators with graph transfer, reusable equation-based functions, optional autosave, local SVG and audio conversion, and an optional dark theme.
 ```
 
 All listed features operate on supported Desmos calculator content and should
@@ -162,13 +165,13 @@ be presented as parts of this one purpose.
 **activeTab**
 
 ```text
-Desmos+ needs temporary access to the active tab after the user opens the extension so a requested graph export, graph import, SVG import, audio conversion, or in-page graph overlay can run on that tab. It does not use activeTab for background browsing surveillance.
+Desmos+ needs temporary access to the active tab after the user opens the extension so a requested graph export, graph import, SVG import, function-library change, audio conversion, or in-page graph overlay can run on that tab. It does not use activeTab for background browsing surveillance.
 ```
 
 **scripting**
 
 ```text
-Desmos+ injects packaged functions into an active supported calculator to call its getState, setState, and expression APIs for user-requested graph, SVG, and audio operations. On an unrelated website it can inject the packaged graph-overlay interface after the user selects Show graph on this page. No remotely downloaded script is executed with extension privileges.
+Desmos+ injects packaged functions into an active supported calculator to call its getState, setState, and expression APIs for user-requested graph, SVG, function-library, and audio operations. On an unrelated website it can inject the packaged graph-overlay interface after the user selects Show graph on this page. No remotely downloaded script is executed with extension privileges.
 ```
 
 **storage**
@@ -243,9 +246,10 @@ several calculator-specific sections. No account credentials are required.
 2. Open Desmos+. In Graph, enter a name and category, then select Export. Confirm that a .desmos file downloads.
 3. Select Import and choose that downloaded .desmos file. Confirm that the graph state loads.
 4. In SVG, select Import SVG as equations and choose a small static SVG. Confirm that a named folder of editable equations is added.
-5. In DesAudify, use a short browser-decodable audio file and Auto mode. Confirm that conversion finishes and equations are injected. MAX mode is intentionally resource intensive and is not required for review.
-6. Open Settings and enable Dark mode. Confirm that the calculator becomes dark, reload the page, and confirm the preference remains active. Disable it and confirm the normal appearance returns.
-7. While signed in, open a previously saved 2D graph, enable Autosave in Settings, edit the graph, and wait 60 seconds. Confirm Desmos saves it. Disable Autosave and confirm no further automatic save is requested. Autosave does not run on the new unsaved calculator page.
+5. In Functions, select Add library. Confirm that one Desmos+ Functions folder with editable definitions appears. Select Add library again and confirm there is still only one folder, then select Remove library.
+6. In DesAudify, use a short browser-decodable audio file and Auto mode. Confirm that conversion finishes and equations are injected. MAX mode is intentionally resource intensive and is not required for review.
+7. Open Settings and enable Dark mode. Confirm that the calculator becomes dark, reload the page, and confirm the preference remains active. Disable it and confirm the normal appearance returns.
+8. While signed in, open a previously saved 2D graph, enable Autosave in Settings, edit the graph, and wait 60 seconds. Confirm Desmos saves it. Disable Autosave and confirm no further automatic save is requested. Autosave does not run on the new unsaved calculator page.
 ```
 
 ## Final Submission Checklist
@@ -258,6 +262,7 @@ several calculator-specific sections. No account credentials are required.
 - [ ] ZIP tested through **Load unpacked** using the matching source version.
 - [ ] Graph export and import tested on a supported Desmos page.
 - [ ] SVG import tested.
+- [ ] Function library add, replace, call, and removal tested.
 - [ ] DesAudify Auto tested with a short non-private audio file.
 - [ ] Dark mode tested on, off, and after a page reload.
 - [ ] Autosave tested on a saved signed-in graph and confirmed inactive after disabling.
@@ -282,8 +287,8 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.18.0 Web Store edition:** Graph, pop-out, autosave, dark mode, SVG, and
-  DesAudify, with no DesModder or WakaTime code.
+- **v1.19.0 Web Store edition:** Graph, pop-out, functions, autosave, dark mode,
+  SVG, and DesAudify, with no DesModder or WakaTime code.
 - **Older GitHub editions:** v1.11.0 through v1.14.1 include DesModder. A future
   current-version DesModder build must be published as a clearly separate
   download.
