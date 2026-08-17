@@ -16,19 +16,26 @@ const manifest = JSON.parse(
 );
 const forbiddenManifestKeys = [
   "background",
-  "content_scripts",
   "host_permissions",
   "web_accessible_resources",
 ];
 if (forbiddenManifestKeys.some((key) => key in manifest)) {
   throw new Error("Web Store package contains a DesModder-related manifest key.");
 }
+const allowedPermissions = new Set(["activeTab", "scripting", "storage"]);
+if (manifest.permissions.some((permission) => !allowedPermissions.has(permission))) {
+  throw new Error("Web Store package contains an unexpected permission.");
+}
+const darkModeScripts = manifest.content_scripts || [];
 if (
-  manifest.permissions.some((permission) =>
-    ["storage", "declarativeNetRequest"].includes(permission),
+  darkModeScripts.length !== 1 ||
+  darkModeScripts[0].js?.join(",") !== "dark-mode.js" ||
+  darkModeScripts[0].css?.join(",") !== "dark-mode.css" ||
+  darkModeScripts[0].matches.some(
+    (match) => !/^https:\/\/(?:\*\.)?(?:desmos\.com|desmosplus\.pages\.dev)\/\*$/.test(match),
   )
 ) {
-  throw new Error("Web Store package contains a DesModder-related permission.");
+  throw new Error("Web Store package contains an unexpected content script.");
 }
 const output = path.resolve(
   process.argv[2] ||

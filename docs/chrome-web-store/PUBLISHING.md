@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.16.2.zip` |
-| SHA-256 | `1ae2902db1fc9a19aa359d12544446e4350efd57e63c83175395ffaee50d1937` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.17.0.zip` |
+| SHA-256 | `55e86ad3c2c17d2619c29699aaac062f75a1e307c15c51608b53d82268c7332e` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,9 +27,9 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.16.2, which excludes
-> DesModder, its Settings tab, background loader, WakaTime access, and related
-> permissions.
+> contain the GitHub DesModder integration. Use v1.17.0, which excludes
+> DesModder, its injection settings, background loader, WakaTime access, and
+> related permissions. The v1.17.0 Settings tab controls only dark mode.
 
 ## Account Setup
 
@@ -50,7 +50,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.16.2.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.17.0.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
@@ -89,6 +89,9 @@ Save graphs in a portable format and reopen them later in Desmos+ or a compatibl
 
 • Graph pop-out
 Open a separate DesmosPlus 2D calculator window or use a movable, resizable in-page calculator that minimizes into a floating DesmosPlus icon.
+
+• Toggleable dark mode
+Apply a locally stored dark theme to supported official Desmos and hosted DesmosPlus pages, then switch back instantly.
 
 • SVG-to-equation conversion
 Convert static SVG artwork into editable Desmos polygons, points, and equations.
@@ -145,7 +148,7 @@ not reveal private graphs, files, or account data.
 ### Single Purpose
 
 ```text
-Enhance supported Desmos calculators with user-requested graph transfer and local SVG and audio conversion.
+Enhance supported Desmos calculators with graph transfer, local SVG and audio conversion, and an optional dark theme.
 ```
 
 All listed features operate on supported Desmos calculator content and should
@@ -163,6 +166,18 @@ Desmos+ needs temporary access to the active tab after the user opens the extens
 
 ```text
 Desmos+ injects packaged functions into an active supported calculator to call its getState, setState, and expression APIs for user-requested graph, SVG, and audio operations. On an unrelated website it can inject the packaged graph-overlay interface after the user selects Show graph on this page. No remotely downloaded script is executed with extension privileges.
+```
+
+**storage**
+
+```text
+Desmos+ stores one local Boolean preference recording whether the user enabled dark mode. It does not store graph, SVG, audio, schema, browsing-history, account, or analytics data in extension storage.
+```
+
+**Host access**
+
+```text
+Desmos+ runs its packaged dark-mode stylesheet and preference listener only on official Desmos pages and the hosted DesmosPlus calculator. This access is required so the user's saved dark-mode choice applies on page load and can be removed immediately when disabled. It is not used to monitor unrelated websites or transmit page content.
 ```
 
 ### Remote Code
@@ -226,6 +241,7 @@ several calculator-specific sections. No account credentials are required.
 3. Select Import and choose that downloaded .desmos file. Confirm that the graph state loads.
 4. In SVG, select Import SVG as equations and choose a small static SVG. Confirm that a named folder of editable equations is added.
 5. In DesAudify, use a short browser-decodable audio file and Auto mode. Confirm that conversion finishes and equations are injected. MAX mode is intentionally resource intensive and is not required for review.
+6. Open Settings and enable Dark mode. Confirm that the calculator becomes dark, reload the page, and confirm the preference remains active. Disable it and confirm the normal appearance returns.
 ```
 
 ## Final Submission Checklist
@@ -239,6 +255,7 @@ several calculator-specific sections. No account credentials are required.
 - [ ] Graph export and import tested on a supported Desmos page.
 - [ ] SVG import tested.
 - [ ] DesAudify Auto tested with a short non-private audio file.
+- [ ] Dark mode tested on, off, and after a page reload.
 - [ ] Listing description matches actual behavior.
 - [ ] Icon, at least one screenshot, and small promotional tile uploaded.
 - [ ] Category set to Education and language set to English.
@@ -260,8 +277,8 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.16.2 Web Store edition:** Graph, pop-out, SVG, and DesAudify only, with
-  the narrowest required permissions and no DesModder or WakaTime code.
+- **v1.17.0 Web Store edition:** Graph, pop-out, dark mode, SVG, and DesAudify,
+  with no DesModder or WakaTime code.
 - **Older GitHub editions:** v1.11.0 through v1.14.1 include DesModder. A future
   current-version DesModder build must be published as a clearly separate
   download.

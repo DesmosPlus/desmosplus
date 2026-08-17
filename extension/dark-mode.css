@@ -1,0 +1,196 @@
+/*
+ * DesmosPlus dark mode.
+ * Independently implemented using the page-scoped CSS approach demonstrated by
+ * Dark Desmos: https://github.com/finnmprice/DarkDesmos
+ */
+
+html[data-desmosplus-dark-mode="true"] {
+  color-scheme: dark;
+  background: #111;
+}
+
+html[data-desmosplus-dark-mode="true"] body,
+html[data-desmosplus-dark-mode="true"] .dcg-main,
+html[data-desmosplus-dark-mode="true"] .dcg-container,
+html[data-desmosplus-dark-mode="true"] .dcg-sliding-interior,
+html[data-desmosplus-dark-mode="true"] .dcg-loading-div-container,
+html[data-desmosplus-dark-mode="true"] .dcg-loading-background-div,
+html[data-desmosplus-dark-mode="true"] .dcg-calc-basic-main,
+html[data-desmosplus-dark-mode="true"] .dcg-calc-basic-main-wrapper,
+html[data-desmosplus-dark-mode="true"] .dcg-basic-list-placeholder,
+html[data-desmosplus-dark-mode="true"] .dcg-frontpage-landing-section,
+html[data-desmosplus-dark-mode="true"] .dcg-printable-page-container,
+html[data-desmosplus-dark-mode="true"] .teacher-page,
+html[data-desmosplus-dark-mode="true"] .teacher-page-content,
+html[data-desmosplus-dark-mode="true"] .student-page {
+  background: #111 !important;
+  color: #eee !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-header,
+html[data-desmosplus-dark-mode="true"] .dcg-header-desktop,
+html[data-desmosplus-dark-mode="true"] .dcg-main-header-container,
+html[data-desmosplus-dark-mode="true"] .dcg-exppanel,
+html[data-desmosplus-dark-mode="true"] .dcg-expression-top-bar,
+html[data-desmosplus-dark-mode="true"] .dcg-expressionitem,
+html[data-desmosplus-dark-mode="true"] .dcg-tab,
+html[data-desmosplus-dark-mode="true"] .dcg-basic-list-container,
+html[data-desmosplus-dark-mode="true"] .dcg-basic-expression,
+html[data-desmosplus-dark-mode="true"] .dcg-keypad-control-bar,
+html[data-desmosplus-dark-mode="true"] .dcg-basic-keypad-container,
+html[data-desmosplus-dark-mode="true"] .dcg-keys-background,
+html[data-desmosplus-dark-mode="true"] .dcg-keypad-btn,
+html[data-desmosplus-dark-mode="true"] .dcg-popover-interior,
+html[data-desmosplus-dark-mode="true"] .dcg-options-menu,
+html[data-desmosplus-dark-mode="true"] .dcg-dropdown-popover__interior,
+html[data-desmosplus-dark-mode="true"] .dcg-header-link-dropdown,
+html[data-desmosplus-dark-mode="true"] .dcg-language-picker-dropdown,
+html[data-desmosplus-dark-mode="true"] .dcg-shared-modal-contents-wrapper,
+html[data-desmosplus-dark-mode="true"] .dcg-state-modals,
+html[data-desmosplus-dark-mode="true"] .dcg-toast,
+html[data-desmosplus-dark-mode="true"] .dcg-footer-main-content-container,
+html[data-desmosplus-dark-mode="true"] .dcg-classroom-card,
+html[data-desmosplus-dark-mode="true"] .dcg-frontpage-landing-classroom__card,
+html[data-desmosplus-dark-mode="true"] .teacher-page-top-bar-interior,
+html[data-desmosplus-dark-mode="true"] .logged-out-cta-cards,
+html[data-desmosplus-dark-mode="true"] .landing-page-content-container,
+html[data-desmosplus-dark-mode="true"] .footer-link-container,
+html[data-desmosplus-dark-mode="true"] .modal-contents {
+  background: #1f1f1f !important;
+  color: #eee !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-graph-inner {
+  background: #171717 !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-grapher-3d {
+  background: #000 !important;
+  filter: invert(1);
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-grapher-3d .dcg-pillbox,
+html[data-desmosplus-dark-mode="true"] .dcg-grapher-3d .dcg-options-menu,
+html[data-desmosplus-dark-mode="true"] .dcg-grapher-3d .dcg-popover {
+  filter: invert(1);
+}
+
+html[data-desmosplus-dark-mode="true"] .grid-line,
+html[data-desmosplus-dark-mode="true"] .dcg-grid-line {
+  stroke: #343434 !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .x-axis-line,
+html[data-desmosplus-dark-mode="true"] .y-axis-line,
+html[data-desmosplus-dark-mode="true"] .dcg-axis-line {
+  stroke: #888 !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-label,
+html[data-desmosplus-dark-mode="true"] .dcg-title,
+html[data-desmosplus-dark-mode="true"] .dcg-section-heading,
+html[data-desmosplus-dark-mode="true"] .dcg-popover-title,
+html[data-desmosplus-dark-mode="true"] .dcg-expression-footer-title,
+html[data-desmosplus-dark-mode="true"] .dcg-keypad-btn-content,
+html[data-desmosplus-dark-mode="true"] .dcg-keypad-control-btn,
+html[data-desmosplus-dark-mode="true"] .dcg-mq-root-block,
+html[data-desmosplus-dark-mode="true"] .dcg-mq-root-block span,
+html[data-desmosplus-dark-mode="true"] .dcg-mq-root-block var,
+html[data-desmosplus-dark-mode="true"] .dcg-msg,
+html[data-desmosplus-dark-mode="true"] .dcg-powered-by,
+html[data-desmosplus-dark-mode="true"] .dcg-unstyled-heading,
+html[data-desmosplus-dark-mode="true"] .dcg-p-tag,
+html[data-desmosplus-dark-mode="true"] .dcg-header-link-title-container,
+html[data-desmosplus-dark-mode="true"] .dcg-header-link-dropdown a,
+html[data-desmosplus-dark-mode="true"] .dcg-dropdown-link,
+html[data-desmosplus-dark-mode="true"] .dcg-log-in,
+html[data-desmosplus-dark-mode="true"] .dcg-user-name,
+html[data-desmosplus-dark-mode="true"] .dcg-email,
+html[data-desmosplus-dark-mode="true"] .detail-text,
+html[data-desmosplus-dark-mode="true"] .footer-link:hover {
+  color: #eee !important;
+  text-shadow: none !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-desmos-svg-logo,
+html[data-desmosplus-dark-mode="true"] .dcg-icon-desmos {
+  filter: brightness(0) invert(1);
+}
+
+html[data-desmosplus-dark-mode="true"] input,
+html[data-desmosplus-dark-mode="true"] textarea,
+html[data-desmosplus-dark-mode="true"] select,
+html[data-desmosplus-dark-mode="true"] .dcg-dropdown-input,
+html[data-desmosplus-dark-mode="true"] .dcg-smart-textarea,
+html[data-desmosplus-dark-mode="true"] .dcg-text-input__input,
+html[data-desmosplus-dark-mode="true"] .dcg-shared-input-blue-outline,
+html[data-desmosplus-dark-mode="true"] .dcg-braille-input {
+  border-color: #666 !important;
+  background: #181818 !important;
+  color: #eee !important;
+}
+
+html[data-desmosplus-dark-mode="true"] input::placeholder,
+html[data-desmosplus-dark-mode="true"] textarea::placeholder,
+html[data-desmosplus-dark-mode="true"] .dcg-text-input__input::placeholder {
+  color: #aaa !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-btn-light-gray,
+html[data-desmosplus-dark-mode="true"] .dcg-btn-flat-gray,
+html[data-desmosplus-dark-mode="true"] .dcg-basic-tool-btn,
+html[data-desmosplus-dark-mode="true"] .dcg-segmented-control-btn,
+html[data-desmosplus-dark-mode="true"] .dcg-keypad-control-btn:not(.dcg-selected),
+html[data-desmosplus-dark-mode="true"] button:not(.dcg-btn-blue):not(.dcg-btn-primary):not(.dcg-btn-red) {
+  border-color: #666 !important;
+  background: #242424 !important;
+  color: #eee !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-selected,
+html[data-desmosplus-dark-mode="true"] .dcg-depressed,
+html[data-desmosplus-dark-mode="true"] .dcg-segmented-control-btn.dcg-selected,
+html[data-desmosplus-dark-mode="true"] .dcg-keypad-control-btn.dcg-selected {
+  background: #343434 !important;
+  color: #fff !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-expressionitem,
+html[data-desmosplus-dark-mode="true"] .dcg-tab,
+html[data-desmosplus-dark-mode="true"] .dcg-basic-expression,
+html[data-desmosplus-dark-mode="true"] .dcg-cell,
+html[data-desmosplus-dark-mode="true"] .dcg-table-container,
+html[data-desmosplus-dark-mode="true"] .dcg-keypad-btn {
+  border-color: #555 !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-mq-editable-field:not(.dcg-no-fadeout)::after,
+html[data-desmosplus-dark-mode="true"] .dcg-graphic {
+  background-image: linear-gradient(to right, transparent, #1f1f1f) !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-new-expression-fade {
+  background-image: linear-gradient(to top, #111, transparent 50%) !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-dropdown-popover.dcg-bottom .dcg-arrow {
+  border-bottom-color: #1f1f1f !important;
+}
+
+html[data-desmosplus-dark-mode="true"] .dcg-dropdown-popover.dcg-top .dcg-arrow {
+  border-top-color: #1f1f1f !important;
+}
+
+html[data-desmosplus-dark-mode="true"] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html[data-desmosplus-dark-mode="true"] ::-webkit-scrollbar-track {
+  background: #171717;
+}
+
+html[data-desmosplus-dark-mode="true"] ::-webkit-scrollbar-thumb {
+  border: 2px solid #171717;
+  background: #555;
+}

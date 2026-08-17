@@ -33,12 +33,13 @@ and DesAudify. It must not contain:
 - DesModder or WakaTime source, text, paths, or web-accessible resources.
 - A DesModder Settings tab or auto-injection controls.
 - A background worker or DesModder content script.
-- `storage`, `declarativeNetRequest`, Desmos host permissions, or WakaTime host
-  permissions.
+- `declarativeNetRequest` or WakaTime host permissions.
 
-Its manifest permissions are limited to `activeTab` and `scripting` unless a
-future user-facing standard feature is documented and approved for the Chrome
-Web Store edition.
+Its manifest permissions are limited to `activeTab`, `scripting`, and `storage`.
+The only standard-edition content script is the packaged dark-mode toggle, and
+its matches are limited to official Desmos and hosted DesmosPlus pages. Any
+future permission or content script requires a documented user-facing standard
+feature and updated Chrome Web Store disclosures.
 
 ### DesModder Edition
 
@@ -98,15 +99,17 @@ checks for the optional DesModder edition when it is published:
 5. Test SVG import on the 2D Graphing Calculator.
 6. Test DesAudify Auto import with a short non-private audio file.
 7. Open every popup tab and verify keyboard and pointer controls.
-8. Inspect every ZIP member list for nested roots, `.DS_Store`, `__MACOSX`, and
+8. Toggle dark mode on and off, reload an official Desmos calculator, and verify
+   that the saved state applies without remote requests.
+9. Inspect every ZIP member list for nested roots, `.DS_Store`, `__MACOSX`, and
    embedded ZIP files.
-9. Confirm `manifest.json` and `DESMOSPLUS-BUILD.txt` are at every ZIP root.
-10. Confirm first-party code is watermarked and third-party files are not.
-11. Scan the standard ZIP for `desmodder` and `wakatime`; it must return no
+10. Confirm `manifest.json` and `DESMOSPLUS-BUILD.txt` are at every ZIP root.
+11. Confirm first-party code is watermarked and third-party files are not.
+12. Scan the standard ZIP for `desmodder` and `wakatime`; it must return no
     filenames or packaged text.
-12. When built, verify the DesModder ZIP contains its loader, background
+13. When built, verify the DesModder ZIP contains its loader, background
     support, runtime, metadata, and license.
-13. Compute and record a SHA-256 checksum for every published ZIP.
+14. Compute and record a SHA-256 checksum for every published ZIP.
 
 MAX mode is intentionally resource intensive and does not need to be used for
 every release smoke test. Its menu, warning, and disabled-by-default behavior

@@ -21,7 +21,7 @@
       <h1>Desmos+ Extension Privacy Policy</h1>
       <p><strong>Effective date:</strong> August 16, 2026<br><strong>Last updated:</strong> August 16, 2026</p>
 
-      <p>This policy applies to the Desmos+ edition distributed through the Chrome Web Store. It explains how the extension handles information. Desmos+ is designed so its graph transfer, SVG conversion, and audio conversion features run locally in the browser. The developer does not operate a server that receives those files or graph contents.</p>
+      <p>This policy applies to the Desmos+ edition distributed through the Chrome Web Store. It explains how the extension handles information. Desmos+ is designed so its graph transfer, dark mode, SVG conversion, and audio conversion features run locally in the browser. The developer does not operate a server that receives those files or graph contents.</p>
 
       <h2>Information Handled</h2>
 
@@ -31,11 +31,15 @@
       <h3>Files selected by the user</h3>
       <p>Desmos+ processes graph files, SVG files, audio files, and DesAudify schema files that the user explicitly selects. Processing occurs locally in browser memory. Generated graph files and shard ZIPs are downloaded only when the user requests them.</p>
 
+      <h3>Extension preference</h3>
+      <p>Desmos+ stores one local on/off preference for dark mode. The preference is not sent to the developer and can be removed by turning dark mode off, clearing the extension's stored data, or uninstalling the extension.</p>
+
       <h2>How Information Is Used</h2>
       <ul>
         <li>To export and import Desmos graph state.</li>
         <li>To convert selected SVG and audio files into editable Desmos content.</li>
         <li>To create user-requested downloads.</li>
+        <li>To apply the user's dark-mode preference on supported Desmos pages.</li>
       </ul>
 
       <h2>Collection, Sharing, and Sale</h2>
@@ -43,7 +47,7 @@
       <p>Opening external links or using the official Desmos website can cause the browser to communicate with those services under their own policies. Desmos+ does not initiate a transfer of graph state or selected files to a third-party service.</p>
 
       <h2>Storage and Deletion</h2>
-      <p>Selected files and conversion data are normally retained only in browser memory for the active operation. User-requested downloads remain wherever the user saves them. The Chrome Web Store edition does not retain graph, SVG, audio, or schema contents in extension storage.</p>
+      <p>Selected files and conversion data are normally retained only in browser memory for the active operation. User-requested downloads remain wherever the user saves them. The Chrome Web Store edition does not retain graph, SVG, audio, or schema contents in extension storage. It retains only the dark-mode preference described above.</p>
 
       <h2>Permissions</h2>
       <table>
@@ -53,6 +57,8 @@
         <tbody>
           <tr><td><code>activeTab</code></td><td>Temporarily accesses the current tab after the user opens Desmos+ so a requested graph, SVG, or audio action can run.</td></tr>
           <tr><td><code>scripting</code></td><td>Runs packaged Desmos+ code in the active supported calculator to read or update calculator state.</td></tr>
+          <tr><td><code>storage</code></td><td>Stores the local dark-mode on/off preference.</td></tr>
+          <tr><td>Desmos site access</td><td>Applies packaged dark-mode styles on official Desmos and hosted DesmosPlus pages when the user enables the feature.</td></tr>
         </tbody>
       </table>
 
@@ -74,7 +80,7 @@
       <nav aria-label="Legal and support">
         <a href="/extension.html">Extension</a>
         <a href="/support.html">Support</a>
-        <a href="https://github.com/loleksyuk/desmosplus">Source</a>
+        <a href="https://github.com/DesmosPlus/desmosplus">Source</a>
       </nav>
     </footer>
   </body>

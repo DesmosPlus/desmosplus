@@ -44,6 +44,7 @@
         <button type="button" role="tab" aria-selected="true" aria-controls="graph-panel" data-view="graph">Graph</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="svg-panel" data-view="svg">SVG</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="desaudify-panel" data-view="desaudify">DesAudify</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="settings-panel" data-view="settings">Settings</button>
       </nav>
 
       <section id="popout-panel" class="popout-panel" hidden>
@@ -131,6 +132,20 @@
             <button id="desaudify-processing" type="button" data-action disabled>Import processing</button>
           </div>
         </details>
+      </section>
+
+      <section id="settings-panel" role="tabpanel" data-panel="settings" hidden>
+        <div class="setting-row">
+          <div class="setting-copy">
+            <h2>Dark mode</h2>
+            <p id="dark-mode-state">Off</p>
+          </div>
+          <label class="toggle" for="dark-mode-toggle">
+            <input id="dark-mode-toggle" type="checkbox" aria-describedby="dark-mode-state">
+            <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
+            <span class="sr-only">Dark mode</span>
+          </label>
+        </div>
       </section>
 
       <input id="import-file" type="file" accept=".desmos,.desmosplus.json,.json,application/json" hidden>

@@ -3,7 +3,7 @@ import path from "node:path";
 
 export const WATERMARK_MARKER = "DesmosPlus release watermark";
 
-const SOURCE_URL = "https://github.com/loleksyuk/desmosplus";
+const SOURCE_URL = "https://github.com/DesmosPlus/desmosplus";
 const SKIPPED_DIRECTORIES = new Set(["icons", "vendor"]);
 const CODE_EXTENSIONS = new Set([".css", ".html", ".js"]);
 
@@ -51,7 +51,7 @@ export function watermarkExtensionDirectory(directory, version) {
     [
       `DesmosPlus v${version}`,
       `Source: ${SOURCE_URL}`,
-      `Identifier: DESMOSPLUS:v${version}:loleksyuk/desmosplus`,
+      `Identifier: DESMOSPLUS:v${version}:DesmosPlus/desmosplus`,
       "",
       "DesmosPlus-owned HTML, CSS, and JavaScript in this package include a release watermark.",
       "Third-party files retain their original attribution and are not watermarked as DesmosPlus code.",

@@ -44,21 +44,22 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.16.2 (latest)** | **No** | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.16.2/DesmosPlus-Extension-v1.16.2.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.16.2) |
-| v1.16.1 | No | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.16.1/DesmosPlus-Extension-v1.16.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.16.1) |
-| v1.16.0 | No | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.16.0/DesmosPlus-Extension-v1.16.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.16.0) |
-| v1.15.0 | No | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.15.0/DesmosPlus-Extension-v1.15.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.15.0) |
-| v1.14.1 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.14.1/DesmosPlus-Extension-v1.14.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.14.1) |
-| v1.14.0 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.14.0/DesmosPlus-Extension-v1.14.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.14.0) |
-| v1.13.0 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.13.0/DesmosPlus-Extension-v1.13.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.13.0) |
-| v1.12.1 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.12.1/DesmosPlus-Extension-v1.12.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.12.1) |
-| v1.12.0 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.12.0/DesmosPlus-Extension-v1.12.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.12.0) |
-| v1.11.1 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.11.1/DesmosPlus-Extension-v1.11.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.11.1) |
-| v1.11.0 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.11.0/DesmosPlus-Extension-v1.11.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.11.0) |
-| v1.10.0 | No | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.10.0/DesmosPlus-Extension-v1.10.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.10.0) |
+| **v1.17.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.17.0/DesmosPlus-Extension-v1.17.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.17.0) |
+| v1.16.2 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.16.2/DesmosPlus-Extension-v1.16.2.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.16.2) |
+| v1.16.1 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.16.1/DesmosPlus-Extension-v1.16.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.16.1) |
+| v1.16.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.16.0/DesmosPlus-Extension-v1.16.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.16.0) |
+| v1.15.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.15.0/DesmosPlus-Extension-v1.15.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.15.0) |
+| v1.14.1 | Yes | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.14.1/DesmosPlus-Extension-v1.14.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.14.1) |
+| v1.14.0 | Yes | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.14.0/DesmosPlus-Extension-v1.14.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.14.0) |
+| v1.13.0 | Yes | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.13.0/DesmosPlus-Extension-v1.13.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.13.0) |
+| v1.12.1 | Yes | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.12.1/DesmosPlus-Extension-v1.12.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.12.1) |
+| v1.12.0 | Yes | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.12.0/DesmosPlus-Extension-v1.12.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.12.0) |
+| v1.11.1 | Yes | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.11.1/DesmosPlus-Extension-v1.11.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.11.1) |
+| v1.11.0 | Yes | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.11.0/DesmosPlus-Extension-v1.11.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.11.0) |
+| v1.10.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.10.0/DesmosPlus-Extension-v1.10.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.10.0) |
 
 The complete release history is available on the
-[GitHub Releases page](https://github.com/loleksyuk/desmosplus/releases).
+[GitHub Releases page](https://github.com/DesmosPlus/desmosplus/releases).
 
 ## Release Process
 
@@ -80,8 +81,8 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.16.2 keeps the Graph, SVG, and DesAudify tabs
-but does not include Settings or DesModder.
+DesModder Settings tab. Version 1.17.0 has a Settings tab for dark mode, but it
+does not include DesModder.
 
 | 1. Graph transfer | 2. SVG import |
 | --- | --- |
@@ -177,6 +178,17 @@ DesAudify tools on that calculator. Browser-protected pages and websites with
 restrictive frame policies may block the in-page overlay; use the separate
 window on those pages. Neither option adds a background process or extension
 permission.
+
+## Dark Mode
+
+Open **Settings** and switch **Dark mode** on or off. The preference is stored
+locally by the extension and applies immediately across open supported Desmos
+and hosted DesmosPlus pages. It remains selected after a reload or browser
+restart.
+
+Dark mode uses packaged CSS and does not download a theme or send the setting
+anywhere. Turning it off removes the DesmosPlus theme flag and restores the
+page's normal appearance.
 
 ## Graph Transfer
 
@@ -334,6 +346,8 @@ python desaudify_cli.py input.mp3 output
 | --- | --- |
 | `activeTab` | Grants temporary access to the current tab after the user opens the extension. |
 | `scripting` | Injects packaged code that reads or writes `window.Calc` or `window.Notebook` in the active page. |
+| `storage` | Stores the local dark-mode on/off preference. |
+| Desmos site access | Runs the packaged dark-mode stylesheet and toggle listener only on official Desmos and hosted DesmosPlus pages. |
 
 Selected graph, SVG, schema, and audio files are processed locally and are not
 uploaded by DesmosPlus. Graph transfer, SVG conversion, and DesAudify run only
@@ -399,6 +413,7 @@ node --check extension/desaudify-audio-worker.js
 node --check extension/desaudify-export.js
 node --check extension/desaudify-page.js
 node --check extension/flame-effects.js
+node --check extension/dark-mode.js
 node --check extension/popup.js
 node --check extension/vendor/flame-wrap.js
 node -e 'JSON.parse(require("fs").readFileSync("extension/manifest.json", "utf8"))'
@@ -424,6 +439,8 @@ The extension's main files are:
 | `extension/popup.html` | Popup structure and tool sections |
 | `extension/popup.css` | Popup styling and animations |
 | `extension/popup.js` | Active-tab detection and graph transfer orchestration |
+| `extension/dark-mode.js` | Stored dark-mode preference and live page toggle |
+| `extension/dark-mode.css` | Page-scoped Desmos dark theme |
 | `extension/flame-effects.js` | DesAudify MAX Flame Wrap lifecycle and colors |
 | `extension/vendor/flame-wrap.js` | Pinned Canvas UI Flame Wrap WebGL engine |
 | `extension/svg-import.js` | Static SVG validation and equation conversion |

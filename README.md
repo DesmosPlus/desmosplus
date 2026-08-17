@@ -78,7 +78,7 @@ or official Desmos graphs and load DesAudify audio-resynthesis equations.
 ## Quick Start
 
 ```sh
-git clone https://github.com/loleksyuk/desmosplus.git
+git clone https://github.com/DesmosPlus/desmosplus.git
 cd desmosplus
 node scripts/serve.mjs
 ```
@@ -161,8 +161,8 @@ the same `http://127.0.0.1:8765` address.
 ## Browser Extension
 
 Installation, graph transfer, the movable and resizable unsupported-site graph
-pop-out and minimized icon, SVG conversion, DesAudify audio import, permissions,
-troubleshooting, and extension development are documented in
+pop-out and minimized icon, toggleable dark mode, SVG conversion, DesAudify
+audio import, permissions, troubleshooting, and extension development are documented in
 [`EXTENSION.md`](EXTENSION.md).
 
 Every future extension version must publish the standard edition without
@@ -220,7 +220,7 @@ Use a Node.js host that can run the included server.
 
 ### Render
 
-1. Create a Web Service from `loleksyuk/desmosplus`.
+1. Create a Web Service from `DesmosPlus/desmosplus`.
 2. Select the Node runtime.
 3. Leave the build command empty.
 4. Set the start command to `node scripts/serve.mjs`.
@@ -228,7 +228,7 @@ Use a Node.js host that can run the included server.
 
 ### Railway
 
-1. Create a project from `loleksyuk/desmosplus`.
+1. Create a project from `DesmosPlus/desmosplus`.
 2. Set the start command to `node scripts/serve.mjs`.
 3. Generate a public domain.
 

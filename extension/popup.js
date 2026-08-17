@@ -27,11 +27,14 @@
   var overlayButton = document.getElementById("open-overlay");
   var nameInput = document.getElementById("graph-name");
   var categoryInput = document.getElementById("graph-category");
+  var darkModeToggle = document.getElementById("dark-mode-toggle");
+  var darkModeState = document.getElementById("dark-mode-state");
   var statusNode = document.getElementById("status");
   var availability = { graph: false, svg: false, desaudify: false };
   var busy = false;
   var audioAction = "import";
   var POPOUT_URL = "https://desmosplus.pages.dev/2dcalculator";
+  var DARK_MODE_KEY = "desmosPlusDarkModeEnabled";
   var MAX_MODE_CONFIRMATION =
     "MAX is not an originally supported mode for DesAudify. It removes " +
     "DesmosPlus safety limits and may exhaust CPU or RAM, freeze or crash the " +
@@ -150,6 +153,31 @@
 
   function setStatus(message) {
     statusNode.textContent = message;
+  }
+
+  function showDarkModeState(enabled) {
+    darkModeToggle.checked = enabled;
+    darkModeState.textContent = enabled ? "On" : "Off";
+  }
+
+  async function loadDarkModeSetting() {
+    var stored = await chrome.storage.local.get(DARK_MODE_KEY);
+    showDarkModeState(stored[DARK_MODE_KEY] === true);
+  }
+
+  async function saveDarkModeSetting() {
+    var enabled = darkModeToggle.checked;
+    darkModeToggle.disabled = true;
+    try {
+      await chrome.storage.local.set({ [DARK_MODE_KEY]: enabled });
+      showDarkModeState(enabled);
+      setStatus(enabled ? "Dark mode enabled." : "Dark mode disabled.");
+    } catch (error) {
+      showDarkModeState(!enabled);
+      setStatus("Dark mode could not be changed.");
+    } finally {
+      darkModeToggle.disabled = false;
+    }
   }
 
   function updateAvailability() {
@@ -802,9 +830,13 @@
     processingFile.value = "";
   });
   customSettings.addEventListener("input", updateConversionSettings);
+  darkModeToggle.addEventListener("change", saveDarkModeSetting);
 
   setupModeMenu();
   selectView("graph");
   updateConversionSettings();
+  loadDarkModeSetting().catch(function () {
+    showDarkModeState(false);
+  });
   initialize();
 })();
