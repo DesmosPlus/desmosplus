@@ -20,7 +20,7 @@ account-specific material.
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
-| Store screenshots | Pending recapture from the Web Store build |
+| Store screenshots | `local-assets/store-edition-screenshots/` (local, ignored by Git) |
 | Public extension page | `/extension.html` |
 | Public privacy policy | `/privacy.html` |
 | Public support page | `/support.html` |
@@ -113,17 +113,27 @@ testimonials.
 
 ## Graphic Assets
 
-Recapture up to five 1280x800 screenshots from v1.15.0. Do not upload the
-earlier screenshots that show Settings, because they do not match the official
-package.
+Upload the graphic assets in this order:
 
-Use `assets/small-promo-440x280.png` for the required small promotional image.
-Use `assets/marquee-1400x560.png` for the optional marquee image. The extension
-icon comes from the packaged `icons/icon-128.png`; the identical review copy is
-stored at `assets/icon-128.png`.
+| Dashboard field | File |
+| --- | --- |
+| Store icon | `assets/icon-128.png` |
+| Screenshot 1 | `local-assets/store-edition-screenshots/01-graph-transfer-1280x800.png` |
+| Screenshot 2 | `local-assets/store-edition-screenshots/02-svg-equations-1280x800.png` |
+| Screenshot 3 | `local-assets/store-edition-screenshots/03-desaudify-auto-1280x800.png` |
+| Screenshot 4 | `local-assets/store-edition-screenshots/04-desaudify-max-menu-1280x800.png` |
+| Screenshot 5 | `local-assets/store-edition-screenshots/05-desaudify-custom-1280x800.png` |
+| Small promo tile | `assets/small-promo-440x280.png` |
+| Marquee promo tile | `assets/marquee-1400x560.png` |
 
-A promotional YouTube video is optional. Add one only if it accurately shows
-the current version and does not reveal private graphs, files, or account data.
+The screenshots are opaque 1280x800 PNGs captured from the v1.15.0 standard
+edition. The small and marquee promotional images are opaque 24-bit PNGs at
+the exact dashboard dimensions. Do not upload the older reference screenshots
+that show Settings, because they depict the GitHub edition with DesModder.
+
+The global promotional YouTube video is optional. Leave it blank unless an
+accurate public demo of the current standard edition is available and it does
+not reveal private graphs, files, or account data.
 
 ## Privacy Practices
 
