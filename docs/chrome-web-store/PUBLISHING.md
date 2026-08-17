@@ -41,9 +41,9 @@ account-specific material.
    information in the dashboard.
 4. Deploy this repository to a stable public HTTPS origin before submission.
 5. Confirm these pages work without signing in:
-   - `https://YOUR-DOMAIN/extension.html`
-   - `https://YOUR-DOMAIN/privacy.html`
-   - `https://YOUR-DOMAIN/support.html`
+   - `https://desmosplus.pages.dev/extension`
+   - `https://desmosplus.pages.dev/privacy`
+   - `https://desmosplus.pages.dev/support`
 
 Only the account owner can complete payment, 2-Step Verification, contact-email
 verification, dashboard declarations, and the final **Submit for Review** action.
@@ -67,8 +67,10 @@ dashboard. Any package change requires a higher manifest version and a new ZIP.
 | Summary | From package: `Transfer graphs, make songs in Desmos, convert SVGs into Desmos graphs, and so much more!` |
 | Category | `Education` |
 | Language | `English` |
-| Homepage URL | `https://YOUR-DOMAIN/extension.html` |
-| Support URL | `https://YOUR-DOMAIN/support.html` |
+| Official URL | `None` |
+| Homepage URL | `https://desmosplus.pages.dev/extension` |
+| Support URL | `https://desmosplus.pages.dev/support` |
+| Mature content | `Off` |
 
 ### Detailed Description
 
@@ -191,7 +193,7 @@ is handled according to the Chrome Web Store User Data Policy.
 ### Privacy Policy URL
 
 ```text
-https://YOUR-DOMAIN/privacy.html
+https://desmosplus.pages.dev/privacy
 ```
 
 The deployed policy must match the submitted extension. Update both the policy
