@@ -160,8 +160,8 @@ the same `http://127.0.0.1:8765` address.
 
 ## Browser Extension
 
-Installation, graph transfer, the resizable unsupported-site graph pop-out and
-minimized icon, SVG conversion, DesAudify audio import, permissions,
+Installation, graph transfer, the movable and resizable unsupported-site graph
+pop-out and minimized icon, SVG conversion, DesAudify audio import, permissions,
 troubleshooting, and extension development are documented in
 [`EXTENSION.md`](EXTENSION.md).
 
