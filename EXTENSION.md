@@ -38,8 +38,8 @@ No package installation or build step is required.
 ## Downloads
 
 Published extension packages are listed newest first. Each ZIP extracts directly
-into a folder that can be selected with **Load unpacked**. The repository is
-private, so GitHub must be signed in with an account that has access.
+into a folder that can be selected with **Load unpacked**. The repository and
+release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
@@ -95,20 +95,19 @@ but does not include Settings or DesModder.
 
 ### Install a Release ZIP
 
-1. Sign in to GitHub with an account that can access the repository.
-2. Download the latest package from the [Downloads](#downloads) table.
-3. Create a permanent folder for the extension, such as
+1. Download the latest package from the [Downloads](#downloads) table.
+2. Create a permanent folder for the extension, such as
    `DesmosPlus Extension`.
-4. Extract the ZIP into that folder. `manifest.json` must be directly inside
+3. Extract the ZIP into that folder. `manifest.json` must be directly inside
    the selected folder, not inside another nested directory.
-5. Open the browser's extension manager:
+4. Open the browser's extension manager:
    - Chrome and Chromium: `chrome://extensions`
    - Edge: `edge://extensions`
    - Brave: `brave://extensions`
-6. Enable **Developer mode**.
-7. Select **Load unpacked** and choose the extracted extension folder.
-8. Pin **DesmosPlus** from the browser's extensions menu.
-9. Open a supported Desmos calculator and select the DesmosPlus toolbar icon.
+5. Enable **Developer mode**.
+6. Select **Load unpacked** and choose the extracted extension folder.
+7. Pin **DesmosPlus** from the browser's extensions menu.
+8. Open a supported Desmos calculator and select the DesmosPlus toolbar icon.
 
 Keep the extracted folder after installation. The browser loads the extension
 from that location and cannot use the ZIP directly.
