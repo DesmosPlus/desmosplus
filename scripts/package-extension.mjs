@@ -101,6 +101,12 @@ if (!members.includes("manifest.json")) {
 if (!members.includes("DESMOSPLUS-BUILD.txt")) {
   throw new Error("Packaged extension is missing its release watermark file.");
 }
+if (!members.includes("obj-import.js")) {
+  throw new Error("Packaged extension is missing the OBJ importer.");
+}
+if (!members.includes("DESLOADER-LICENSE")) {
+  throw new Error("Packaged extension is missing the DesLoader MIT license.");
+}
 if (members.some((member) => member.includes(".DS_Store") || member.endsWith(".zip"))) {
   throw new Error("Packaged extension contains excluded metadata or archives.");
 }

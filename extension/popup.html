@@ -43,6 +43,7 @@
       <nav class="tabs" role="tablist" aria-label="Extension tools">
         <button type="button" role="tab" aria-selected="true" aria-controls="graph-panel" data-view="graph">Graph</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="svg-panel" data-view="svg">SVG</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="three-d-panel" data-view="three-d">3D</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="functions-panel" data-view="functions">Functions</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="desaudify-panel" data-view="desaudify">DesAudify</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="settings-panel" data-view="settings">Settings</button>
@@ -73,6 +74,28 @@
 
       <section id="svg-panel" role="tabpanel" data-panel="svg" hidden>
         <button id="import-svg" type="button" title="Convert a static SVG into editable Desmos equations" data-action disabled>Import SVG as equations</button>
+      </section>
+
+      <section id="three-d-panel" role="tabpanel" data-panel="three-d" hidden>
+        <div class="function-library-copy">
+          <h2>OBJ import</h2>
+          <p>Convert a local OBJ model into editable Desmos 3D expressions.</p>
+        </div>
+        <input id="obj-mode" type="hidden" value="optimized">
+        <div class="segmented-control" role="group" aria-label="OBJ import mode">
+          <button type="button" data-obj-mode="direct" aria-pressed="false">Direct</button>
+          <button type="button" data-obj-mode="optimized" aria-pressed="true">Optimized</button>
+        </div>
+        <p id="obj-mode-summary" class="settings-summary">Indexed arrays, up to 50,000 triangles</p>
+        <button id="import-obj" type="button" data-action disabled>Import OBJ</button>
+        <div class="tool-divider">
+          <h2>Starter ticker</h2>
+          <p>Track elapsed time in seconds with a native Desmos ticker.</p>
+        </div>
+        <div class="actions two-columns">
+          <button id="ticker-add" type="button" data-action disabled>Add ticker</button>
+          <button id="ticker-remove" type="button" data-action disabled>Remove ticker</button>
+        </div>
       </section>
 
       <section id="functions-panel" role="tabpanel" data-panel="functions" hidden>
@@ -189,6 +212,7 @@
 
       <input id="import-file" type="file" accept=".desmos,.desmosplus.json,.json,application/json" hidden>
       <input id="svg-file" type="file" accept=".svg,image/svg+xml" hidden>
+      <input id="obj-file" type="file" accept=".obj,text/plain" hidden>
       <input id="desaudify-audio-file" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac,.aac" hidden>
       <input id="desaudify-data-file" type="file" accept=".txt,text/plain" multiple hidden>
       <input id="desaudify-processing-file" type="file" accept=".txt,text/plain" multiple hidden>
@@ -197,6 +221,7 @@
     <script src="vendor/flame-wrap.js"></script>
     <script src="flame-effects.js"></script>
     <script src="svg-import.js"></script>
+    <script src="obj-import.js"></script>
     <script src="desaudify-audio.js"></script>
     <script src="desaudify-export.js"></script>
     <script src="popup.js"></script>

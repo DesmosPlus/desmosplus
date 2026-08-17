@@ -195,7 +195,7 @@ button:focus-visible {
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 6px;
   padding-bottom: 14px;
   border-bottom: 1px solid #000;
@@ -204,7 +204,7 @@ button:focus-visible {
 .tabs button {
   min-width: 0;
   padding: 0 4px;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .tabs button[aria-selected="true"] {
@@ -406,6 +406,29 @@ section[hidden] {
   border-right: 1px solid #000;
   border-bottom: 1px solid #000;
   font-size: 11px;
+}
+
+.segmented-control {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.segmented-control button[aria-pressed="true"] {
+  background: #000;
+  color: #fff;
+}
+
+.tool-divider {
+  display: grid;
+  gap: 4px;
+  padding-top: 12px;
+  border-top: 1px solid #000;
+}
+
+.tool-divider p {
+  margin: 0;
+  line-height: 1.4;
 }
 
 label {

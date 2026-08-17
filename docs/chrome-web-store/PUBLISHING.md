@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.19.0.zip` |
-| SHA-256 | `3154058de03dce76af3bcbc8965d529d1fbb5781d98cdf831787ce44db44409e` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.20.0.zip` |
+| SHA-256 | `d87f04ccaeb5c33def213f887629b60a6af6a25d77a245f0655c6a7960dc8da3` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,9 +27,9 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.19.0, which excludes
+> contain the GitHub DesModder integration. Use v1.20.0, which excludes
 > DesModder, its injection settings, background loader, WakaTime access, and
-> related permissions. The v1.19.0 Settings tab controls dark mode and autosave.
+> related permissions. The v1.20.0 Settings tab controls dark mode and autosave.
 
 ## Account Setup
 
@@ -50,7 +50,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.19.0.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.20.0.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
@@ -77,7 +77,7 @@ dashboard. Any package change requires a higher manifest version and a new ZIP.
 Paste this as plain text:
 
 ```text
-Desmos+ adds graph transfer, reusable functions, autosave, SVG conversion, and audio creation tools directly to supported Desmos calculators.
+Desmos+ adds graph transfer, reusable functions, autosave, SVG and OBJ conversion, and audio creation tools directly to supported Desmos calculators.
 
 KEY FEATURES
 
@@ -99,6 +99,12 @@ Request a save every 60 seconds on eligible saved, signed-in Desmos 2D graphs. A
 • SVG-to-equation conversion
 Convert static SVG artwork into editable Desmos polygons, points, and equations.
 
+• OBJ-to-Desmos 3D conversion
+Import local OBJ models as editable Desmos 3D triangle equations. Direct mode keeps one expression per face, while Optimized mode uses indexed vertex and face arrays for larger models.
+
+• Starter ticker
+Add an editable native Desmos ticker that tracks elapsed seconds for 3D animation without replacing a graph's existing ticker.
+
 • Reusable function library
 Add editable definitions for normalized sinc, clamping, interpolation, inverse hyperbolic functions, and other helpers that Desmos does not provide natively.
 
@@ -112,11 +118,11 @@ Export large audio projects as organized shard ZIPs that can be added to a graph
 Transfer graphs across supported Desmos Graphing, Geometry, 3D, Notebook, Matrix, Scientific, and Four Function calculators.
 
 • Local processing
-Graph, SVG, and audio processing runs locally in your browser.
+Graph, SVG, OBJ, and audio processing runs locally in your browser.
 
 PRIVACY
 
-Desmos+ does not sell user data, run advertising analytics, or send selected graph, SVG, or audio files to the developer. Its executable code is included in the extension package and is not downloaded remotely at runtime.
+Desmos+ does not sell user data, run advertising analytics, or send selected graph, SVG, OBJ, or audio files to the developer. Its executable code is included in the extension package and is not downloaded remotely at runtime.
 
 Desmos+ is an independent project. It is not affiliated with, endorsed by, or maintained by Desmos Studio PBC.
 ```
@@ -154,7 +160,7 @@ not reveal private graphs, files, or account data.
 ### Single Purpose
 
 ```text
-Enhance supported Desmos calculators with graph transfer, reusable equation-based functions, optional autosave, local SVG and audio conversion, and an optional dark theme.
+Enhance supported Desmos calculators with graph transfer, reusable equation-based tools, optional autosave, local SVG, OBJ, and audio conversion, and an optional dark theme.
 ```
 
 All listed features operate on supported Desmos calculator content and should
@@ -165,19 +171,19 @@ be presented as parts of this one purpose.
 **activeTab**
 
 ```text
-Desmos+ needs temporary access to the active tab after the user opens the extension so a requested graph export, graph import, SVG import, function-library change, audio conversion, or in-page graph overlay can run on that tab. It does not use activeTab for background browsing surveillance.
+Desmos+ needs temporary access to the active tab after the user opens the extension so a requested graph export, graph import, SVG or OBJ import, ticker or function-library change, audio conversion, or in-page graph overlay can run on that tab. It does not use activeTab for background browsing surveillance.
 ```
 
 **scripting**
 
 ```text
-Desmos+ injects packaged functions into an active supported calculator to call its getState, setState, and expression APIs for user-requested graph, SVG, function-library, and audio operations. On an unrelated website it can inject the packaged graph-overlay interface after the user selects Show graph on this page. No remotely downloaded script is executed with extension privileges.
+Desmos+ injects packaged functions into an active supported calculator to call its getState, setState, and expression APIs for user-requested graph, SVG, OBJ, ticker, function-library, and audio operations. On an unrelated website it can inject the packaged graph-overlay interface after the user selects Show graph on this page. No remotely downloaded script is executed with extension privileges.
 ```
 
 **storage**
 
 ```text
-Desmos+ stores two local Boolean preferences recording whether the user enabled dark mode and autosave. It does not store graph, SVG, audio, schema, browsing-history, account, or analytics data in extension storage.
+Desmos+ stores two local Boolean preferences recording whether the user enabled dark mode and autosave. It does not store graph, SVG, OBJ, audio, schema, browsing-history, account, or analytics data in extension storage.
 ```
 
 **Host access**
@@ -194,8 +200,8 @@ Select:
 No, I am not using remote code.
 ```
 
-All executable extension logic, including the overlay, DesAudify, FFT, and
-Flame Wrap code, is inside the submitted package. The optional graph window and
+All executable extension logic, including the OBJ importer, overlay, DesAudify,
+FFT, and Flame Wrap code, is inside the submitted package. The optional graph window and
 overlay display the documented DesmosPlus calculator as a separate cross-origin
 web page without extension API access; no remote script is imported into or
 executed by the extension.
@@ -206,7 +212,7 @@ Google requires disclosure even when data is processed or stored only on the
 device. Select the following categories conservatively:
 
 - **Website content:** Desmos calculator state and user-selected graph, SVG,
-  audio, and schema content.
+  OBJ, audio, and schema content.
 - **Web history:** the active supported Desmos URL used to identify the
   calculator and record graph source information.
 
@@ -246,10 +252,12 @@ several calculator-specific sections. No account credentials are required.
 2. Open Desmos+. In Graph, enter a name and category, then select Export. Confirm that a .desmos file downloads.
 3. Select Import and choose that downloaded .desmos file. Confirm that the graph state loads.
 4. In SVG, select Import SVG as equations and choose a small static SVG. Confirm that a named folder of editable equations is added.
-5. In Functions, select Add library. Confirm that one Desmos+ Functions folder with editable definitions appears. Select Add library again and confirm there is still only one folder, then select Remove library.
-6. In DesAudify, use a short browser-decodable audio file and Auto mode. Confirm that conversion finishes and equations are injected. MAX mode is intentionally resource intensive and is not required for review.
-7. Open Settings and enable Dark mode. Confirm that the calculator becomes dark, reload the page, and confirm the preference remains active. Disable it and confirm the normal appearance returns.
-8. While signed in, open a previously saved 2D graph, enable Autosave in Settings, edit the graph, and wait 60 seconds. Confirm Desmos saves it. Disable Autosave and confirm no further automatic save is requested. Autosave does not run on the new unsaved calculator page.
+5. Open https://www.desmos.com/3d. In 3D, import a small cube OBJ in Optimized mode and confirm a named folder with vertex, face, and triangle expressions appears. Repeat in Direct mode and confirm individual triangle expressions appear.
+6. In 3D, select Add ticker, open its folder, start the native ticker, and confirm t_elapsed increases. Select Remove ticker and confirm only the Desmos+ ticker folder is removed.
+7. In Functions, select Add library. Confirm that one Desmos+ Functions folder with editable definitions appears. Select Add library again and confirm there is still only one folder, then select Remove library.
+8. In DesAudify, use a short browser-decodable audio file and Auto mode. Confirm that conversion finishes and equations are injected. MAX mode is intentionally resource intensive and is not required for review.
+9. Open Settings and enable Dark mode. Confirm that the calculator becomes dark, reload the page, and confirm the preference remains active. Disable it and confirm the normal appearance returns.
+10. While signed in, open a previously saved 2D graph, enable Autosave in Settings, edit the graph, and wait 60 seconds. Confirm Desmos saves it. Disable Autosave and confirm no further automatic save is requested. Autosave does not run on the new unsaved calculator page.
 ```
 
 ## Final Submission Checklist
@@ -262,6 +270,8 @@ several calculator-specific sections. No account credentials are required.
 - [ ] ZIP tested through **Load unpacked** using the matching source version.
 - [ ] Graph export and import tested on a supported Desmos page.
 - [ ] SVG import tested.
+- [ ] Direct and optimized OBJ import tested on Desmos 3D.
+- [ ] Starter ticker add, advance, conflict, and removal behavior tested.
 - [ ] Function library add, replace, call, and removal tested.
 - [ ] DesAudify Auto tested with a short non-private audio file.
 - [ ] Dark mode tested on, off, and after a page reload.
@@ -287,8 +297,9 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.19.0 Web Store edition:** Graph, pop-out, functions, autosave, dark mode,
-  SVG, and DesAudify, with no DesModder or WakaTime code.
+- **v1.20.0 Web Store edition:** Graph, pop-out, functions, autosave, dark mode,
+  SVG, 3D OBJ import, starter ticker, and DesAudify, with no DesModder or
+  WakaTime code.
 - **Older GitHub editions:** v1.11.0 through v1.14.1 include DesModder. A future
   current-version DesModder build must be published as a clearly separate
   download.

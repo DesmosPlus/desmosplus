@@ -4,6 +4,9 @@
   var exportButton = document.getElementById("export");
   var importButton = document.getElementById("import");
   var svgButton = document.getElementById("import-svg");
+  var objImportButton = document.getElementById("import-obj");
+  var tickerAddButton = document.getElementById("ticker-add");
+  var tickerRemoveButton = document.getElementById("ticker-remove");
   var functionsAddButton = document.getElementById("functions-add");
   var functionsRemoveButton = document.getElementById("functions-remove");
   var audioImportButton = document.getElementById("desaudify-audio");
@@ -13,6 +16,7 @@
   var processingButton = document.getElementById("desaudify-processing");
   var importFile = document.getElementById("import-file");
   var svgFile = document.getElementById("svg-file");
+  var objFile = document.getElementById("obj-file");
   var audioFile = document.getElementById("desaudify-audio-file");
   var dataFile = document.getElementById("desaudify-data-file");
   var processingFile = document.getElementById("desaudify-processing-file");
@@ -20,6 +24,8 @@
   var modeMenu = document.getElementById("desaudify-mode-menu");
   var modeButton = document.getElementById("desaudify-mode-button");
   var customSettings = document.getElementById("desaudify-custom-settings");
+  var objModeInput = document.getElementById("obj-mode");
+  var objModeSummary = document.getElementById("obj-mode-summary");
   var settingsSummary = document.getElementById("desaudify-settings-summary");
   var maxWarning = document.getElementById("desaudify-max-warning");
   var desaudifyProjectLink = document.getElementById("desaudify-project-link");
@@ -34,7 +40,13 @@
   var autosaveToggle = document.getElementById("autosave-toggle");
   var autosaveState = document.getElementById("autosave-state");
   var statusNode = document.getElementById("status");
-  var availability = { graph: false, svg: false, functions: false, desaudify: false };
+  var availability = {
+    graph: false,
+    svg: false,
+    threeD: false,
+    functions: false,
+    desaudify: false,
+  };
   var busy = false;
   var audioAction = "import";
   var POPOUT_URL = "https://desmosplus.pages.dev/2dcalculator";
@@ -42,6 +54,9 @@
   var AUTOSAVE_KEY = "desmosPlusAutosaveEnabled";
   var FUNCTION_FOLDER_ID = "desmosplus-functions-folder";
   var FUNCTION_ID_PREFIX = "desmosplus-function-";
+  var TICKER_FOLDER_ID = "desmosplus-starter-ticker-folder";
+  var TICKER_ID_PREFIX = "desmosplus-starter-ticker-";
+  var TICKER_HANDLER = "u_{pdate}\\left(\\operatorname{dt}\\right)";
   var FUNCTION_DEFINITIONS = [
     { id: "sinc", latex: "f_{sinc}\\left(x\\right)=\\left\\{x=0:1,\\frac{\\sin\\left(\\pi x\\right)}{\\pi x}\\right\\}" },
     { id: "clamp", latex: "f_{clamp}\\left(x,a,b\\right)=\\min\\left(\\max\\left(x,a\\right),b\\right)" },
@@ -144,6 +159,101 @@
     Array.prototype.push.apply(state.expressions.list, expressions);
     calculator.setState(state, { allowUndo: true });
     return true;
+  }
+
+  function writeObj(expressions) {
+    var calculator = window.Calc;
+    if (
+      !calculator ||
+      typeof calculator.getState !== "function" ||
+      typeof calculator.setState !== "function"
+    ) {
+      throw new Error("3D Calculator API is not ready.");
+    }
+    var state = calculator.getState();
+    if (!state.expressions || !Array.isArray(state.expressions.list)) {
+      throw new Error("This calculator cannot accept OBJ expressions.");
+    }
+    Array.prototype.push.apply(state.expressions.list, expressions);
+    calculator.setState(state, { allowUndo: true });
+    return { expressionCount: expressions.length };
+  }
+
+  function updateStarterTicker(action, folderId, idPrefix, handlerLatex) {
+    var calculator = window.Calc;
+    if (
+      !calculator ||
+      typeof calculator.getState !== "function" ||
+      typeof calculator.setState !== "function"
+    ) {
+      throw new Error("Calculator API is not ready.");
+    }
+    var state = calculator.getState();
+    if (!state.expressions || !Array.isArray(state.expressions.list)) {
+      throw new Error("This calculator cannot accept a ticker.");
+    }
+    var ticker = state.expressions.ticker;
+    var hasOwnedItems = state.expressions.list.some(function (item) {
+      return (
+        String(item.id || "") === folderId ||
+        String(item.id || "").indexOf(idPrefix) === 0 ||
+        String(item.folderId || "") === folderId
+      );
+    });
+    if (
+      action === "add" &&
+      ticker &&
+      (!hasOwnedItems || ticker.handlerLatex !== handlerLatex)
+    ) {
+      return { conflict: true, added: 0, removed: 0 };
+    }
+    var removed = 0;
+    state.expressions.list = state.expressions.list.filter(function (item) {
+      var owned =
+        String(item.id || "") === folderId ||
+        String(item.id || "").indexOf(idPrefix) === 0 ||
+        String(item.folderId || "") === folderId;
+      if (owned) removed += 1;
+      return !owned;
+    });
+    if (action === "add") {
+      state.expressions.list.push({
+        id: folderId,
+        type: "folder",
+        title: "Desmos+ Starter Ticker",
+        collapsed: true,
+      });
+      state.expressions.list.push({
+        id: idPrefix + "elapsed",
+        folderId: folderId,
+        type: "expression",
+        color: "#2d70b3",
+        latex: "t_{elapsed}=0",
+      });
+      state.expressions.list.push({
+        id: idPrefix + "update",
+        folderId: folderId,
+        type: "expression",
+        color: "#c74440",
+        hidden: true,
+        latex:
+          "u_{pdate}\\left(d\\right)=t_{elapsed}\\to t_{elapsed}+\\frac{d}{1000}",
+      });
+      state.expressions.ticker = {
+        handlerLatex: handlerLatex,
+        minStepLatex: "0",
+        open: true,
+        playing: false,
+      };
+    } else if (action === "remove") {
+      if (removed > 0 && ticker && ticker.handlerLatex === handlerLatex) {
+        delete state.expressions.ticker;
+      }
+    } else {
+      throw new Error("Unknown ticker action.");
+    }
+    calculator.setState(state, { allowUndo: true });
+    return { conflict: false, added: action === "add" ? 3 : 0, removed: removed };
   }
 
   function updateFunctionLibrary(action, definitions, folderId, idPrefix) {
@@ -282,6 +392,9 @@
     exportButton.disabled = busy || !availability.graph;
     importButton.disabled = busy || !availability.graph;
     svgButton.disabled = busy || !availability.svg;
+    objImportButton.disabled = busy || !availability.threeD;
+    tickerAddButton.disabled = busy || !availability.threeD;
+    tickerRemoveButton.disabled = busy || !availability.threeD;
     functionsAddButton.disabled = busy || !availability.functions;
     functionsRemoveButton.disabled = busy || !availability.functions;
     audioImportButton.disabled = busy || !availability.desaudify;
@@ -292,12 +405,26 @@
     document.querySelectorAll("[data-conversion-setting]").forEach(function (control) {
       control.disabled = busy;
     });
+    document.querySelectorAll("[data-obj-mode]").forEach(function (control) {
+      control.disabled = busy;
+    });
     if (modeButton.disabled) closeModeMenu(false);
   }
 
   function setBusy(value) {
     busy = value;
     updateAvailability();
+  }
+
+  function setObjMode(mode) {
+    objModeInput.value = mode === "direct" ? "direct" : "optimized";
+    document.querySelectorAll("[data-obj-mode]").forEach(function (button) {
+      button.setAttribute("aria-pressed", String(button.dataset.objMode === objModeInput.value));
+    });
+    objModeSummary.textContent =
+      objModeInput.value === "direct"
+        ? "One expression per face, up to 2,500 triangles"
+        : "Indexed arrays, up to 50,000 triangles";
   }
 
   function modeOptions() {
@@ -710,6 +837,80 @@
     }
   }
 
+  async function importObj(file) {
+    setBusy(true);
+    setStatus("Parsing OBJ...");
+    try {
+      var page = await inspectPage();
+      if (page.product !== "3dcalculator") throw new Error("Open Desmos 3D Calculator.");
+      if (!window.DesmosPlusObj) throw new Error("OBJ importer did not load.");
+      if (file.size > window.DesmosPlusObj.limits.fileBytes) {
+        throw new Error("OBJ files must be 15 MB or smaller.");
+      }
+      var converted = window.DesmosPlusObj.parse(await file.text(), {
+        mode: objModeInput.value,
+        name: file.name,
+        token: Date.now().toString(36),
+      });
+      setStatus("Adding " + converted.stats.triangles.toLocaleString() + " triangles...");
+      var results = await chrome.scripting.executeScript({
+        target: { tabId: page.tab.id },
+        world: "MAIN",
+        func: writeObj,
+        args: [converted.expressions],
+      });
+      var result = results[0] && results[0].result;
+      if (!result || result.expressionCount !== converted.expressions.length) {
+        throw new Error("Desmos rejected the OBJ expressions.");
+      }
+      setStatus(
+        "Imported " +
+          converted.stats.vertices.toLocaleString() +
+          " vertices and " +
+          converted.stats.triangles.toLocaleString() +
+          " triangles in " +
+          converted.stats.mode +
+          " mode.",
+      );
+    } catch (error) {
+      setStatus(error.message || String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function applyStarterTicker(action) {
+    setBusy(true);
+    setStatus(action === "add" ? "Adding starter ticker..." : "Removing starter ticker...");
+    try {
+      var page = await inspectPage();
+      if (page.product !== "3dcalculator") throw new Error("Open Desmos 3D Calculator.");
+      var results = await chrome.scripting.executeScript({
+        target: { tabId: page.tab.id },
+        world: "MAIN",
+        func: updateStarterTicker,
+        args: [action, TICKER_FOLDER_ID, TICKER_ID_PREFIX, TICKER_HANDLER],
+      });
+      var result = results[0] && results[0].result;
+      if (!result || typeof result.conflict !== "boolean") {
+        throw new Error("Desmos rejected the ticker change.");
+      }
+      if (result.conflict) {
+        setStatus("This graph already has a different ticker. It was not changed.");
+      } else if (action === "add") {
+        setStatus("Starter ticker added. Start it from the Desmos expression panel.");
+      } else if (result.removed > 0) {
+        setStatus("Starter ticker removed.");
+      } else {
+        setStatus("The Desmos+ starter ticker was not in this graph.");
+      }
+    } catch (error) {
+      setStatus(error.message || String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function applyFunctionLibrary(action) {
     setBusy(true);
     setStatus(action === "add" ? "Adding function library..." : "Removing function library...");
@@ -896,6 +1097,7 @@
       var page = await inspectPage();
       availability.graph = true;
       availability.svg = DesmosPlusSvg.supportedProduct(page.product);
+      availability.threeD = page.product === "3dcalculator";
       availability.functions = page.product === "2dcalculator";
       availability.desaudify = page.product === "2dcalculator";
       setStatus("Ready.");
@@ -918,6 +1120,20 @@
   });
   svgButton.addEventListener("click", function () {
     svgFile.click();
+  });
+  objImportButton.addEventListener("click", function () {
+    objFile.click();
+  });
+  tickerAddButton.addEventListener("click", function () {
+    applyStarterTicker("add");
+  });
+  tickerRemoveButton.addEventListener("click", function () {
+    applyStarterTicker("remove");
+  });
+  document.querySelectorAll("[data-obj-mode]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      setObjMode(button.dataset.objMode);
+    });
   });
   functionsAddButton.addEventListener("click", function () {
     applyFunctionLibrary("add");
@@ -950,6 +1166,11 @@
     if (file) importSvg(file);
     svgFile.value = "";
   });
+  objFile.addEventListener("change", function () {
+    var file = objFile.files && objFile.files[0];
+    if (file) importObj(file);
+    objFile.value = "";
+  });
   audioFile.addEventListener("change", function () {
     var file = audioFile.files && audioFile.files[0];
     if (file) {
@@ -972,6 +1193,7 @@
 
   setupModeMenu();
   selectView("graph");
+  setObjMode("optimized");
   updateConversionSettings();
   loadDarkModeSetting().catch(function () {
     showDarkModeState(false);

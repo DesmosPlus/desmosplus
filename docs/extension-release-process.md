@@ -28,7 +28,7 @@ retroactively relabel an older ZIP as a current DesModder edition.
 ### Standard Edition
 
 The standard edition is built from `extension/` and must contain Graph, SVG,
-Functions, and DesAudify. It must not contain:
+3D, Functions, and DesAudify. It must not contain:
 
 - DesModder or WakaTime source, text, paths, or web-accessible resources.
 - A DesModder Settings tab or auto-injection controls.
@@ -98,24 +98,30 @@ checks for the optional DesModder edition when it is published:
 3. Load each available edition unpacked in a separate browser profile.
 4. Test Graph export and import on a supported official Desmos page.
 5. Test SVG import on the 2D Graphing Calculator.
-6. Add the Functions library to a 2D graph, call at least one definition, add it
+6. Test direct and optimized OBJ import on the 3D Graphing Calculator. Confirm
+   the imported expressions parse and render as 3D triangles.
+7. Add the starter ticker, confirm elapsed time advances, add it again without
+   duplication, remove it without changing unrelated expressions, and confirm
+   a pre-existing unrelated ticker is never replaced.
+8. Add the Functions library to a 2D graph, call at least one definition, add it
    again to confirm it does not duplicate, then remove it without changing
    unrelated expressions.
-7. Test DesAudify Auto import with a short non-private audio file.
-8. Open every popup tab and verify keyboard and pointer controls.
-9. Toggle dark mode on and off, reload an official Desmos calculator, and verify
+9. Test DesAudify Auto import with a short non-private audio file.
+10. Open every popup tab and verify keyboard and pointer controls.
+11. Toggle dark mode on and off, reload an official Desmos calculator, and verify
    that the saved state applies without remote requests.
-10. Enable autosave on a saved signed-in 2D graph, verify one save request after
+12. Enable autosave on a saved signed-in 2D graph, verify one save request after
    60 seconds, then disable it and verify the timer stops.
-11. Inspect every ZIP member list for nested roots, `.DS_Store`, `__MACOSX`, and
+13. Inspect every ZIP member list for nested roots, `.DS_Store`, `__MACOSX`, and
    embedded ZIP files.
-12. Confirm `manifest.json` and `DESMOSPLUS-BUILD.txt` are at every ZIP root.
-13. Confirm first-party code is watermarked and third-party files are not.
-14. Scan the standard ZIP for `desmodder` and `wakatime`; it must return no
+14. Confirm `manifest.json`, `DESMOSPLUS-BUILD.txt`, and required third-party
+    notices are at every ZIP root.
+15. Confirm first-party code is watermarked and third-party files are not.
+16. Scan the standard ZIP for `desmodder` and `wakatime`; it must return no
     filenames or packaged text.
-15. When built, verify the DesModder ZIP contains its loader, background
+17. When built, verify the DesModder ZIP contains its loader, background
     support, runtime, metadata, and license.
-16. Compute and record a SHA-256 checksum for every published ZIP.
+18. Compute and record a SHA-256 checksum for every published ZIP.
 
 MAX mode is intentionally resource intensive and does not need to be used for
 every release smoke test. Its menu, warning, and disabled-by-default behavior

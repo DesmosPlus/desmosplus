@@ -14,8 +14,9 @@ DesmosPlus packages seven calculator experiences from local browser captures int
 one dependency-free Node.js project. Calculator assets run locally, saved work
 stays in the browser, and the included Chrome extension moves graph state from
 `desmos.com` into DesmosPlus without translating or rebuilding expressions.
-It can also convert validated static SVG files into editable equations in local
-or official Desmos graphs and load DesAudify audio-resynthesis equations.
+It can also convert validated static SVG files into editable equations, import
+OBJ geometry into official Desmos 3D graphs, and load DesAudify
+audio-resynthesis equations.
 
 > [!IMPORTANT]
 > DesmosPlus is an independent project. It is not affiliated with, endorsed by,
@@ -47,7 +48,7 @@ or official Desmos graphs and load DesAudify audio-resynthesis equations.
 - Local New, Save, Library, category, open, edit, and delete workflows.
 - Browser-local persistence with no application database.
 - [Chrome MV3 extension](EXTENSION.md) for graph transfer, autosave, dark mode,
-  SVG conversion, and audio import.
+  SVG and OBJ conversion, starter ticker setup, and audio import.
 - Static SVG import for local Desmos 2D and Geometry graphs.
 - Manual DesAudify player and schema import on the local 2D calculator.
 - Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.
@@ -163,8 +164,9 @@ the same `http://127.0.0.1:8765` address.
 
 Installation, graph transfer, the movable and resizable unsupported-site graph
 pop-out and minimized icon, toggleable dark mode, SVG conversion, DesAudify
-audio import, reusable function definitions, opt-in autosave, permissions,
-troubleshooting, and extension development are documented in
+audio import, 3D OBJ import, starter ticker setup, reusable function
+definitions, opt-in autosave, permissions, troubleshooting, and extension
+development are documented in
 [`EXTENSION.md`](EXTENSION.md).
 
 Every future extension version must publish the standard edition without
@@ -355,6 +357,6 @@ Desmos is a trademark of Desmos Studio PBC. Captured calculator code and assets
 may remain subject to third-party terms. Review those rights before public or
 commercial distribution.
 
-Extension-specific notices for DesAudify, `fft.js`, and Canvas UI Flame Wrap
+Extension-specific notices for DesAudify, DesLoader, `fft.js`, and Canvas UI Flame Wrap
 are documented in [`EXTENSION.md`](EXTENSION.md) and bundled beside the
 corresponding extension code.

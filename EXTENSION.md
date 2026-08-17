@@ -2,9 +2,10 @@
 
 The DesmosPlus browser extension transfers complete graph state between the
 official Desmos calculators and DesmosPlus. It also converts static SVG artwork
-and audio files into editable Desmos equations, adds reusable function
-definitions, adds a dark theme, and can periodically save signed-in Desmos
-graphs. Processing happens locally in the browser.
+and OBJ models into editable Desmos equations, converts audio files into
+playable graphs, adds reusable function definitions and a starter ticker, adds
+a dark theme, and can periodically save signed-in Desmos graphs. Processing
+happens locally in the browser.
 
 DesmosPlus is an independent project. It is not affiliated with, endorsed by,
 or maintained by Desmos Studio PBC.
@@ -21,6 +22,7 @@ or maintained by Desmos Studio PBC.
 - [Autosave](#autosave)
 - [Graph Transfer](#graph-transfer)
 - [SVG Import](#svg-import)
+- [3D OBJ Import and Starter Ticker](#3d-obj-import-and-starter-ticker)
 - [Function Library](#function-library)
 - [DesAudify Audio Import](#desaudify-audio-import)
   - [Downloadable Shard ZIP](#downloadable-shard-zip)
@@ -47,7 +49,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.19.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.19.0/DesmosPlus-Extension-v1.19.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.19.0) |
+| **v1.20.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.0/DesmosPlus-Extension-v1.20.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.0) |
+| v1.19.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.19.0/DesmosPlus-Extension-v1.19.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.19.0) |
 | v1.18.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.18.0/DesmosPlus-Extension-v1.18.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.18.0) |
 | v1.17.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.17.0/DesmosPlus-Extension-v1.17.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.17.0) |
 | v1.16.2 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.16.2/DesmosPlus-Extension-v1.16.2.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.16.2) |
@@ -86,8 +89,8 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.19.0 uses Settings for dark mode and autosave,
-but it does not include DesModder.
+DesModder Settings tab. Version 1.20.0 uses Settings for dark mode and autosave,
+adds a separate 3D tab, and does not include DesModder.
 
 | 1. Graph transfer | 2. SVG import |
 | --- | --- |
@@ -158,8 +161,8 @@ routes:
 | Four Function | `/fourfunction` |
 | Scientific | `/scientific` |
 
-The **SVG** section supports 2D Graphing and Geometry. The **DesAudify** section
-supports 2D Graphing.
+The **SVG** section supports 2D Graphing and Geometry. The **3D** section
+supports 3D Graphing. The **DesAudify** section supports 2D Graphing.
 
 The hosted DesmosPlus 2D calculator at
 `https://desmosplus.pages.dev/2dcalculator` is also recognized as a supported
@@ -255,6 +258,34 @@ SVG files must be 1 MB or smaller. The importer rejects animation, scripts,
 embedded HTML, document entities, and embedded or external resources. Text,
 raster images, clipping, filters, patterns, and reusable symbols must be
 converted to paths before import.
+
+## 3D OBJ Import and Starter Ticker
+
+Open the official Desmos 3D Graphing Calculator, select **3D** in DesmosPlus,
+choose an OBJ mode, and select **Import OBJ**.
+
+| Mode | Result | Limit |
+| --- | --- | --- |
+| Direct | One editable `triangle` expression for every triangulated face | 2,500 triangles |
+| Optimized | Indexed vertex and face lists with vectorized `triangle` expressions | 50,000 triangles |
+
+Optimized mode is the default and uses substantially fewer Desmos expressions.
+Large optimized models are split into bounded chunks so no single vertex list
+or surface expression grows without limit. Direct mode is useful when every
+face needs to remain individually editable.
+
+The importer supports OBJ vertex and face records, slash-separated face
+references, negative indexes, triangles, quads, and polygon faces. Quads and
+polygons are triangulated with a fan. Materials, textures, normals, smoothing
+groups, curves, and scene transforms are not imported. OBJ files are processed
+locally, must be 15 MB or smaller, and must use finite coordinates within one
+billion units.
+
+Select **Add ticker** to create a collapsed **Desmos+ Starter Ticker** folder
+with `t_elapsed`, an update function, and a native Desmos ticker. The value is
+measured in seconds and can drive model animation. If the graph already has a
+different ticker, DesmosPlus leaves it unchanged. **Remove ticker** deletes
+only the DesmosPlus-owned folder and ticker.
 
 ## Function Library
 
@@ -380,13 +411,13 @@ python desaudify_cli.py input.mp3 output
 | Permission | Purpose |
 | --- | --- |
 | `activeTab` | Grants temporary access to the current tab after the user opens the extension. |
-| `scripting` | Injects packaged code that reads or writes calculator state for graph, SVG, function-library, and audio actions. |
+| `scripting` | Injects packaged code that reads or writes calculator state for graph, SVG, OBJ, ticker, function-library, and audio actions. |
 | `storage` | Stores the local dark-mode and autosave on/off preferences. |
 | Desmos site access | Runs the packaged dark-mode files on supported pages and the autosave timer on saved official 2D graphs. |
 
-Selected graph, SVG, schema, and audio files are processed locally and are not
-uploaded by DesmosPlus. Graph transfer, SVG conversion, function-library
-changes, and DesAudify run only after a user action.
+Selected graph, SVG, OBJ, schema, and audio files are processed locally and are
+not uploaded by DesmosPlus. Graph transfer, SVG and OBJ conversion, ticker and
+function-library changes, and DesAudify run only after a user action.
 
 ## File Formats and Limits
 
@@ -396,6 +427,7 @@ changes, and DesAudify run only after a user action.
 | `.desmosplus.json` | Legacy wrapped graph format |
 | `.json` | Raw Desmos state or wrapped graph state |
 | `.svg` | Static vector import, up to 1 MB |
+| `.obj` | 3D geometry import, up to 15 MB; 2,500 direct or 50,000 optimized triangles |
 | Audio | Browser-decodable audio; standard modes allow 100 MB and five minutes, while MAX removes those extension caps |
 | `.zip` | DesAudify-only player UI and individually copyable `.desmos` shard graphs |
 | `.txt` | DesAudify schemas, up to 6 MB and 500 non-empty equations per file |
@@ -414,7 +446,8 @@ prepared listing graphics are in the
 
 Open a supported page on `desmos.com`, wait for the calculator to finish
 loading, and reopen the extension. SVG requires 2D Graphing or Geometry.
-DesAudify requires 2D Graphing.
+OBJ import and the starter ticker require 3D Graphing. DesAudify requires 2D
+Graphing.
 
 ### An Update Is Not Visible
 
@@ -444,6 +477,7 @@ Run the extension checks from the repository root:
 
 ```sh
 node --check extension/svg-import.js
+node --check extension/obj-import.js
 node --check extension/desaudify-audio.js
 node --check extension/desaudify-audio-worker.js
 node --check extension/desaudify-export.js
@@ -482,6 +516,7 @@ The extension's main files are:
 | `extension/flame-effects.js` | DesAudify MAX Flame Wrap lifecycle and colors |
 | `extension/vendor/flame-wrap.js` | Pinned Canvas UI Flame Wrap WebGL engine |
 | `extension/svg-import.js` | Static SVG validation and equation conversion |
+| `extension/obj-import.js` | Local OBJ parsing and direct or optimized 3D expression generation |
 | `extension/desaudify-audio.js` | Audio decoding and worker orchestration |
 | `extension/desaudify-audio-worker.js` | FFT analysis and schema generation |
 | `extension/desaudify-export.js` | DesAudify shard graph and local ZIP generation |
@@ -496,8 +531,8 @@ The extension's main files are:
   new DesmosPlus release manually.
 - Graphs injected into Desmos remain temporary until saved through Desmos.
 - Desmos page changes can require updates to calculator detection or injection.
-- Very large SVG or audio conversions remain limited by browser memory and
-  Desmos evaluator throughput.
+- Very large SVG, OBJ, or audio conversions remain limited by browser memory
+  and Desmos evaluator throughput.
 - Audio codec support varies by Chromium build and operating system.
 - MAX removes DesmosPlus safeguards, not the physical limits of the browser,
   computer, or Desmos calculator.
@@ -514,6 +549,10 @@ The browser port vendors `fft.js` 4.0.4. Its MIT notice is included in
 The MAX visual effect vendors Canvas UI Flame Wrap from commit
 `f993683dc03446eead7a372153f3d22b480ec465`. Its MIT + Commons Clause notice is
 included in [`extension/vendor/CANVAS-UI-NOTICE`](extension/vendor/CANVAS-UI-NOTICE).
+
+The OBJ import workflow is adapted from
+[DesLoader](https://github.com/Mr-milky-way/Desloader). Its MIT license is
+included in [`extension/DESLOADER-LICENSE`](extension/DESLOADER-LICENSE).
 
 Desmos is a trademark of Desmos Studio PBC. See the main
 [`README.md`](README.md) for the repository's license and third-party notice.

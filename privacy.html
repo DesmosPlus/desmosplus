@@ -21,7 +21,7 @@
       <h1>Desmos+ Extension Privacy Policy</h1>
       <p><strong>Effective date:</strong> August 16, 2026<br><strong>Last updated:</strong> August 16, 2026</p>
 
-      <p>This policy applies to the Desmos+ edition distributed through the Chrome Web Store. It explains how the extension handles information. Desmos+ is designed so its graph transfer, function library, autosave, dark mode, SVG conversion, and audio conversion features run locally in the browser. The developer does not operate a server that receives those files or graph contents.</p>
+      <p>This policy applies to the Desmos+ edition distributed through the Chrome Web Store. It explains how the extension handles information. Desmos+ is designed so its graph transfer, function library, starter ticker, autosave, dark mode, SVG and OBJ conversion, and audio conversion features run locally in the browser. The developer does not operate a server that receives those files or graph contents.</p>
 
       <h2>Information Handled</h2>
 
@@ -29,7 +29,7 @@
       <p>When a user requests an import or export, Desmos+ reads or writes the active supported Desmos calculator state. That state can include expressions, folders, tables, notes, sliders, viewport settings, graph titles, and other user-generated graph content. The extension also reads the active tab URL to identify the calculator type, offer graph window options on unsupported pages, and include source information in an exported file.</p>
 
       <h3>Files selected by the user</h3>
-      <p>Desmos+ processes graph files, SVG files, audio files, and DesAudify schema files that the user explicitly selects. Processing occurs locally in browser memory. Generated graph files and shard ZIPs are downloaded only when the user requests them.</p>
+      <p>Desmos+ processes graph files, SVG files, OBJ files, audio files, and DesAudify schema files that the user explicitly selects. Processing occurs locally in browser memory. Generated graph files and shard ZIPs are downloaded only when the user requests them.</p>
 
       <h3>Extension preferences</h3>
       <p>Desmos+ stores local on/off preferences for dark mode and autosave. These preferences are not sent to the developer and can be removed by turning the features off, clearing the extension's stored data, or uninstalling the extension.</p>
@@ -37,7 +37,8 @@
       <h2>How Information Is Used</h2>
       <ul>
         <li>To export and import Desmos graph state.</li>
-        <li>To convert selected SVG and audio files into editable Desmos content.</li>
+        <li>To convert selected SVG, OBJ, and audio files into editable Desmos content.</li>
+        <li>To add or remove a user-requested starter ticker in the active 3D graph.</li>
         <li>To add or remove user-requested function definitions in the active graph.</li>
         <li>To create user-requested downloads.</li>
         <li>To apply the user's dark-mode preference on supported Desmos pages.</li>
@@ -49,7 +50,7 @@
       <p>Opening external links or using the official Desmos website can cause the browser to communicate with those services under their own policies. Desmos+ does not send graph state or selected files to the Desmos+ developer or an independent DesmosPlus service. When autosave requests Desmos's native save action, the official Desmos website may store that graph in the signed-in Desmos account under Desmos's own privacy policy.</p>
 
       <h2>Storage and Deletion</h2>
-      <p>Selected files and conversion data are normally retained only in browser memory for the active operation. User-requested downloads remain wherever the user saves them. The Chrome Web Store edition does not retain graph, SVG, audio, or schema contents in extension storage. It retains only the dark-mode and autosave preferences described above.</p>
+      <p>Selected files and conversion data are normally retained only in browser memory for the active operation. User-requested downloads remain wherever the user saves them. The Chrome Web Store edition does not retain graph, SVG, OBJ, audio, or schema contents in extension storage. It retains only the dark-mode and autosave preferences described above.</p>
 
       <h2>Permissions</h2>
       <table>
@@ -57,7 +58,7 @@
           <tr><th>Permission</th><th>Use</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>activeTab</code></td><td>Temporarily accesses the current tab after the user opens Desmos+ so a requested graph, SVG, function-library, or audio action can run.</td></tr>
+          <tr><td><code>activeTab</code></td><td>Temporarily accesses the current tab after the user opens Desmos+ so a requested graph, SVG, OBJ, ticker, function-library, or audio action can run.</td></tr>
           <tr><td><code>scripting</code></td><td>Runs packaged Desmos+ code in the active supported calculator to read or update calculator state.</td></tr>
           <tr><td><code>storage</code></td><td>Stores the local dark-mode and autosave on/off preferences.</td></tr>
           <tr><td>Desmos site access</td><td>Applies packaged dark-mode files on supported pages and runs the opt-in autosave timer on saved official 2D graphs.</td></tr>
@@ -65,7 +66,7 @@
       </table>
 
       <h2>Remote Code</h2>
-      <p>Desmos+ does not download remote JavaScript into the extension or execute it with extension privileges. DesAudify, Canvas UI Flame Wrap, FFT, and the code used to add the in-page overlay are included in the extension package submitted for review. The optional graph window and overlay display the documented DesmosPlus calculator as a separate web page. That cross-origin page does not receive access to Chrome extension APIs or the surrounding website.</p>
+      <p>Desmos+ does not download remote JavaScript into the extension or execute it with extension privileges. The OBJ importer, DesAudify, Canvas UI Flame Wrap, FFT, and the code used to add the in-page overlay are included in the extension package submitted for review. The optional graph window and overlay display the documented DesmosPlus calculator as a separate web page. That cross-origin page does not receive access to Chrome extension APIs or the surrounding website.</p>
 
       <h2>Chrome Web Store Limited Use</h2>
       <p>Desmos+ uses information received from Chrome APIs only to provide and improve the user-facing features described in this policy. It does not transfer that information except as necessary to provide a user-enabled feature, for security purposes, to comply with applicable law, or as part of a merger or acquisition. It does not use or transfer information for personalized advertising, creditworthiness, or lending purposes. Humans do not read user data unless the user gives specific consent for support, access is required for security or legal reasons, or the information has been aggregated and anonymized for internal operations.</p>
