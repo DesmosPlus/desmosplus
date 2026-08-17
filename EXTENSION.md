@@ -44,7 +44,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.16.0 (latest)** | **No** | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.16.0/DesmosPlus-Extension-v1.16.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.16.0) |
+| **v1.16.1 (latest)** | **No** | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.16.1/DesmosPlus-Extension-v1.16.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.16.1) |
+| v1.16.0 | No | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.16.0/DesmosPlus-Extension-v1.16.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.16.0) |
 | v1.15.0 | No | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.15.0/DesmosPlus-Extension-v1.15.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.15.0) |
 | v1.14.1 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.14.1/DesmosPlus-Extension-v1.14.1.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.14.1) |
 | v1.14.0 | Yes | [Download ZIP](https://github.com/loleksyuk/desmosplus/releases/download/v1.14.0/DesmosPlus-Extension-v1.14.0.zip) | [Release notes](https://github.com/loleksyuk/desmosplus/releases/tag/v1.14.0) |
@@ -78,7 +79,7 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.16.0 keeps the Graph, SVG, and DesAudify tabs
+DesModder Settings tab. Version 1.16.1 keeps the Graph, SVG, and DesAudify tabs
 but does not include Settings or DesModder.
 
 | 1. Graph transfer | 2. SVG import |
@@ -164,8 +165,10 @@ popup offers two options:
 
 - **Open graph window** opens the hosted DesmosPlus 2D calculator in a separate
   1200x800 browser window.
-- **Show graph on this page** places the calculator in an isolated overlay on
-  the current website. Use its close button or press Escape to remove it.
+- **Show graph on this page** places a smaller, resizable calculator window on
+  the current website. Use the minus button or press Escape to minimize it into
+  the floating DesmosPlus icon, then select that icon to restore the same graph.
+  The close button removes it completely.
 
 Open DesmosPlus again from the separate graph window to use Graph, SVG, and
 DesAudify tools on that calculator. Browser-protected pages and websites with

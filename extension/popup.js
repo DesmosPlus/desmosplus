@@ -446,8 +446,10 @@
         files: ["graph-overlay.js"],
       });
       var result = results[0] && results[0].result;
-      if (!result || result.state !== "opened") throw new Error("The graph overlay did not open.");
-      setStatus("Graph opened on this page.");
+      if (!result || (result.state !== "opened" && result.state !== "restored")) {
+        throw new Error("The graph overlay did not open.");
+      }
+      setStatus(result.state === "restored" ? "Graph restored on this page." : "Graph opened on this page.");
     } catch (error) {
       setStatus("This page blocks in-page tools. Use Open graph window.");
     } finally {

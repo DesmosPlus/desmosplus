@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.16.0.zip` |
-| SHA-256 | `4fc5de778612a0201945fb3d859928d2951a99847d401b688506a7e873f60fb5` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.16.1.zip` |
+| SHA-256 | `3d4baf33029d0e6bea89ee873dd4f81c0090c78f249f493c17bd29f1d6df51fb` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,7 +27,7 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.16.0, which excludes
+> contain the GitHub DesModder integration. Use v1.16.1, which excludes
 > DesModder, its Settings tab, background loader, WakaTime access, and related
 > permissions.
 
@@ -50,7 +50,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.16.0.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.16.1.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
@@ -88,7 +88,7 @@ Export and import complete Desmos graphs while preserving expressions, folders, 
 Save graphs in a portable format and reopen them later in Desmos+ or a compatible calculator.
 
 • Graph pop-out
-Open a separate DesmosPlus 2D calculator window or show an isolated calculator overlay while browsing an unrelated website.
+Open a separate DesmosPlus 2D calculator window or use a smaller, resizable in-page calculator that minimizes into a floating DesmosPlus icon.
 
 • SVG-to-equation conversion
 Convert static SVG artwork into editable Desmos polygons, points, and equations.
@@ -131,7 +131,7 @@ Upload the graphic assets in this order:
 | Small promo tile | `assets/small-promo-440x280.png` |
 | Marquee promo tile | `assets/marquee-1400x560.png` |
 
-The screenshots are opaque 1280x800 PNGs captured from the v1.16.0 standard
+The screenshots are opaque 1280x800 PNGs captured from the v1.16.1 standard
 edition. The small and marquee promotional images are opaque 24-bit PNGs at
 the exact dashboard dimensions. Do not upload the older reference screenshots
 that show Settings, because they depict the GitHub edition with DesModder.
@@ -260,7 +260,7 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.16.0 Web Store edition:** Graph, pop-out, SVG, and DesAudify only, with
+- **v1.16.1 Web Store edition:** Graph, pop-out, SVG, and DesAudify only, with
   the narrowest required permissions and no DesModder or WakaTime code.
 - **Older GitHub editions:** v1.11.0 through v1.14.1 include DesModder. A future
   current-version DesModder build must be published as a clearly separate
