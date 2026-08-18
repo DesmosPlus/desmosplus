@@ -278,6 +278,37 @@
       throw new Error("This calculator cannot accept function definitions.");
     }
     var removed = 0;
+    if (action === "add-one") {
+      if (definitions.length !== 1) throw new Error("Select one function definition.");
+      var definition = definitions[0];
+      var expressionId = idPrefix + definition.id;
+      state.expressions.list = state.expressions.list.filter(function (item) {
+        if (String(item.id || "") !== expressionId) return true;
+        removed += 1;
+        return false;
+      });
+      var folderExists = state.expressions.list.some(function (item) {
+        return String(item.id || "") === folderId && item.type === "folder";
+      });
+      if (!folderExists) {
+        state.expressions.list.push({
+          id: folderId,
+          type: "folder",
+          title: "Desmos+ Functions",
+          collapsed: true,
+        });
+      }
+      state.expressions.list.push({
+        id: expressionId,
+        folderId: folderId,
+        type: "expression",
+        color: "#2d70b3",
+        hidden: true,
+        latex: definition.latex,
+      });
+      calculator.setState(state, { allowUndo: true });
+      return { added: 1, removed: removed };
+    }
     state.expressions.list = state.expressions.list.filter(function (item) {
       var owned =
         String(item.id || "") === folderId ||
@@ -415,6 +446,9 @@
     });
     document.querySelectorAll("[data-obj-mode]").forEach(function (control) {
       control.disabled = busy;
+    });
+    document.querySelectorAll("[data-function-add]").forEach(function (control) {
+      control.disabled = busy || !availability.functions;
     });
     if (modeButton.disabled) closeModeMenu(false);
   }
@@ -997,9 +1031,25 @@
     }
   }
 
-  async function applyFunctionLibrary(action) {
+  async function applyFunctionLibrary(action, functionId) {
+    var definitions = FUNCTION_DEFINITIONS;
+    if (action === "add-one") {
+      definitions = FUNCTION_DEFINITIONS.filter(function (definition) {
+        return definition.id === functionId;
+      });
+      if (definitions.length !== 1) {
+        setStatus("That function is not available.");
+        return;
+      }
+    }
     setBusy(true);
-    setStatus(action === "add" ? "Adding function library..." : "Removing function library...");
+    setStatus(
+      action === "add-one"
+        ? "Adding f_" + functionId + "..."
+        : action === "add"
+          ? "Adding function library..."
+          : "Removing function library...",
+    );
     try {
       var page = await inspectPage();
       if (page.product !== "2dcalculator") throw new Error("Open Desmos 2D Calculator.");
@@ -1007,14 +1057,16 @@
         target: { tabId: page.tab.id },
         world: "MAIN",
         func: updateFunctionLibrary,
-        args: [action, FUNCTION_DEFINITIONS, FUNCTION_FOLDER_ID, FUNCTION_ID_PREFIX],
+        args: [action, definitions, FUNCTION_FOLDER_ID, FUNCTION_ID_PREFIX],
       });
       var result = results[0] && results[0].result;
       if (!result || typeof result.added !== "number") {
         throw new Error("Desmos rejected the function library.");
       }
       setStatus(
-        action === "add"
+        action === "add-one"
+          ? "Added f_" + functionId + " to the Desmos+ Functions folder."
+          : action === "add"
           ? "Added " + result.added + " editable function definitions."
           : result.removed > 0
             ? "Removed the Desmos+ function library."
@@ -1227,6 +1279,11 @@
   });
   functionsRemoveButton.addEventListener("click", function () {
     applyFunctionLibrary("remove");
+  });
+  document.querySelectorAll("[data-function-add]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      applyFunctionLibrary("add-one", button.dataset.functionAdd);
+    });
   });
   templateButton.addEventListener("click", loadDesAudifyTemplate);
   audioImportButton.addEventListener("click", function () {

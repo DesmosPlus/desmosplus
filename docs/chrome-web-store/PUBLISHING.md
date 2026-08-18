@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.21.0.zip` |
-| SHA-256 | `7374c18465b77c9ddefac4531f6a8333b084d77d8876e2c40f8cb8c9adb72c4a` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.22.0.zip` |
+| SHA-256 | `71a0cd93168dc80d89c3806aa0d0b2c4bc9aaddbf4aa286e7307506978679bcd` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,9 +27,9 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.21.0, which excludes
+> contain the GitHub DesModder integration. Use v1.22.0, which excludes
 > DesModder, its injection settings, background loader, WakaTime access, and
-> related permissions. The v1.21.0 Settings tab controls dark mode and autosave.
+> related permissions. The v1.22.0 Settings tab controls dark mode and autosave.
 
 ## Account Setup
 
@@ -50,7 +50,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.21.0.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.22.0.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
@@ -106,7 +106,7 @@ Import local OBJ models as editable Desmos 3D triangle equations. Direct mode ke
 Add an editable native Desmos ticker that tracks elapsed seconds for 3D animation without replacing a graph's existing ticker.
 
 • Reusable function library
-Review bundled LaTeX equation images and readable plain-text formulas, then add editable definitions for normalized sinc, clamping, interpolation, inverse hyperbolic functions, and other helpers that Desmos does not provide natively.
+Review bundled LaTeX equation images and readable plain-text formulas, then inject one definition or the complete editable library for normalized sinc, clamping, interpolation, inverse hyperbolic functions, and other helpers that Desmos does not provide natively.
 
 • DesAudify audio tools
 Turn audio files into playable Desmos graphs using automatic, high-quality, MAX, or fully custom conversion settings.
@@ -257,7 +257,7 @@ several calculator-specific sections. No account credentials are required.
 4. In SVG, select Import SVG as equations and choose a small static SVG. Confirm that a named folder of editable equations is added.
 5. Open https://www.desmos.com/3d. In 3D, import a small cube OBJ in Optimized mode and confirm a named folder with vertex, face, and triangle expressions appears. Repeat in Direct mode and confirm individual triangle expressions appear. Open MAX, verify its warning and flame treatment, then return to Optimized without importing a large model.
 6. In 3D, select Add ticker, open its folder, start the native ticker, and confirm t_elapsed increases. Select Remove ticker and confirm only the Desmos+ ticker folder is removed.
-7. In Functions, confirm all 14 equation images and plain-text formulas render. Select Add library and confirm that one Desmos+ Functions folder with editable definitions appears. Select Add library again and confirm there is still only one folder, then select Remove library.
+7. In Functions, confirm all 14 equation images and plain-text formulas render. Add two functions individually, add one again and confirm only that definition is replaced, then select Add library and confirm one complete Desmos+ Functions folder appears. Select Remove library and confirm unrelated expressions remain.
 8. In DesAudify, use a short browser-decodable audio file and Auto mode. Confirm that conversion finishes and equations are injected. MAX mode is intentionally resource intensive and is not required for review.
 9. Open Settings and enable Dark mode. Confirm that the calculator becomes dark, reload the page, and confirm the preference remains active. Disable it and confirm the normal appearance returns.
 10. While signed in, open a previously saved 2D graph, enable Autosave in Settings, edit the graph, and wait 60 seconds. Confirm Desmos saves it. Disable Autosave and confirm no further automatic save is requested. Autosave does not run on the new unsaved calculator page.
@@ -275,7 +275,7 @@ several calculator-specific sections. No account credentials are required.
 - [ ] SVG import tested.
 - [ ] Direct and optimized OBJ import tested on Desmos 3D; MAX warning and flame state checked.
 - [ ] Starter ticker add, advance, conflict, and removal behavior tested.
-- [ ] Function reference images plus library add, replace, call, and removal tested.
+- [ ] Function reference images plus individual and full-library add, replace, call, and removal tested.
 - [ ] DesAudify Auto tested with a short non-private audio file.
 - [ ] Dark mode tested on, off, and after a page reload.
 - [ ] Autosave tested on a saved signed-in graph and confirmed inactive after disabling.
@@ -300,7 +300,7 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.21.0 Web Store edition:** Graph, pop-out, visual function reference,
+- **v1.22.0 Web Store edition:** Graph, pop-out, individually injectable visual function reference,
   autosave, dark mode, SVG, 3D OBJ import including warned MAX mode, starter
   ticker, and DesAudify, with no DesModder or
   WakaTime code.

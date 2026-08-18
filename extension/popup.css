@@ -390,7 +390,9 @@ section[hidden] {
 
 .function-entry {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   min-width: 0;
+  align-items: center;
   gap: 5px;
   padding: 8px;
   border-right: 1px solid #000;
@@ -398,6 +400,7 @@ section[hidden] {
 }
 
 .function-entry img {
+  grid-column: 1 / -1;
   display: block;
   width: auto;
   max-width: 100%;
@@ -407,10 +410,18 @@ section[hidden] {
 }
 
 .function-entry code {
+  grid-column: 1;
   min-width: 0;
   overflow-wrap: anywhere;
   font-size: 11px;
   line-height: 1.35;
+}
+
+.function-add {
+  grid-column: 2;
+  min-height: 28px;
+  padding: 0 10px;
+  font-size: 11px;
 }
 
 .segmented-control {

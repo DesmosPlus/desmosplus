@@ -105,8 +105,8 @@ checks for the optional DesModder edition when it is published:
    duplication, remove it without changing unrelated expressions, and confirm
    a pre-existing unrelated ticker is never replaced.
 8. Confirm all bundled Functions equation images and plain-text formulas render.
-   Add the library to a 2D graph, call at least one definition, add it again to
-   confirm it does not duplicate, then remove it without changing unrelated
+   Add two definitions individually, add one again to confirm only it is
+   replaced, then add the full library and remove it without changing unrelated
    expressions.
 9. Test DesAudify Auto import with a short non-private audio file.
 10. Open every popup tab and verify keyboard and pointer controls. Confirm

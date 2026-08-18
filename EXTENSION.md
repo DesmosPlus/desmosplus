@@ -51,7 +51,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.21.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.21.0/DesmosPlus-Extension-v1.21.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.21.0) |
+| **v1.22.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.22.0/DesmosPlus-Extension-v1.22.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.22.0) |
+| v1.21.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.21.0/DesmosPlus-Extension-v1.21.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.21.0) |
 | v1.20.1 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.1/DesmosPlus-Extension-v1.20.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.1) |
 | v1.20.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.0/DesmosPlus-Extension-v1.20.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.0) |
 | v1.19.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.19.0/DesmosPlus-Extension-v1.19.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.19.0) |
@@ -93,7 +94,7 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.21.0 uses Settings for dark mode and autosave,
+DesModder Settings tab. Version 1.22.0 uses Settings for dark mode and autosave,
 adds separate 3D and Functions tabs, and does not include DesModder.
 
 | 1. Graph transfer | 2. SVG import |
@@ -302,8 +303,8 @@ only the DesmosPlus-owned folder and ticker.
 
 1. Open the official Desmos 2D Graphing Calculator.
 2. Open DesmosPlus and select **Functions**.
-3. Select **Add library**.
-4. Open the new **Desmos+ Functions** folder to inspect or edit the definitions.
+3. Select **Add** beside one definition, or select **Add library** for all 14.
+4. Open the **Desmos+ Functions** folder to inspect or edit the definitions.
 
 The library adds normalized sinc, clamp, linear interpolation, fractional part,
 hypotenuse, logistic, sign, decimal-place rounding, versine, haversine, range
@@ -314,6 +315,10 @@ The Functions tab includes a scrollable reference for all 14 definitions. Each
 entry pairs a bundled, path-based LaTeX SVG with a readable plain-text formula.
 The images are generated locally by `scripts/generate-function-equations.py`
 and require no network or runtime math-rendering dependency.
+
+Each row can inject its function independently. Repeating an individual add
+replaces only that DesmosPlus-owned definition; it does not duplicate the
+function, remove other library entries, or change unrelated graph expressions.
 
 Every definition is an ordinary Desmos expression. It is saved and exported as
 part of the graph, can be edited directly, and does not require a runtime patch.
