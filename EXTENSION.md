@@ -6,6 +6,8 @@ and OBJ models into editable Desmos equations, converts audio files into
 playable graphs, adds reusable function definitions and a starter ticker, adds
 a dark theme, and can periodically save signed-in Desmos graphs. Processing
 happens locally in the browser.
+Tool sections use short directional transitions and switch instantly when the
+browser's reduced-motion preference is enabled.
 
 DesmosPlus is an independent project. It is not affiliated with, endorsed by,
 or maintained by Desmos Studio PBC.
@@ -49,7 +51,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.20.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.0/DesmosPlus-Extension-v1.20.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.0) |
+| **v1.20.1 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.1/DesmosPlus-Extension-v1.20.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.1) |
+| v1.20.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.0/DesmosPlus-Extension-v1.20.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.0) |
 | v1.19.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.19.0/DesmosPlus-Extension-v1.19.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.19.0) |
 | v1.18.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.18.0/DesmosPlus-Extension-v1.18.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.18.0) |
 | v1.17.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.17.0/DesmosPlus-Extension-v1.17.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.17.0) |
@@ -89,7 +92,7 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.20.0 uses Settings for dark mode and autosave,
+DesModder Settings tab. Version 1.20.1 uses Settings for dark mode and autosave,
 adds a separate 3D tab, and does not include DesModder.
 
 | 1. Graph transfer | 2. SVG import |

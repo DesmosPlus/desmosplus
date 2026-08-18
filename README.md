@@ -163,10 +163,10 @@ the same `http://127.0.0.1:8765` address.
 ## Browser Extension
 
 Installation, graph transfer, the movable and resizable unsupported-site graph
-pop-out and minimized icon, toggleable dark mode, SVG conversion, DesAudify
-audio import, 3D OBJ import, starter ticker setup, reusable function
-definitions, opt-in autosave, permissions, troubleshooting, and extension
-development are documented in
+pop-out and minimized icon, smooth popup navigation, toggleable dark mode, SVG
+conversion, DesAudify audio import, 3D OBJ import, starter ticker setup,
+reusable function definitions, opt-in autosave, permissions, troubleshooting,
+and extension development are documented in
 [`EXTENSION.md`](EXTENSION.md).
 
 Every future extension version must publish the standard edition without

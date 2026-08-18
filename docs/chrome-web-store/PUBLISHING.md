@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.20.0.zip` |
-| SHA-256 | `d87f04ccaeb5c33def213f887629b60a6af6a25d77a245f0655c6a7960dc8da3` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.20.1.zip` |
+| SHA-256 | `8eede7233d65296da57b75db15a42dff0df27de45a052513b1ea65f70bca2c44` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,9 +27,9 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.20.0, which excludes
+> contain the GitHub DesModder integration. Use v1.20.1, which excludes
 > DesModder, its injection settings, background loader, WakaTime access, and
-> related permissions. The v1.20.0 Settings tab controls dark mode and autosave.
+> related permissions. The v1.20.1 Settings tab controls dark mode and autosave.
 
 ## Account Setup
 
@@ -50,7 +50,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.20.0.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.20.1.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
@@ -116,6 +116,9 @@ Export large audio projects as organized shard ZIPs that can be added to a graph
 
 • Multiple calculator types
 Transfer graphs across supported Desmos Graphing, Geometry, 3D, Notebook, Matrix, Scientific, and Four Function calculators.
+
+• Smooth tool navigation
+Move between extension sections with short directional transitions. Reduced-motion preferences are respected.
 
 • Local processing
 Graph, SVG, OBJ, and audio processing runs locally in your browser.
@@ -297,7 +300,7 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.20.0 Web Store edition:** Graph, pop-out, functions, autosave, dark mode,
+- **v1.20.1 Web Store edition:** Graph, pop-out, functions, autosave, dark mode,
   SVG, 3D OBJ import, starter ticker, and DesAudify, with no DesModder or
   WakaTime code.
 - **Older GitHub editions:** v1.11.0 through v1.14.1 include DesModder. A future

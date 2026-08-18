@@ -107,7 +107,9 @@ checks for the optional DesModder edition when it is published:
    again to confirm it does not duplicate, then remove it without changing
    unrelated expressions.
 9. Test DesAudify Auto import with a short non-private audio file.
-10. Open every popup tab and verify keyboard and pointer controls.
+10. Open every popup tab and verify keyboard and pointer controls. Confirm
+    transitions settle on one panel after rapid switching and that reduced
+    motion switches instantly.
 11. Toggle dark mode on and off, reload an official Desmos calculator, and verify
    that the saved state applies without remote requests.
 12. Enable autosave on a saved signed-in 2D graph, verify one save request after

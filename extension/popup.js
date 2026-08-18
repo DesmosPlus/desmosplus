@@ -48,6 +48,8 @@
     desaudify: false,
   };
   var busy = false;
+  var panelAnimation = null;
+  var panelTransitionId = 0;
   var audioAction = "import";
   var POPOUT_URL = "https://desmosplus.pages.dev/2dcalculator";
   var DARK_MODE_KEY = "desmosPlusDarkModeEnabled";
@@ -513,18 +515,86 @@
     });
   }
 
-  function selectView(view) {
+  function updateViewChrome(view) {
     document.querySelectorAll("[data-view]").forEach(function (button) {
       var selected = button.dataset.view === view;
       button.setAttribute("aria-selected", String(selected));
       button.tabIndex = selected ? 0 : -1;
     });
+  }
+
+  function finishViewSelection(view) {
     document.querySelectorAll("[data-panel]").forEach(function (panel) {
       panel.hidden = panel.dataset.panel !== view;
     });
     desaudifyProjectLink.hidden = view !== "desaudify";
     updateFlameEffects({ view: view });
     if (view !== "desaudify") closeModeMenu(false);
+  }
+
+  function selectView(view) {
+    var currentPanel = document.querySelector("[data-panel]:not([hidden])");
+    var nextPanel = document.querySelector('[data-panel="' + view + '"]');
+    if (!nextPanel) return;
+
+    updateViewChrome(view);
+    panelTransitionId += 1;
+    var transitionId = panelTransitionId;
+    if (panelAnimation) {
+      panelAnimation.cancel();
+      panelAnimation = null;
+    }
+
+    var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!currentPanel || currentPanel === nextPanel || reducedMotion) {
+      finishViewSelection(view);
+      return;
+    }
+
+    var buttons = Array.from(document.querySelectorAll("[data-view]"));
+    var currentIndex = buttons.findIndex(function (button) {
+      return button.dataset.view === currentPanel.dataset.panel;
+    });
+    var nextIndex = buttons.findIndex(function (button) {
+      return button.dataset.view === view;
+    });
+    var direction = nextIndex >= currentIndex ? 1 : -1;
+
+    var outgoingAnimation = currentPanel.animate(
+      [
+        { opacity: 1, transform: "translateX(0)" },
+        { opacity: 0, transform: "translateX(" + -8 * direction + "px)" },
+      ],
+      { duration: 90, easing: "ease-out", fill: "forwards" },
+    );
+    panelAnimation = outgoingAnimation;
+    outgoingAnimation.finished
+      .catch(function () {})
+      .then(function () {
+        if (transitionId !== panelTransitionId) return;
+        finishViewSelection(view);
+        outgoingAnimation.cancel();
+        var incomingAnimation = nextPanel.animate(
+          [
+            { opacity: 0, transform: "translateX(" + 8 * direction + "px)" },
+            { opacity: 1, transform: "translateX(0)" },
+          ],
+          {
+            duration: 160,
+            easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+            fill: "both",
+          },
+        );
+        panelAnimation = incomingAnimation;
+        incomingAnimation.finished
+          .catch(function () {})
+          .then(function () {
+            if (transitionId === panelTransitionId) {
+              incomingAnimation.cancel();
+              panelAnimation = null;
+            }
+          });
+      });
   }
 
   function numericSetting(id, fallback) {
@@ -661,6 +731,11 @@
   }
 
   function showPopoutState() {
+    panelTransitionId += 1;
+    if (panelAnimation) {
+      panelAnimation.cancel();
+      panelAnimation = null;
+    }
     tabsNode.hidden = true;
     document.querySelectorAll("[data-panel]").forEach(function (panel) {
       panel.hidden = true;
