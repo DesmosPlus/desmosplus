@@ -107,6 +107,13 @@ if (!members.includes("obj-import.js")) {
 if (!members.includes("DESLOADER-LICENSE")) {
   throw new Error("Packaged extension is missing the DesLoader MIT license.");
 }
+const functionEquationAssets = [
+  "acosh", "asinh", "atanh", "clamp", "frac", "haversin", "hypot",
+  "lerp", "logistic", "roundto", "sign", "sinc", "versin", "wrap",
+].map((name) => `equations/${name}.svg`);
+if (functionEquationAssets.some((member) => !members.includes(member))) {
+  throw new Error("Packaged extension is missing a function equation image.");
+}
 if (members.some((member) => member.includes(".DS_Store") || member.endsWith(".zip"))) {
   throw new Error("Packaged extension contains excluded metadata or archives.");
 }

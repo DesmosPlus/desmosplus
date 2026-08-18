@@ -26,6 +26,7 @@
   var customSettings = document.getElementById("desaudify-custom-settings");
   var objModeInput = document.getElementById("obj-mode");
   var objModeSummary = document.getElementById("obj-mode-summary");
+  var objMaxWarning = document.getElementById("obj-max-warning");
   var settingsSummary = document.getElementById("desaudify-settings-summary");
   var maxWarning = document.getElementById("desaudify-max-warning");
   var desaudifyProjectLink = document.getElementById("desaudify-project-link");
@@ -80,6 +81,11 @@
     "DesmosPlus safety limits and may exhaust CPU or RAM, freeze or crash the " +
     "browser or Desmos, and lose unsaved work. The extension owner is not " +
     "responsible for anything that happens beyond this point. Continue?";
+  var OBJ_MAX_CONFIRMATION =
+    "OBJ MAX removes DesmosPlus file-size and triangle safeguards. Large models " +
+    "may exhaust CPU or RAM, freeze or crash the browser or Desmos, and lose " +
+    "unsaved work. The extension owner is not responsible for anything that " +
+    "happens beyond this point. Continue?";
 
   function productFromUrl(value) {
     var url = new URL(value);
@@ -419,14 +425,19 @@
   }
 
   function setObjMode(mode) {
-    objModeInput.value = mode === "direct" ? "direct" : "optimized";
+    objModeInput.value = mode === "direct" ? "direct" : mode === "max" ? "max" : "optimized";
     document.querySelectorAll("[data-obj-mode]").forEach(function (button) {
       button.setAttribute("aria-pressed", String(button.dataset.objMode === objModeInput.value));
     });
-    objModeSummary.textContent =
-      objModeInput.value === "direct"
-        ? "One expression per face, up to 2,500 triangles"
-        : "Indexed arrays, up to 50,000 triangles";
+    if (objModeInput.value === "direct") {
+      objModeSummary.textContent = "One expression per face, up to 2,500 triangles";
+    } else if (objModeInput.value === "max") {
+      objModeSummary.textContent = "Indexed arrays with no DesmosPlus file-size or triangle limit";
+    } else {
+      objModeSummary.textContent = "Indexed arrays, up to 50,000 triangles";
+    }
+    objMaxWarning.hidden = objModeInput.value !== "max";
+    updateFlameEffects({ objMaxActive: objModeInput.value === "max" });
   }
 
   function modeOptions() {
@@ -919,7 +930,7 @@
       var page = await inspectPage();
       if (page.product !== "3dcalculator") throw new Error("Open Desmos 3D Calculator.");
       if (!window.DesmosPlusObj) throw new Error("OBJ importer did not load.");
-      if (file.size > window.DesmosPlusObj.limits.fileBytes) {
+      if (objModeInput.value !== "max" && file.size > window.DesmosPlusObj.limits.fileBytes) {
         throw new Error("OBJ files must be 15 MB or smaller.");
       }
       var converted = window.DesmosPlusObj.parse(await file.text(), {
@@ -1197,6 +1208,7 @@
     svgFile.click();
   });
   objImportButton.addEventListener("click", function () {
+    if (objModeInput.value === "max" && !window.confirm(OBJ_MAX_CONFIRMATION)) return;
     objFile.click();
   });
   tickerAddButton.addEventListener("click", function () {

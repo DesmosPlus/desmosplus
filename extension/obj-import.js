@@ -136,10 +136,11 @@
 
   function parse(text, options) {
     options = options || {};
-    if (String(text || "").length > MAX_FILE_BYTES) {
+    var mode =
+      options.mode === "direct" ? "direct" : options.mode === "max" ? "max" : "optimized";
+    if (mode !== "max" && String(text || "").length > MAX_FILE_BYTES) {
       throw new Error("OBJ files must be 15 MB or smaller.");
     }
-    var mode = options.mode === "direct" ? "direct" : "optimized";
     var geometry = parseGeometry(text);
     if (mode === "direct" && geometry.triangles.length > MAX_DIRECT_TRIANGLES) {
       throw new Error("Direct mode supports up to 2,500 triangles. Use Optimized mode for this model.");
@@ -155,7 +156,9 @@
       {
         id: folderId,
         type: "folder",
-        title: safeTitle(options.name) + (mode === "optimized" ? " (optimized)" : ""),
+        title:
+          safeTitle(options.name) +
+          (mode === "optimized" ? " (optimized)" : mode === "max" ? " (MAX)" : ""),
         collapsed: true,
       },
     ];

@@ -99,13 +99,15 @@ checks for the optional DesModder edition when it is published:
 4. Test Graph export and import on a supported official Desmos page.
 5. Test SVG import on the 2D Graphing Calculator.
 6. Test direct and optimized OBJ import on the 3D Graphing Calculator. Confirm
-   the imported expressions parse and render as 3D triangles.
+   the imported expressions parse and render as 3D triangles. Open MAX, confirm
+   its warning and Flame Wrap state, and verify it remains disabled by default.
 7. Add the starter ticker, confirm elapsed time advances, add it again without
    duplication, remove it without changing unrelated expressions, and confirm
    a pre-existing unrelated ticker is never replaced.
-8. Add the Functions library to a 2D graph, call at least one definition, add it
-   again to confirm it does not duplicate, then remove it without changing
-   unrelated expressions.
+8. Confirm all bundled Functions equation images and plain-text formulas render.
+   Add the library to a 2D graph, call at least one definition, add it again to
+   confirm it does not duplicate, then remove it without changing unrelated
+   expressions.
 9. Test DesAudify Auto import with a short non-private audio file.
 10. Open every popup tab and verify keyboard and pointer controls. Confirm
     transitions settle on one panel after rapid switching and that reduced

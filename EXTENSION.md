@@ -51,7 +51,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.20.1 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.1/DesmosPlus-Extension-v1.20.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.1) |
+| **v1.21.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.21.0/DesmosPlus-Extension-v1.21.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.21.0) |
+| v1.20.1 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.1/DesmosPlus-Extension-v1.20.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.1) |
 | v1.20.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.0/DesmosPlus-Extension-v1.20.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.0) |
 | v1.19.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.19.0/DesmosPlus-Extension-v1.19.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.19.0) |
 | v1.18.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.18.0/DesmosPlus-Extension-v1.18.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.18.0) |
@@ -92,8 +93,8 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.20.1 uses Settings for dark mode and autosave,
-adds a separate 3D tab, and does not include DesModder.
+DesModder Settings tab. Version 1.21.0 uses Settings for dark mode and autosave,
+adds separate 3D and Functions tabs, and does not include DesModder.
 
 | 1. Graph transfer | 2. SVG import |
 | --- | --- |
@@ -271,18 +272,25 @@ choose an OBJ mode, and select **Import OBJ**.
 | --- | --- | --- |
 | Direct | One editable `triangle` expression for every triangulated face | 2,500 triangles |
 | Optimized | Indexed vertex and face lists with vectorized `triangle` expressions | 50,000 triangles |
+| MAX | The same indexed representation as Optimized | No DesmosPlus file-size or triangle cap |
 
 Optimized mode is the default and uses substantially fewer Desmos expressions.
-Large optimized models are split into bounded chunks so no single vertex list
-or surface expression grows without limit. Direct mode is useful when every
-face needs to remain individually editable.
+Large optimized and MAX models are split into bounded chunks so no single
+vertex list or surface expression grows without limit. Direct mode is useful
+when every face needs to remain individually editable.
+
+MAX displays the purple Flame Wrap frame used by other unrestricted tools and
+changes the MAX control to blue while it is hovered or keyboard-focused. Its
+warning must be accepted before choosing a file. MAX removes the extension's
+15 MB file-size and 50,000-triangle safeguards; it does not remove browser,
+memory, computer, or Desmos evaluator limits.
 
 The importer supports OBJ vertex and face records, slash-separated face
 references, negative indexes, triangles, quads, and polygon faces. Quads and
 polygons are triangulated with a fan. Materials, textures, normals, smoothing
 groups, curves, and scene transforms are not imported. OBJ files are processed
-locally, must be 15 MB or smaller, and must use finite coordinates within one
-billion units.
+locally and must use finite coordinates within one billion units. Direct and
+Optimized mode files must be 15 MB or smaller; MAX removes that extension cap.
 
 Select **Add ticker** to create a collapsed **Desmos+ Starter Ticker** folder
 with `t_elapsed`, an update function, and a native Desmos ticker. The value is
@@ -301,6 +309,11 @@ The library adds normalized sinc, clamp, linear interpolation, fractional part,
 hypotenuse, logistic, sign, decimal-place rounding, versine, haversine, range
 wrapping, and the inverse hyperbolic sine, cosine, and tangent. Calls use Desmos
 subscript names, such as `f_{sinc}(x)` and `f_{clamp}(x,a,b)`.
+
+The Functions tab includes a scrollable reference for all 14 definitions. Each
+entry pairs a bundled, path-based LaTeX SVG with a readable plain-text formula.
+The images are generated locally by `scripts/generate-function-equations.py`
+and require no network or runtime math-rendering dependency.
 
 Every definition is an ordinary Desmos expression. It is saved and exported as
 part of the graph, can be edited directly, and does not require a runtime patch.
@@ -430,7 +443,7 @@ function-library changes, and DesAudify run only after a user action.
 | `.desmosplus.json` | Legacy wrapped graph format |
 | `.json` | Raw Desmos state or wrapped graph state |
 | `.svg` | Static vector import, up to 1 MB |
-| `.obj` | 3D geometry import, up to 15 MB; 2,500 direct or 50,000 optimized triangles |
+| `.obj` | 3D geometry import; Direct and Optimized cap files at 15 MB, Direct allows 2,500 triangles, Optimized allows 50,000, and warned MAX removes those extension caps |
 | Audio | Browser-decodable audio; standard modes allow 100 MB and five minutes, while MAX removes those extension caps |
 | `.zip` | DesAudify-only player UI and individually copyable `.desmos` shard graphs |
 | `.txt` | DesAudify schemas, up to 6 MB and 500 non-empty equations per file |
@@ -516,10 +529,12 @@ The extension's main files are:
 | `extension/dark-mode.js` | Stored dark-mode preference and live page toggle |
 | `extension/dark-mode.css` | Page-scoped Desmos dark theme |
 | `extension/autosave.js` | Opt-in 60-second save timer for saved official 2D graphs |
-| `extension/flame-effects.js` | DesAudify MAX Flame Wrap lifecycle and colors |
+| `extension/flame-effects.js` | DesAudify and OBJ MAX Flame Wrap lifecycle and colors |
 | `extension/vendor/flame-wrap.js` | Pinned Canvas UI Flame Wrap WebGL engine |
 | `extension/svg-import.js` | Static SVG validation and equation conversion |
-| `extension/obj-import.js` | Local OBJ parsing and direct or optimized 3D expression generation |
+| `extension/obj-import.js` | Local OBJ parsing and direct, optimized, or MAX 3D expression generation |
+| `extension/equations/*.svg` | Bundled path-based equation images for the Functions reference |
+| `scripts/generate-function-equations.py` | Rebuilds the Functions reference SVGs from LaTeX source |
 | `extension/desaudify-audio.js` | Audio decoding and worker orchestration |
 | `extension/desaudify-audio-worker.js` | FFT analysis and schema generation |
 | `extension/desaudify-export.js` | DesAudify shard graph and local ZIP generation |

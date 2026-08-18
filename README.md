@@ -48,7 +48,8 @@ audio-resynthesis equations.
 - Local New, Save, Library, category, open, edit, and delete workflows.
 - Browser-local persistence with no application database.
 - [Chrome MV3 extension](EXTENSION.md) for graph transfer, autosave, dark mode,
-  SVG and OBJ conversion, starter ticker setup, and audio import.
+  SVG and OBJ conversion, unrestricted OBJ MAX imports, a visual function
+  reference, starter ticker setup, and audio import.
 - Static SVG import for local Desmos 2D and Geometry graphs.
 - Manual DesAudify player and schema import on the local 2D calculator.
 - Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.

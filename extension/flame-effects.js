@@ -33,13 +33,26 @@
     distortion: 10,
     smoke: 1.5,
   });
-  var state = { view: "graph", menuOpen: false, maxActive: false };
-  var optionInstance = null;
+  var state = { view: "graph", menuOpen: false, maxActive: false, objMaxActive: false };
   var frameInstance = null;
-  var optionHighlighted = false;
-  var maxWrap = document.getElementById("desaudify-max-flame-wrap");
-  var maxOption = document.getElementById("desaudify-max-option");
-  var maxCanvas = document.getElementById("desaudify-max-flame-canvas");
+  var optionEffects = [
+    {
+      view: "desaudify",
+      wrap: document.getElementById("desaudify-max-flame-wrap"),
+      option: document.getElementById("desaudify-max-option"),
+      canvas: document.getElementById("desaudify-max-flame-canvas"),
+      instance: null,
+      highlighted: false,
+    },
+    {
+      view: "three-d",
+      wrap: document.getElementById("obj-max-flame-wrap"),
+      option: document.getElementById("obj-max-option"),
+      canvas: document.getElementById("obj-max-flame-canvas"),
+      instance: null,
+      highlighted: false,
+    },
+  ];
   var frameTarget = document.getElementById("desaudify-flame-frame");
   var frameCanvas = document.getElementById("desaudify-flame-canvas");
 
@@ -69,36 +82,43 @@
     return null;
   }
 
-  function optionColor() {
-    if (optionInstance) {
-      optionInstance.setOptions({ color: optionHighlighted ? BLUE : PURPLE });
+  function optionColor(effect) {
+    if (effect.instance) {
+      effect.instance.setOptions({ color: effect.highlighted ? BLUE : PURPLE });
     }
-    maxWrap.setAttribute("data-highlighted", String(optionHighlighted));
+    effect.wrap.setAttribute("data-highlighted", String(effect.highlighted));
   }
 
-  function setOptionHighlighted(value) {
-    optionHighlighted = value;
-    optionColor();
+  function setOptionHighlighted(effect, value) {
+    effect.highlighted = value;
+    render();
+  }
+
+  function syncOptionEffect(effect, visible) {
+    effect.wrap.setAttribute("data-flame-active", String(visible));
+    if (visible && !effect.instance) {
+      effect.instance = createEffect(effect.option, effect.canvas, OPTION_CONFIG);
+      optionColor(effect);
+    } else if (!visible && effect.instance) {
+      effect.instance = destroyEffect(effect.instance, effect.canvas);
+    } else if (visible && effect.instance) {
+      optionColor(effect);
+      effect.instance.resize();
+    }
   }
 
   function render() {
     var inDesAudify = state.view === "desaudify";
-    var showOption = inDesAudify && state.menuOpen;
-    var showFrame = inDesAudify && state.maxActive;
+    var inObj = state.view === "three-d";
+    var showFrame = (inDesAudify && state.maxActive) || (inObj && state.objMaxActive);
 
     document.body.setAttribute("data-desaudify-view", String(inDesAudify));
     document.body.setAttribute("data-max-flame", String(showFrame));
-    maxWrap.setAttribute("data-flame-active", String(showOption));
-
-    if (showOption && !optionInstance) {
-      optionInstance = createEffect(maxOption, maxCanvas, OPTION_CONFIG);
-      optionColor();
-    } else if (!showOption && optionInstance) {
-      optionInstance = destroyEffect(optionInstance, maxCanvas);
-      setOptionHighlighted(false);
-    } else if (showOption && optionInstance) {
-      optionInstance.resize();
-    }
+    syncOptionEffect(optionEffects[0], inDesAudify && state.menuOpen);
+    syncOptionEffect(
+      optionEffects[1],
+      inObj && (state.objMaxActive || optionEffects[1].highlighted),
+    );
 
     if (showFrame && !frameInstance) {
       frameInstance = createEffect(frameTarget, frameCanvas, FRAME_CONFIG);
@@ -109,20 +129,24 @@
     }
   }
 
-  maxWrap.addEventListener("pointerenter", function () {
-    setOptionHighlighted(true);
-  });
-  maxWrap.addEventListener("pointerleave", function () {
-    setOptionHighlighted(document.activeElement === maxOption);
-  });
-  maxOption.addEventListener("focus", function () {
-    setOptionHighlighted(true);
-  });
-  maxOption.addEventListener("blur", function () {
-    setOptionHighlighted(maxWrap.matches(":hover"));
+  optionEffects.forEach(function (effect) {
+    effect.wrap.addEventListener("pointerenter", function () {
+      setOptionHighlighted(effect, true);
+    });
+    effect.wrap.addEventListener("pointerleave", function () {
+      setOptionHighlighted(effect, document.activeElement === effect.option);
+    });
+    effect.option.addEventListener("focus", function () {
+      setOptionHighlighted(effect, true);
+    });
+    effect.option.addEventListener("blur", function () {
+      setOptionHighlighted(effect, effect.wrap.matches(":hover"));
+    });
   });
   window.addEventListener("pagehide", function () {
-    optionInstance = destroyEffect(optionInstance, maxCanvas);
+    optionEffects.forEach(function (effect) {
+      effect.instance = destroyEffect(effect.instance, effect.canvas);
+    });
     frameInstance = destroyEffect(frameInstance, frameCanvas);
   });
 
@@ -132,7 +156,9 @@
       render();
     },
     destroy: function () {
-      optionInstance = destroyEffect(optionInstance, maxCanvas);
+      optionEffects.forEach(function (effect) {
+        effect.instance = destroyEffect(effect.instance, effect.canvas);
+      });
       frameInstance = destroyEffect(frameInstance, frameCanvas);
     },
   };

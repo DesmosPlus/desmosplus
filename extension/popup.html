@@ -82,11 +82,21 @@
           <p>Convert a local OBJ model into editable Desmos 3D expressions.</p>
         </div>
         <input id="obj-mode" type="hidden" value="optimized">
-        <div class="segmented-control" role="group" aria-label="OBJ import mode">
+        <div class="segmented-control obj-mode-control" role="group" aria-label="OBJ import mode">
           <button type="button" data-obj-mode="direct" aria-pressed="false">Direct</button>
           <button type="button" data-obj-mode="optimized" aria-pressed="true">Optimized</button>
+          <div class="segmented-max-wrap" id="obj-max-flame-wrap">
+            <button id="obj-max-option" type="button" data-obj-mode="max" aria-pressed="false">MAX</button>
+            <canvas id="obj-max-flame-canvas" class="max-flame-canvas" aria-hidden="true" hidden></canvas>
+          </div>
         </div>
         <p id="obj-mode-summary" class="settings-summary">Indexed arrays, up to 50,000 triangles</p>
+        <p id="obj-max-warning" class="mode-warning" hidden>
+          <strong>Warning:</strong> MAX removes DesmosPlus file-size and triangle
+          safeguards. Large models may exhaust CPU or RAM, freeze or crash the
+          browser or Desmos, and lose unsaved work. The extension owner is not
+          responsible for anything that happens beyond this point.
+        </p>
         <button id="import-obj" type="button" data-action disabled>Import OBJ</button>
         <div class="tool-divider">
           <h2>Starter ticker</h2>
@@ -103,21 +113,63 @@
           <h2>Function library</h2>
           <p>Add editable definitions that Desmos does not provide natively.</p>
         </div>
-        <div class="function-list" aria-label="Included functions">
-          <code>f_sinc(x)</code>
-          <code>f_clamp(x,a,b)</code>
-          <code>f_lerp(a,b,t)</code>
-          <code>f_frac(x)</code>
-          <code>f_hypot(x,y)</code>
-          <code>f_logistic(x)</code>
-          <code>f_sign(x)</code>
-          <code>f_roundto(x,n)</code>
-          <code>f_versin(x)</code>
-          <code>f_haversin(x)</code>
-          <code>f_asinh(x)</code>
-          <code>f_acosh(x)</code>
-          <code>f_atanh(x)</code>
-          <code>f_wrap(x,a,b)</code>
+        <div class="function-list" aria-label="Included function equations">
+          <div class="function-entry">
+            <img src="equations/sinc.svg" alt="sinc of x equals 1 at zero, otherwise sine of pi x divided by pi x">
+            <code>f_sinc(x) = 1 if x = 0; otherwise sin(pi*x)/(pi*x)</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/clamp.svg" alt="clamp of x from a to b equals the minimum of the maximum of x and a, and b">
+            <code>f_clamp(x,a,b) = min(max(x,a),b)</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/lerp.svg" alt="linear interpolation from a to b at t equals a plus b minus a times t">
+            <code>f_lerp(a,b,t) = a + (b-a)*t</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/frac.svg" alt="fractional part of x equals x minus floor x">
+            <code>f_frac(x) = x - floor(x)</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/hypot.svg" alt="hypotenuse of x and y equals the square root of x squared plus y squared">
+            <code>f_hypot(x,y) = sqrt(x^2 + y^2)</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/logistic.svg" alt="logistic of x equals one divided by one plus e to the negative x">
+            <code>f_logistic(x) = 1/(1 + e^(-x))</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/sign.svg" alt="sign of x equals one above zero, negative one below zero, and zero at zero">
+            <code>f_sign(x) = 1 if x &gt; 0; -1 if x &lt; 0; otherwise 0</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/roundto.svg" alt="round x to n decimal places">
+            <code>f_roundto(x,n) = round(10^n*x)/10^n</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/versin.svg" alt="versed sine of x equals one minus cosine x">
+            <code>f_versin(x) = 1 - cos(x)</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/haversin.svg" alt="haversine of x equals sine squared of x over two">
+            <code>f_haversin(x) = sin(x/2)^2</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/asinh.svg" alt="inverse hyperbolic sine equation">
+            <code>f_asinh(x) = ln(x + sqrt(x^2 + 1))</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/acosh.svg" alt="inverse hyperbolic cosine equation">
+            <code>f_acosh(x) = ln(x + sqrt(x^2 - 1))</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/atanh.svg" alt="inverse hyperbolic tangent equation">
+            <code>f_atanh(x) = ln((1+x)/(1-x))/2</code>
+          </div>
+          <div class="function-entry">
+            <img src="equations/wrap.svg" alt="wrap x into the interval from a to b">
+            <code>f_wrap(x,a,b) = a + mod(x-a,b-a)</code>
+          </div>
         </div>
         <div class="actions two-columns">
           <button id="functions-add" type="button" data-action disabled>Add library</button>
