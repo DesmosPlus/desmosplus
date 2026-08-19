@@ -1,0 +1,11 @@
+Desmos Unlocked integration
+
+Upstream: https://github.com/SinclaM/desmos-unlocked
+Upstream version: 1.1.2
+Upstream commit: aa1c0aefba37db4de8a73e005f9371eedb14fe1b
+License: MIT; see DESMOS-UNLOCKED-LICENSE
+
+DesmosPlus bundles an adapted local runtime so the shortcut engine remains
+offline. It uses the current calculator's exposed MathQuill field API instead
+of replacing the official calculator bundle. The popup uses a locally generated
+catalog from the upstream shortcut definitions and MathQuill symbol mappings.

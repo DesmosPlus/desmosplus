@@ -1,9 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Desmos+",
-  "version": "1.23.0",
+  "version": "1.24.0",
   "description": "Transfer graphs, make songs in Desmos, convert SVGs into Desmos graphs, and so much more!",
-  "permissions": ["activeTab", "scripting", "storage"],
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": ["https://www.desmos.com/calculator*"],
   "content_scripts": [
     {
       "matches": [
@@ -22,6 +27,14 @@
       ],
       "js": ["autosave.js"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.desmos.com/calculator*"],
+      "js": [
+        "vendor/desmos-unlocked/catalog.js",
+        "vendor/desmos-unlocked/content.js"
+      ],
+      "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
@@ -36,6 +49,10 @@
         "https://*.desmos.com/*",
         "https://desmosplus.pages.dev/*"
       ]
+    },
+    {
+      "resources": ["vendor/desmos-unlocked/script.js"],
+      "matches": ["https://www.desmos.com/*"]
     }
   ],
   "icons": {

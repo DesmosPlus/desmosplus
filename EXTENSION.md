@@ -54,7 +54,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.23.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.23.0/DesmosPlus-Extension-v1.23.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.23.0) |
+| **v1.24.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.0/DesmosPlus-Extension-v1.24.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.0) |
+| v1.23.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.23.0/DesmosPlus-Extension-v1.23.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.23.0) |
 | v1.22.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.22.0/DesmosPlus-Extension-v1.22.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.22.0) |
 | v1.21.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.21.0/DesmosPlus-Extension-v1.21.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.21.0) |
 | v1.20.1 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.1/DesmosPlus-Extension-v1.20.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.1) |
@@ -98,8 +99,8 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.23.0 uses Settings for dark mode, autosave,
-and Modern Font, adds separate 3D and Functions tabs, and does not include
+DesModder Settings tab. Version 1.24.0 uses Settings for dark mode, autosave,
+and Modern Font, includes separate 3D and Functions tabs, and does not include
 DesModder.
 
 | 1. Graph transfer | 2. SVG import |
@@ -320,8 +321,26 @@ only the DesmosPlus-owned folder and ticker.
 
 1. Open the official Desmos 2D Graphing Calculator.
 2. Open DesmosPlus and select **Functions**.
-3. Select **Add** beside one definition, or select **Add library** for all 14.
-4. Open the **Desmos+ Functions** folder to inspect or edit the definitions.
+3. Configure individual editor shortcuts or select **Enable all** for the full
+   387-command catalog.
+4. Select **Add** beside one editable helper, or select **Add library** for all
+   14 helpers.
+5. Open the **Desmos+ Functions** folder to inspect or edit the definitions.
+
+The editor-shortcut section bundles the complete Desmos Unlocked 1.1.2 catalog:
+15 Desmos defaults, 41 basic symbols, 23 advanced commands, and 308 extended
+symbols and aliases. Each command has its own switch. **Enable all** turns on
+the complete catalog and the extended local MathQuill engine; **Disable all**
+turns both off. A search field and fixed-height scrolling list keep all 387
+commands usable without expanding the popup.
+
+The extended engine is opt-in and changes only enabled commands through the
+official calculator's exposed MathQuill field API. Its executable files are
+bundled with DesmosPlus, do not replace the calculator bundle, and do not load
+code from the network. Shortcut changes apply to the open calculator immediately.
+The integration is adapted from
+[Desmos Unlocked](https://github.com/SinclaM/desmos-unlocked) under its MIT
+license.
 
 The library adds normalized sinc, clamp, linear interpolation, fractional part,
 hypotenuse, logistic, sign, decimal-place rounding, versine, haversine, range
@@ -450,8 +469,8 @@ python desaudify_cli.py input.mp3 output
 | --- | --- |
 | `activeTab` | Grants temporary access to the current tab after the user opens the extension. |
 | `scripting` | Injects packaged code that reads or writes calculator state for graph, SVG, OBJ, ticker, function-library, and audio actions. |
-| `storage` | Stores the local dark-mode, autosave, and Modern Font on/off preferences. |
-| Desmos site access | Runs packaged dark-mode and Modern Font files on supported pages and the autosave timer on saved official 2D graphs. |
+| `storage` | Stores local dark-mode, autosave, Modern Font, and editor-shortcut preferences. |
+| Desmos site access | Runs packaged appearance tools and autosave on their supported pages, and limits the optional shortcut engine to `www.desmos.com/calculator`. |
 
 Selected graph, SVG, OBJ, schema, and audio files are processed locally and are
 not uploaded by DesmosPlus. Graph transfer, SVG and OBJ conversion, ticker and
@@ -559,6 +578,8 @@ The extension's main files are:
 | `extension/svg-import.js` | Static SVG validation and equation conversion |
 | `extension/obj-import.js` | Local OBJ parsing and direct, optimized, or MAX 3D expression generation |
 | `extension/equations/*.svg` | Bundled path-based equation images for the Functions reference |
+| `extension/vendor/desmos-unlocked/` | Bundled MIT-licensed editor engine and complete 387-command catalog |
+| `scripts/vendor-desmos-unlocked.mjs` | Rebuilds the shortcut catalog and symbol mappings from an upstream source checkout |
 | `scripts/generate-function-equations.py` | Rebuilds the Functions reference SVGs from LaTeX source |
 | `extension/desaudify-audio.js` | Audio decoding and worker orchestration |
 | `extension/desaudify-audio-worker.js` | FFT analysis and schema generation |

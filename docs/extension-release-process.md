@@ -32,17 +32,20 @@ The standard edition is built from `extension/` and must contain Graph, SVG,
 
 - DesModder or WakaTime source, text, paths, or web-accessible resources.
 - A DesModder Settings tab or auto-injection controls.
-- A background worker or DesModder content script.
-- `declarativeNetRequest` or WakaTime host permissions.
+- A DesModder background worker or content script.
+- WakaTime host permissions.
 
 Its manifest permissions are limited to `activeTab`, `scripting`, and `storage`.
 The standard-edition content scripts are the packaged dark-mode and Modern Font
-toggles plus the opt-in autosave timer. Dark mode and Modern Font are limited to
-official Desmos and hosted DesmosPlus pages; autosave is limited to official
-saved 2D calculator URLs. The only web-accessible resources are the three
-bundled Latin Modern font files. Any future permission, content script, or
-accessible resource requires a documented user-facing standard feature and
-updated Chrome Web Store disclosures.
+toggles, the opt-in autosave timer, and the bundled Desmos Unlocked shortcut
+configuration bridge. Dark mode and Modern Font are limited to official Desmos
+and hosted DesmosPlus pages; autosave is limited to official saved 2D calculator
+URLs. The optional shortcut engine uses the current calculator's exposed
+MathQuill field API on `www.desmos.com/calculator`; it does not replace or
+redirect the official calculator bundle. The web-accessible resources are the
+bundled Latin Modern font files and the packaged shortcut-engine script. Any future
+permission, content script, or accessible resource requires a documented
+user-facing standard feature and updated Chrome Web Store disclosures.
 
 ### DesModder Edition
 
@@ -106,10 +109,14 @@ checks for the optional DesModder edition when it is published:
 7. Add the starter ticker, confirm elapsed time advances, add it again without
    duplication, remove it without changing unrelated expressions, and confirm
    a pre-existing unrelated ticker is never replaced.
-8. Confirm all bundled Functions equation images and plain-text formulas render.
+8. Confirm the Functions tab shows all 387 editor shortcuts in a contained
+   scrolling list. Test search and an individual switch, enable all, and verify
+   an extended shortcut. Disable the engine and verify
+   the command no longer converts without reloading.
+   Confirm all bundled helper equation images and plain-text formulas render.
    Add two definitions individually, add one again to confirm only it is
-   replaced, then add the full library and remove it without changing unrelated
-   expressions.
+   replaced, then add the full helper library and remove it without changing
+   unrelated expressions.
 9. Test DesAudify Auto import with a short non-private audio file.
 10. Open every popup tab and verify keyboard and pointer controls. Confirm
     transitions settle on one panel after rapid switching and that reduced

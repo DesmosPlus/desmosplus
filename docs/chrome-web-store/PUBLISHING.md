@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.23.0.zip` |
-| SHA-256 | `a54dc5e454ec69cc77f845341af9217c83c050117d0b41b0ce6ba59a2d1d8b7e` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.24.0.zip` |
+| SHA-256 | `dec5768d8894186e903ca8dc793c06dce822cbef969724d73d6bee0138be23d8` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,10 +27,10 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.23.0, which excludes
+> contain the GitHub DesModder integration. Use v1.24.0, which excludes
 > DesModder, its injection settings, background loader, WakaTime access, and
-> related permissions. The v1.23.0 Settings tab controls dark mode, autosave,
-> and Modern Font.
+> related permissions. Version 1.24.0 adds the separately attributed, locally
+> bundled Desmos Unlocked shortcut engine; it is not DesModder.
 
 ## Account Setup
 
@@ -51,7 +51,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.23.0.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.24.0.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
@@ -111,6 +111,9 @@ Add an editable native Desmos ticker that tracks elapsed seconds for 3D animatio
 
 • Reusable function library
 Review bundled LaTeX equation images and readable plain-text formulas, then inject one definition or the complete editable library for normalized sinc, clamping, interpolation, inverse hyperbolic functions, and other helpers that Desmos does not provide natively.
+
+• Complete editor shortcut catalog
+Search and configure 387 Desmos defaults, Greek symbols, advanced commands, and extended symbol aliases. Enable all at once or toggle commands individually in a contained scrolling list.
 
 • DesAudify audio tools
 Turn audio files into playable Desmos graphs using automatic, high-quality, MAX, or fully custom conversion settings.
@@ -190,13 +193,13 @@ Desmos+ injects packaged functions into an active supported calculator to call i
 **storage**
 
 ```text
-Desmos+ stores three local Boolean preferences recording whether the user enabled dark mode, autosave, and Modern Font. It does not store graph, SVG, OBJ, audio, schema, browsing-history, account, or analytics data in extension storage.
+Desmos+ stores local preferences for dark mode, autosave, Modern Font, enabled editor shortcuts, and the optional extended symbol engine. It does not store graph, SVG, OBJ, audio, schema, browsing-history, account, or analytics data in extension storage.
 ```
 
 **Host access**
 
 ```text
-Desmos+ runs its packaged dark-mode and Modern Font files only on official Desmos pages and the hosted DesmosPlus calculator. The Latin Modern fonts are bundled in the submitted extension and are not fetched from the network. Desmos+ also runs a packaged autosave timer only on official saved 2D calculator URLs when the user enables autosave. Autosave requests Desmos's native save shortcut; any resulting account storage is performed by the official Desmos site. This access does not monitor unrelated websites or send page content to the Desmos+ developer.
+Desmos+ runs its packaged dark-mode and Modern Font files only on official Desmos pages and the hosted DesmosPlus calculator. The Latin Modern fonts are bundled in the submitted extension and are not fetched from the network. It runs a packaged autosave timer only on official saved 2D calculator URLs when the user enables autosave. On www.desmos.com/calculator, it applies locally stored editor-shortcut settings through the calculator's exposed MathQuill field API. It does not replace the official calculator bundle, monitor unrelated websites, or send page content to the Desmos+ developer.
 ```
 
 ### Remote Code
@@ -208,7 +211,8 @@ No, I am not using remote code.
 ```
 
 All executable extension logic, including the OBJ importer, overlay, DesAudify,
-FFT, and Flame Wrap code, is inside the submitted package. The optional graph window and
+FFT, Flame Wrap, and Desmos Unlocked-compatible editor code, is inside the
+submitted package. The optional graph window and
 overlay display the documented DesmosPlus calculator as a separate cross-origin
 web page without extension API access; no remote script is imported into or
 executed by the extension.
@@ -261,7 +265,7 @@ several calculator-specific sections. No account credentials are required.
 4. In SVG, select Import SVG as equations and choose a small static SVG. Confirm that a named folder of editable equations is added.
 5. Open https://www.desmos.com/3d. In 3D, import a small cube OBJ in Optimized mode and confirm a named folder with vertex, face, and triangle expressions appears. Repeat in Direct mode and confirm individual triangle expressions appear. Open MAX, verify its warning and flame treatment, then return to Optimized without importing a large model.
 6. In 3D, select Add ticker, open its folder, start the native ticker, and confirm t_elapsed increases. Select Remove ticker and confirm only the Desmos+ ticker folder is removed.
-7. In Functions, confirm all 14 equation images and plain-text formulas render. Add two functions individually, add one again and confirm only that definition is replaced, then select Add library and confirm one complete Desmos+ Functions folder appears. Select Remove library and confirm unrelated expressions remain.
+7. In Functions, confirm the shortcut catalog scrolls within the panel and shows 387 commands. Search for gamma, toggle it, then select Enable all. Type triangleright followed by a space and confirm the extended symbol renders. Disable that command and confirm it no longer converts without reloading. Confirm all 14 helper equation images and plain-text formulas render. Add two helpers individually, add one again and confirm only that definition is replaced, then select Add library and confirm one complete Desmos+ Functions folder appears. Select Remove library and confirm unrelated expressions remain.
 8. In DesAudify, use a short browser-decodable audio file and Auto mode. Confirm that conversion finishes and equations are injected. MAX mode is intentionally resource intensive and is not required for review.
 9. Open Settings and enable Dark mode. Confirm that the calculator becomes dark, reload the page, and confirm the preference remains active. Disable it and confirm the normal appearance returns.
 10. In Settings, enable Modern Font. Confirm the expression-list math changes to Latin Modern immediately, reload the page, and confirm the preference remains active. Disable it and confirm the normal Desmos font returns.
@@ -281,6 +285,7 @@ several calculator-specific sections. No account credentials are required.
 - [ ] Direct and optimized OBJ import tested on Desmos 3D; MAX warning and flame state checked.
 - [ ] Starter ticker add, advance, conflict, and removal behavior tested.
 - [ ] Function reference images plus individual and full-library add, replace, call, and removal tested.
+- [ ] Shortcut search, contained scrolling, individual toggle, Enable all, extended command, Disable all, and reload behavior tested.
 - [ ] DesAudify Auto tested with a short non-private audio file.
 - [ ] Dark mode tested on, off, and after a page reload.
 - [ ] Modern Font tested on, off, live, and after a page reload.
@@ -306,9 +311,9 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.23.0 Web Store edition:** Graph, pop-out, individually injectable visual function reference,
+- **v1.24.0 Web Store edition:** Graph, pop-out, individually injectable visual function reference,
   autosave, dark mode, Modern Font, SVG, 3D OBJ import including warned MAX mode, starter
-  ticker, and DesAudify, with no DesModder or
+  ticker, complete locally bundled editor shortcuts, and DesAudify, with no DesModder or
   WakaTime code.
 - **Older GitHub editions:** v1.11.0 through v1.14.1 include DesModder. A future
   current-version DesModder build must be published as a clearly separate

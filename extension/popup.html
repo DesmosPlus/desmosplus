@@ -110,8 +110,33 @@
 
       <section id="functions-panel" role="tabpanel" data-panel="functions" hidden>
         <div class="function-library-copy">
-          <h2>Function library</h2>
-          <p>Add editable definitions that Desmos does not provide natively.</p>
+          <h2>Editor shortcuts</h2>
+          <p>Configure the complete Desmos Unlocked symbol and command catalog.</p>
+        </div>
+        <div class="setting-row shortcut-engine-row">
+          <div class="setting-copy">
+            <h2>Extended symbol engine</h2>
+            <p id="shortcut-engine-state">Off</p>
+          </div>
+          <label class="toggle" for="shortcut-engine-toggle">
+            <input id="shortcut-engine-toggle" type="checkbox" aria-describedby="shortcut-engine-state">
+            <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
+            <span class="sr-only">Extended symbol engine</span>
+          </label>
+        </div>
+        <div class="field">
+          <label for="shortcut-filter">Find a shortcut</label>
+          <input id="shortcut-filter" type="search" placeholder="gamma, triangle, arrow..." autocomplete="off">
+        </div>
+        <div id="shortcut-list" class="shortcut-list" aria-label="Desmos Unlocked shortcuts"></div>
+        <div class="actions two-columns">
+          <button id="shortcuts-enable-all" type="button">Enable all</button>
+          <button id="shortcuts-disable-all" type="button">Disable all</button>
+        </div>
+        <p class="settings-summary">Changes apply to the open calculator immediately.</p>
+        <div class="tool-divider function-library-copy">
+          <h2>Editable helpers</h2>
+          <p>Add graph definitions for functions Desmos does not provide natively.</p>
         </div>
         <div class="function-list" aria-label="Included function equations">
           <div class="function-entry">
@@ -301,6 +326,7 @@
     <script src="obj-import.js"></script>
     <script src="desaudify-audio.js"></script>
     <script src="desaudify-export.js"></script>
+    <script src="vendor/desmos-unlocked/catalog.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

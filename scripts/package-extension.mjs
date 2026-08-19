@@ -23,14 +23,20 @@ function normalizeArchiveTimestamps(directory) {
 const manifest = JSON.parse(
   fs.readFileSync(path.join(extension, "manifest.json"), "utf8"),
 );
-const forbiddenManifestKeys = [
-  "background",
-  "host_permissions",
-];
-if (forbiddenManifestKeys.some((key) => key in manifest)) {
-  throw new Error("Web Store package contains a DesModder-related manifest key.");
+if (manifest.background) {
+  throw new Error("Web Store package contains an unexpected background worker.");
 }
-const allowedPermissions = new Set(["activeTab", "scripting", "storage"]);
+if (
+  JSON.stringify(manifest.host_permissions) !==
+  JSON.stringify(["https://www.desmos.com/calculator*"])
+) {
+  throw new Error("Web Store package has unexpected host permissions.");
+}
+const allowedPermissions = new Set([
+  "activeTab",
+  "scripting",
+  "storage",
+]);
 if (manifest.permissions.some((permission) => !allowedPermissions.has(permission))) {
   throw new Error("Web Store package contains an unexpected permission.");
 }
@@ -53,6 +59,14 @@ const expectedContentScripts = [
     js: ["autosave.js"],
     run_at: "document_idle",
   },
+  {
+    matches: ["https://www.desmos.com/calculator*"],
+    js: [
+      "vendor/desmos-unlocked/catalog.js",
+      "vendor/desmos-unlocked/content.js",
+    ],
+    run_at: "document_idle",
+  },
 ];
 if (
   JSON.stringify(manifest.content_scripts) !== JSON.stringify(expectedContentScripts)
@@ -71,6 +85,10 @@ const expectedFontResources = [
       "https://*.desmos.com/*",
       "https://desmosplus.pages.dev/*",
     ],
+  },
+  {
+    resources: ["vendor/desmos-unlocked/script.js"],
+    matches: ["https://www.desmos.com/*"],
   },
 ];
 if (
@@ -129,6 +147,20 @@ if (!members.includes("DESLOADER-LICENSE")) {
 if (!members.includes("MODERN-FONT-NOTICE")) {
   throw new Error("Packaged extension is missing the Modern Font notice.");
 }
+if (
+  !members.includes("DESMOS-UNLOCKED-LICENSE") ||
+  !members.includes("DESMOS-UNLOCKED-NOTICE")
+) {
+  throw new Error("Packaged extension is missing Desmos Unlocked attribution.");
+}
+const unlockedMembers = [
+  "vendor/desmos-unlocked/catalog.js",
+  "vendor/desmos-unlocked/content.js",
+  "vendor/desmos-unlocked/script.js",
+];
+if (unlockedMembers.some((member) => !members.includes(member))) {
+  throw new Error("Packaged extension is missing a Desmos Unlocked file.");
+}
 for (const resource of expectedFontResources[0].resources) {
   if (!members.includes(resource)) {
     throw new Error(`Packaged extension is missing ${resource}.`);
@@ -154,11 +186,39 @@ const firstPartySource = execFileSync("unzip", ["-p", output, "popup.js"], {
 const thirdPartySource = execFileSync("unzip", ["-p", output, "vendor/fft.js"], {
   encoding: "utf8",
 });
+const unlockedSource = execFileSync(
+  "unzip",
+  ["-p", output, "vendor/desmos-unlocked/script.js"],
+  { encoding: "utf8" },
+);
+const unlockedCatalogSource = execFileSync(
+  "unzip",
+  ["-p", output, "vendor/desmos-unlocked/catalog.js"],
+  { encoding: "utf8" },
+);
+const unlockedCatalog = JSON.parse(
+  unlockedCatalogSource
+    .replace(/^window\.DesmosUnlockedCatalog = /, "")
+    .replace(/;\s*$/, ""),
+);
+const unlockedShortcutCount = unlockedCatalog.categories.reduce(
+  (total, category) => total + category.entries.length,
+  0,
+);
+if (unlockedShortcutCount !== 387) {
+  throw new Error(`Expected 387 Desmos Unlocked shortcuts, found ${unlockedShortcutCount}.`);
+}
+if (!unlockedSource.includes("window.Calc.focusedMathQuill")) {
+  throw new Error("Desmos Unlocked runtime is not using the current MathQuill API.");
+}
 if (!firstPartySource.includes(WATERMARK_MARKER)) {
   throw new Error("Packaged first-party code is missing its release watermark.");
 }
 if (thirdPartySource.includes(WATERMARK_MARKER)) {
   throw new Error("Packaged third-party code was incorrectly watermarked.");
+}
+if (unlockedSource.includes(WATERMARK_MARKER)) {
+  throw new Error("Packaged Desmos Unlocked code was incorrectly watermarked.");
 }
 
 console.log(output);

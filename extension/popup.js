@@ -42,6 +42,12 @@
   var autosaveState = document.getElementById("autosave-state");
   var modernFontToggle = document.getElementById("modern-font-toggle");
   var modernFontState = document.getElementById("modern-font-state");
+  var shortcutEngineToggle = document.getElementById("shortcut-engine-toggle");
+  var shortcutEngineState = document.getElementById("shortcut-engine-state");
+  var shortcutFilter = document.getElementById("shortcut-filter");
+  var shortcutList = document.getElementById("shortcut-list");
+  var shortcutsEnableAllButton = document.getElementById("shortcuts-enable-all");
+  var shortcutsDisableAllButton = document.getElementById("shortcuts-disable-all");
   var statusNode = document.getElementById("status");
   var availability = {
     graph: false,
@@ -58,6 +64,15 @@
   var DARK_MODE_KEY = "desmosPlusDarkModeEnabled";
   var AUTOSAVE_KEY = "desmosPlusAutosaveEnabled";
   var MODERN_FONT_KEY = "desmosPlusModernFontEnabled";
+  var SHORTCUT_COMMANDS_KEY = "autoCommands";
+  var SHORTCUT_ENGINE_KEY = "enableMathquillOverrides";
+  var SHORTCUT_SENTINEL = "keepmeKEEPME";
+  var SHORTCUT_DEFAULT_COMMANDS =
+    "keepmeKEEPME alpha beta sqrt theta Theta phi Phi pi Pi tau nthroot cbrt " +
+    "sum prod int ans percent infinity infty gamma Gamma delta Delta epsilon " +
+    "epsiv zeta eta kappa lambda Lambda mu xi Xi rho sigma Sigma chi Psi " +
+    "omega Omega digamma iota nu upsilon Upsilon Psi square mid parallel " +
+    "nparallel perp times div approx";
   var FUNCTION_FOLDER_ID = "desmosplus-functions-folder";
   var FUNCTION_ID_PREFIX = "desmosplus-function-";
   var TICKER_FOLDER_ID = "desmosplus-starter-ticker-folder";
@@ -79,6 +94,14 @@
     { id: "atanh", latex: "f_{atanh}\\left(x\\right)=\\frac{1}{2}\\ln\\left(\\frac{1+x}{1-x}\\right)" },
     { id: "wrap", latex: "f_{wrap}\\left(x,a,b\\right)=a+\\mod\\left(x-a,b-a\\right)" },
   ];
+  var SHORTCUT_CATALOG = window.DesmosUnlockedCatalog || { categories: [] };
+  var EXTENDED_SHORTCUTS = new Set(
+    (SHORTCUT_CATALOG.categories.find(function (category) {
+      return category.id === "extended";
+    }) || { entries: [] }).entries.map(function (entry) {
+      return entry[0];
+    }),
+  );
   var MAX_MODE_CONFIRMATION =
     "MAX is not an originally supported mode for DesAudify. It removes " +
     "DesmosPlus safety limits and may exhaust CPU or RAM, freeze or crash the " +
@@ -452,6 +475,172 @@
       setStatus("Reload DesmosPlus, then reopen this popup.");
     } finally {
       modernFontToggle.disabled = false;
+    }
+  }
+
+  function allShortcutNames() {
+    return SHORTCUT_CATALOG.categories.flatMap(function (category) {
+      return category.entries.map(function (entry) {
+        return entry[0];
+      });
+    });
+  }
+
+  function shortcutCommandSet(value) {
+    return new Set(
+      String(value || "")
+        .split(/\s+/)
+        .filter(function (command) {
+          return command && command !== SHORTCUT_SENTINEL;
+        }),
+    );
+  }
+
+  function renderShortcutCatalog() {
+    shortcutList.replaceChildren();
+    SHORTCUT_CATALOG.categories.forEach(function (category) {
+      var categoryNode = document.createElement("section");
+      categoryNode.className = "shortcut-category";
+      categoryNode.dataset.shortcutCategory = category.id;
+
+      var heading = document.createElement("h3");
+      heading.textContent = category.label + " (" + category.entries.length + ")";
+      categoryNode.appendChild(heading);
+
+      category.entries.forEach(function (entry) {
+        var name = entry[0];
+        var symbol = entry[1];
+        var label = document.createElement("label");
+        label.className = "shortcut-entry";
+        label.dataset.shortcutSearch = (name + " " + symbol).toLowerCase();
+
+        var symbolNode = document.createElement("span");
+        symbolNode.className = "shortcut-symbol";
+        symbolNode.textContent = symbol || "\\";
+
+        var commandNode = document.createElement("code");
+        commandNode.textContent = "\\" + name;
+
+        var input = document.createElement("input");
+        input.type = "checkbox";
+        input.dataset.shortcut = name;
+        input.setAttribute("aria-label", "Enable " + name + " shortcut");
+
+        label.append(symbolNode, commandNode, input);
+        categoryNode.appendChild(label);
+      });
+      shortcutList.appendChild(categoryNode);
+    });
+  }
+
+  function showShortcutSettings(commands, engineEnabled) {
+    shortcutEngineToggle.checked = engineEnabled;
+    shortcutEngineState.textContent = engineEnabled ? "On" : "Off";
+    document.querySelectorAll("[data-shortcut]").forEach(function (input) {
+      input.checked = commands.has(input.dataset.shortcut);
+    });
+  }
+
+  async function loadShortcutSettings() {
+    var stored = await chrome.storage.local.get([
+      SHORTCUT_COMMANDS_KEY,
+      SHORTCUT_ENGINE_KEY,
+    ]);
+    showShortcutSettings(
+      shortcutCommandSet(stored[SHORTCUT_COMMANDS_KEY] || SHORTCUT_DEFAULT_COMMANDS),
+      stored[SHORTCUT_ENGINE_KEY] === true,
+    );
+  }
+
+  async function saveShortcutSettings(commands, engineEnabled, message) {
+    var allowed = new Set(allShortcutNames());
+    var normalized = Array.from(commands).filter(function (command) {
+      return allowed.has(command);
+    });
+    await chrome.storage.local.set({
+      [SHORTCUT_COMMANDS_KEY]: SHORTCUT_SENTINEL + (normalized.length ? " " + normalized.join(" ") : ""),
+      [SHORTCUT_ENGINE_KEY]: engineEnabled,
+    });
+    showShortcutSettings(new Set(normalized), engineEnabled);
+    setStatus(message);
+  }
+
+  async function saveShortcutEngine() {
+    shortcutEngineToggle.disabled = true;
+    try {
+      var stored = await chrome.storage.local.get(SHORTCUT_COMMANDS_KEY);
+      await saveShortcutSettings(
+        shortcutCommandSet(stored[SHORTCUT_COMMANDS_KEY] || SHORTCUT_DEFAULT_COMMANDS),
+        shortcutEngineToggle.checked,
+        shortcutEngineToggle.checked
+          ? "Extended symbol engine enabled."
+          : "Extended symbol engine disabled.",
+      );
+    } catch (error) {
+      await loadShortcutSettings();
+      setStatus("Shortcut settings could not be changed.");
+    } finally {
+      shortcutEngineToggle.disabled = false;
+    }
+  }
+
+  async function saveOneShortcut(input) {
+    input.disabled = true;
+    try {
+      var stored = await chrome.storage.local.get([
+        SHORTCUT_COMMANDS_KEY,
+        SHORTCUT_ENGINE_KEY,
+      ]);
+      var commands = shortcutCommandSet(
+        stored[SHORTCUT_COMMANDS_KEY] || SHORTCUT_DEFAULT_COMMANDS,
+      );
+      if (input.checked) commands.add(input.dataset.shortcut);
+      else commands.delete(input.dataset.shortcut);
+      var engineEnabled =
+        stored[SHORTCUT_ENGINE_KEY] === true ||
+        (input.checked && EXTENDED_SHORTCUTS.has(input.dataset.shortcut));
+      await saveShortcutSettings(
+        commands,
+        engineEnabled,
+        "Updated \\" + input.dataset.shortcut + ".",
+      );
+    } catch (error) {
+      await loadShortcutSettings();
+      setStatus("That shortcut could not be changed.");
+    } finally {
+      input.disabled = false;
+    }
+  }
+
+  function filterShortcutCatalog() {
+    var query = shortcutFilter.value.trim().toLowerCase();
+    document.querySelectorAll("[data-shortcut-category]").forEach(function (category) {
+      var visible = 0;
+      category.querySelectorAll(".shortcut-entry").forEach(function (entry) {
+        entry.hidden = Boolean(query) && !entry.dataset.shortcutSearch.includes(query);
+        if (!entry.hidden) visible += 1;
+      });
+      category.hidden = visible === 0;
+    });
+  }
+
+  async function setAllShortcuts(enabled) {
+    shortcutsEnableAllButton.disabled = true;
+    shortcutsDisableAllButton.disabled = true;
+    try {
+      await saveShortcutSettings(
+        new Set(enabled ? allShortcutNames() : []),
+        enabled,
+        enabled
+          ? "Enabled all 387 shortcuts."
+          : "Disabled all shortcuts.",
+      );
+    } catch (error) {
+      await loadShortcutSettings();
+      setStatus("Shortcut settings could not be changed.");
+    } finally {
+      shortcutsEnableAllButton.disabled = false;
+      shortcutsDisableAllButton.disabled = false;
     }
   }
 
@@ -1313,6 +1502,17 @@
       applyFunctionLibrary("add-one", button.dataset.functionAdd);
     });
   });
+  shortcutEngineToggle.addEventListener("change", saveShortcutEngine);
+  shortcutFilter.addEventListener("input", filterShortcutCatalog);
+  shortcutList.addEventListener("change", function (event) {
+    if (event.target.matches("[data-shortcut]")) saveOneShortcut(event.target);
+  });
+  shortcutsEnableAllButton.addEventListener("click", function () {
+    setAllShortcuts(true);
+  });
+  shortcutsDisableAllButton.addEventListener("click", function () {
+    setAllShortcuts(false);
+  });
   templateButton.addEventListener("click", loadDesAudifyTemplate);
   audioImportButton.addEventListener("click", function () {
     audioAction = "import";
@@ -1364,6 +1564,7 @@
   autosaveToggle.addEventListener("change", saveAutosaveSetting);
   modernFontToggle.addEventListener("change", saveModernFontSetting);
 
+  renderShortcutCatalog();
   setupModeMenu();
   selectView("graph");
   setObjMode("optimized");
@@ -1379,6 +1580,10 @@
   loadModernFontSetting().catch(function () {
     showModernFontState(false);
     setStatus("Reload DesmosPlus, then reopen this popup.");
+  });
+  loadShortcutSettings().catch(function () {
+    showShortcutSettings(new Set(), false);
+    setStatus("Shortcut settings could not be loaded.");
   });
   initialize();
 })();
