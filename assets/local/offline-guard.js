@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var SITE_CACHE_VERSION = "2026-08-15-3";
+  var SITE_CACHE_VERSION = "2026-08-18-1";
   var SITE_CACHE_KEY = "desmosplus.site-cache-version";
 
   function resetOldSiteCache() {
@@ -86,20 +86,15 @@
     XMLHttpRequest.prototype.open = function (method, url) {
       this.__offlineBlocked = url && !isLocalUrl(url);
       if (this.__offlineBlocked) {
-        this.__offlineMethod = method || "GET";
         this.__offlineUrl = url;
-        return;
+        var args = Array.from(arguments);
+        args[1] = "/sessions/bugsnag";
+        return originalOpen.apply(this, args);
       }
       return originalOpen.apply(this, arguments);
     };
     XMLHttpRequest.prototype.send = function () {
-      if (!this.__offlineBlocked) return originalSend.apply(this, arguments);
-      setTimeout(
-        function () {
-          this.dispatchEvent(new Event("loadend"));
-        }.bind(this),
-        0,
-      );
+      return originalSend.apply(this, arguments);
     };
   }
 

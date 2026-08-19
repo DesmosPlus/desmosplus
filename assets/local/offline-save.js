@@ -34,6 +34,16 @@
     tickerAcceleratedHandler: "",
   };
   var loadedId = "";
+  var SHORTCUT_COMMANDS_KEY = "desmosplus.site.shortcut-commands.v1";
+  var SHORTCUT_ENGINE_KEY = "desmosplus.site.shortcut-engine.v1";
+  var SHORTCUT_SENTINEL = "keepmeKEEPME";
+  var SHORTCUT_DEFAULT_COMMANDS =
+    "alpha beta sqrt theta Theta phi Phi pi Pi tau nthroot cbrt sum prod int " +
+    "ans percent infinity infty gamma Gamma delta Delta epsilon epsiv zeta eta " +
+    "kappa lambda Lambda mu xi Xi rho sigma Sigma chi Psi omega Omega digamma " +
+    "iota nu upsilon Upsilon square mid parallel nparallel perp times div approx";
+  var shortcutSettings = { engineEnabled: false, commands: new Set() };
+  var shortcutRuntimeInstalled = false;
   var PRODUCTS = [
     ["2dcalculator", "2D Calculator"],
     ["3dcalculator", "3D Calculator"],
@@ -554,6 +564,222 @@
     });
   }
 
+  function shortcutCatalog() {
+    return window.DesmosUnlockedCatalog || { categories: [] };
+  }
+
+  function shortcutSupported() {
+    return product() === "2dcalculator";
+  }
+
+  function allShortcutNames() {
+    return shortcutCatalog().categories.flatMap(function (category) {
+      return category.entries.map(function (entry) {
+        return entry[0];
+      });
+    });
+  }
+
+  function extendedShortcutNames() {
+    var category = shortcutCatalog().categories.find(function (entry) {
+      return entry.id === "extended";
+    });
+    return new Set((category ? category.entries : []).map(function (entry) {
+      return entry[0];
+    }));
+  }
+
+  function readShortcutSettings() {
+    var commands = SHORTCUT_DEFAULT_COMMANDS.split(/\s+/);
+    var engineEnabled = false;
+    try {
+      var storedCommands = JSON.parse(localStorage.getItem(SHORTCUT_COMMANDS_KEY) || "null");
+      if (Array.isArray(storedCommands)) commands = storedCommands;
+      engineEnabled = localStorage.getItem(SHORTCUT_ENGINE_KEY) === "true";
+    } catch (error) {
+      // Default shortcuts remain available when local storage is blocked.
+    }
+    var allowed = new Set(allShortcutNames());
+    return {
+      commands: new Set(commands.filter(function (name) { return allowed.has(name); })),
+      engineEnabled: engineEnabled,
+    };
+  }
+
+  function writeShortcutSettings(commands, engineEnabled) {
+    shortcutSettings = {
+      commands: new Set(commands),
+      engineEnabled: engineEnabled === true,
+    };
+    try {
+      localStorage.setItem(SHORTCUT_COMMANDS_KEY, JSON.stringify(Array.from(commands)));
+      localStorage.setItem(SHORTCUT_ENGINE_KEY, String(engineEnabled === true));
+    } catch (error) {
+      functionsStatus("Shortcut settings apply until this page closes.");
+    }
+    applyShortcutSettings();
+    showShortcutSettings();
+  }
+
+  function applyShortcutSettings() {
+    if (
+      !shortcutSupported() ||
+      !window.Desmos ||
+      !window.Desmos.MathQuill ||
+      typeof window.Desmos.MathQuill.config !== "function"
+    ) {
+      return false;
+    }
+    window.Desmos.MathQuill.config({
+      autoCommands:
+        SHORTCUT_SENTINEL +
+        (shortcutSettings.commands.size
+          ? " " + Array.from(shortcutSettings.commands).join(" ")
+          : ""),
+      charsThatBreakOutOfSupSub: "+-=<>*",
+      disableAutoSubstitutionInSubscripts: true,
+    });
+    return true;
+  }
+
+  function activeMathField(event) {
+    if (!window.Calc || !window.Calc.focusedMathQuill) return null;
+    if (!event.target.closest || !event.target.closest(".dcg-math-field")) return null;
+    return window.Calc.focusedMathQuill;
+  }
+
+  function enabledExtendedCommands() {
+    var extended = shortcutCatalog().categories.find(function (category) {
+      return category.id === "extended";
+    });
+    return new Map(
+      (extended ? extended.entries : []).filter(function (entry) {
+        return shortcutSettings.commands.has(entry[0]);
+      }).map(function (entry) {
+        return [entry[0], entry];
+      }),
+    );
+  }
+
+  function findShortcutCommand(latex) {
+    var found = null;
+    enabledExtendedCommands().forEach(function (entry, name) {
+      if (found) return;
+      var suffix = "\\backslash " + name;
+      var compactSuffix = "\\backslash" + name;
+      if (latex.endsWith(suffix)) {
+        found = { entry: entry, start: latex.length - suffix.length };
+      } else if (latex.endsWith(compactSuffix)) {
+        found = { entry: entry, start: latex.length - compactSuffix.length };
+      }
+    });
+    return found;
+  }
+
+  function replaceShortcutCommand(event) {
+    if (!shortcutSettings.engineEnabled) return;
+    if (event.key !== " " && event.key !== "Enter" && event.key !== "Tab") return;
+    var field = activeMathField(event);
+    if (!field || typeof field.latex !== "function") return;
+    var latex = field.latex();
+    var found = findShortcutCommand(latex);
+    if (!found) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    var insertion = found.entry[2] || found.entry[1] || found.entry[0];
+    field.latex(latex.slice(0, found.start));
+    field.moveToRightEnd();
+    field.write(insertion);
+    if (found.entry[3]) field.keystroke("Left");
+    if (typeof field.simulateUserChangedLatex === "function") {
+      field.simulateUserChangedLatex();
+    }
+  }
+
+  function installShortcutRuntime() {
+    if (shortcutRuntimeInstalled || !shortcutSupported()) return;
+    shortcutRuntimeInstalled = true;
+    shortcutSettings = readShortcutSettings();
+    document.addEventListener("keydown", replaceShortcutCommand, true);
+    applyShortcutSettings();
+    showShortcutSettings();
+  }
+
+  function functionsStatus(message) {
+    var node = document.getElementById("local-functions-status");
+    if (node) node.textContent = message;
+  }
+
+  function showShortcutSettings() {
+    var toggle = document.getElementById("local-shortcut-engine");
+    var state = document.getElementById("local-shortcut-engine-state");
+    if (toggle) toggle.checked = shortcutSettings.engineEnabled;
+    if (state) state.textContent = shortcutSettings.engineEnabled ? "On" : "Off";
+    document.querySelectorAll("[data-local-shortcut]").forEach(function (input) {
+      input.checked = shortcutSettings.commands.has(input.dataset.localShortcut);
+    });
+  }
+
+  function renderShortcutCatalog() {
+    var list = document.getElementById("local-shortcut-list");
+    if (!list) return;
+    list.replaceChildren();
+    shortcutCatalog().categories.forEach(function (category) {
+      var section = document.createElement("section");
+      section.className = "local-shortcut-category";
+      section.dataset.localShortcutCategory = category.id;
+
+      var heading = document.createElement("h3");
+      heading.textContent = category.label + " (" + category.entries.length + ")";
+      section.appendChild(heading);
+
+      category.entries.forEach(function (entry) {
+        var name = entry[0];
+        var label = document.createElement("label");
+        label.className = "local-shortcut-entry";
+        label.dataset.localShortcutSearch = (name + " " + (entry[1] || "")).toLowerCase();
+
+        var symbol = document.createElement("span");
+        symbol.className = "local-shortcut-symbol";
+        symbol.textContent = entry[1] || "\\";
+        var command = document.createElement("code");
+        command.textContent = "\\" + name;
+        var input = document.createElement("input");
+        input.type = "checkbox";
+        input.dataset.localShortcut = name;
+        input.setAttribute("aria-label", "Enable " + name + " shortcut");
+        input.addEventListener("change", function () {
+          var commands = new Set(shortcutSettings.commands);
+          if (input.checked) commands.add(name);
+          else commands.delete(name);
+          var engineEnabled =
+            shortcutSettings.engineEnabled ||
+            (input.checked && extendedShortcutNames().has(name));
+          writeShortcutSettings(commands, engineEnabled);
+          functionsStatus("Updated \\" + name + ".");
+        });
+        label.append(symbol, command, input);
+        section.appendChild(label);
+      });
+      list.appendChild(section);
+    });
+    showShortcutSettings();
+  }
+
+  function filterShortcutCatalog() {
+    var input = document.getElementById("local-shortcut-filter");
+    var query = input ? input.value.trim().toLowerCase() : "";
+    document.querySelectorAll("[data-local-shortcut-category]").forEach(function (category) {
+      var visible = 0;
+      category.querySelectorAll(".local-shortcut-entry").forEach(function (entry) {
+        entry.hidden = Boolean(query) && !entry.dataset.localShortcutSearch.includes(query);
+        if (!entry.hidden) visible += 1;
+      });
+      category.hidden = visible === 0;
+    });
+  }
+
   function cookieMap() {
     return document.cookie.split(";").reduce(function (map, part) {
       var index = part.indexOf("=");
@@ -677,6 +903,9 @@
       (product() === "2dcalculator"
         ? '<button type="button" id="local-audio" aria-expanded="false">Audio</button>'
         : "") +
+      (shortcutSupported()
+        ? '<button type="button" id="local-functions" aria-expanded="false">Functions</button>'
+        : "") +
       '<button type="button" id="local-library" aria-expanded="false">Library</button>' +
       "</div>";
     document.body.appendChild(shell);
@@ -692,6 +921,8 @@
     document.getElementById("local-save").addEventListener("click", saveCurrent);
     var audioButton = document.getElementById("local-audio");
     if (audioButton) audioButton.addEventListener("click", toggleAudioPanel);
+    var functionsButton = document.getElementById("local-functions");
+    if (functionsButton) functionsButton.addEventListener("click", toggleFunctionsPanel);
     document.getElementById("local-library").addEventListener("click", togglePanel);
   }
 
@@ -779,6 +1010,7 @@
 
   function openPanel() {
     closeAudioPanel();
+    closeFunctionsPanel();
     document.getElementById("local-save-panel").hidden = false;
     document.getElementById("local-library").setAttribute("aria-expanded", "true");
     render();
@@ -856,6 +1088,7 @@
     var panel = document.getElementById("local-audio-panel");
     if (!panel) return;
     closePanel();
+    closeFunctionsPanel();
     panel.hidden = false;
     document.getElementById("local-audio").setAttribute("aria-expanded", "true");
   }
@@ -863,6 +1096,77 @@
   function closeAudioPanel() {
     var panel = document.getElementById("local-audio-panel");
     var button = document.getElementById("local-audio");
+    if (panel) panel.hidden = true;
+    if (button) button.setAttribute("aria-expanded", "false");
+  }
+
+  function buildFunctionsPanel() {
+    if (!shortcutSupported() || document.getElementById("local-functions-panel")) return;
+
+    var count = allShortcutNames().length;
+    var panel = document.createElement("aside");
+    panel.id = "local-functions-panel";
+    panel.hidden = true;
+    panel.innerHTML =
+      '<div class="local-panel-header">' +
+      "<strong>Functions</strong>" +
+      '<button type="button" id="local-functions-close" aria-label="Close function tools">Close</button>' +
+      "</div>" +
+      '<div class="local-shortcut-controls">' +
+      '<div class="local-shortcut-engine-row">' +
+      '<div><strong>Extended shortcut engine</strong><span id="local-shortcut-engine-state">Off</span></div>' +
+      '<label class="local-toggle" for="local-shortcut-engine">' +
+      '<input id="local-shortcut-engine" type="checkbox">' +
+      '<span aria-hidden="true"></span></label></div>' +
+      '<label for="local-shortcut-filter">Editor shortcuts (' + count + ")</label>" +
+      '<input id="local-shortcut-filter" type="search" placeholder="Find a shortcut" autocomplete="off">' +
+      "</div>" +
+      '<div id="local-shortcut-list" class="local-shortcut-list" aria-label="Editor shortcuts"></div>' +
+      '<div class="local-shortcut-actions">' +
+      '<button type="button" id="local-shortcuts-enable-all">Enable all</button>' +
+      '<button type="button" id="local-shortcuts-disable-all">Disable all</button>' +
+      "</div>" +
+      '<div id="local-functions-status" aria-live="polite">Function shortcuts ready.</div>';
+    document.body.appendChild(panel);
+    isolateControls(panel);
+
+    shortcutSettings = readShortcutSettings();
+    renderShortcutCatalog();
+    document.getElementById("local-functions-close").addEventListener("click", closeFunctionsPanel);
+    document.getElementById("local-shortcut-filter").addEventListener("input", filterShortcutCatalog);
+    document.getElementById("local-shortcut-engine").addEventListener("change", function (event) {
+      writeShortcutSettings(shortcutSettings.commands, event.target.checked);
+      functionsStatus(event.target.checked ? "Extended shortcut engine enabled." : "Extended shortcut engine disabled.");
+    });
+    document.getElementById("local-shortcuts-enable-all").addEventListener("click", function () {
+      writeShortcutSettings(new Set(allShortcutNames()), true);
+      functionsStatus("Enabled all " + count + " shortcuts.");
+    });
+    document.getElementById("local-shortcuts-disable-all").addEventListener("click", function () {
+      writeShortcutSettings(new Set(), false);
+      functionsStatus("Disabled all shortcuts.");
+    });
+  }
+
+  function toggleFunctionsPanel() {
+    var panel = document.getElementById("local-functions-panel");
+    if (!panel) return;
+    if (panel.hidden) openFunctionsPanel();
+    else closeFunctionsPanel();
+  }
+
+  function openFunctionsPanel() {
+    var panel = document.getElementById("local-functions-panel");
+    if (!panel) return;
+    closePanel();
+    closeAudioPanel();
+    panel.hidden = false;
+    document.getElementById("local-functions").setAttribute("aria-expanded", "true");
+  }
+
+  function closeFunctionsPanel() {
+    var panel = document.getElementById("local-functions-panel");
+    var button = document.getElementById("local-functions");
     if (panel) panel.hidden = true;
     if (button) button.setAttribute("aria-expanded", "false");
   }
@@ -1333,6 +1637,7 @@
     setTurboSpeed(1, false);
     buildPanel();
     buildAudioPanel();
+    buildFunctionsPanel();
     interceptBuiltInSave();
     setInterval(keepBuiltInSaveLocal, 500);
     var timer = setInterval(function () {
@@ -1341,6 +1646,7 @@
       if (!ready) return;
       clearInterval(timer);
       installTurbo();
+      installShortcutRuntime();
       var id = pendingSaveId();
       if (id) openSave(id);
       else if (!restoreRecoverySnapshot()) {

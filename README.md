@@ -52,6 +52,7 @@ audio-resynthesis equations.
   reference with individual injection, starter ticker setup, and audio import.
 - Static SVG import for local Desmos 2D and Geometry graphs.
 - Manual DesAudify player and schema import on the local 2D calculator.
+- Complete 387-command editor-shortcut catalog with local preferences and contained scrolling on the local 2D calculator.
 - Opt-in Turbo clock for running graph sliders and tickers at up to 16x speed.
 - `.desmos` graph exports, with import compatibility for older
   `.desmosplus.json` files and raw Desmos state JSON.

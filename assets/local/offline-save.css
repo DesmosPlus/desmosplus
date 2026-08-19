@@ -15,7 +15,9 @@ body {
 #local-save-panel,
 #local-save-panel *,
 #local-audio-panel,
-#local-audio-panel * {
+#local-audio-panel *,
+#local-functions-panel,
+#local-functions-panel * {
   box-sizing: border-box;
   letter-spacing: 0;
 }
@@ -70,6 +72,8 @@ body {
 #local-save-panel button:focus-visible,
 #local-save-panel input:focus-visible,
 #local-audio-panel button:focus-visible,
+#local-functions-panel button:focus-visible,
+#local-functions-panel input:focus-visible,
 .desmosplus-home nav a:focus-visible {
   outline: 2px solid #000;
   outline-offset: 2px;
@@ -219,7 +223,8 @@ body {
 }
 
 #local-save-panel,
-#local-audio-panel {
+#local-audio-panel,
+#local-functions-panel {
   position: fixed;
   inset: var(--desmosplus-bar-height) 0 0 auto;
   z-index: 99999;
@@ -233,7 +238,8 @@ body {
 }
 
 #local-save-panel[hidden],
-#local-audio-panel[hidden] {
+#local-audio-panel[hidden],
+#local-functions-panel[hidden] {
   display: none;
 }
 
@@ -268,7 +274,9 @@ body {
 
 #local-save-panel button,
 #local-save-panel input,
-#local-audio-panel button {
+#local-audio-panel button,
+#local-functions-panel button,
+#local-functions-panel input {
   min-height: var(--desmosplus-control-height);
   border: 1px solid #000;
   border-radius: var(--desmosplus-radius);
@@ -278,19 +286,169 @@ body {
 }
 
 #local-save-panel button,
-#local-audio-panel button {
+#local-audio-panel button,
+#local-functions-panel button {
   padding: 0 12px;
   cursor: pointer;
 }
 
 #local-save-panel button:hover,
-#local-audio-panel button:hover {
+#local-audio-panel button:hover,
+#local-functions-panel button:hover {
   text-decoration: underline;
 }
 
 #local-save-panel input {
   width: 100%;
   padding: 6px 9px;
+}
+
+.local-shortcut-controls {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+}
+
+.local-shortcut-controls > label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.local-shortcut-controls > input {
+  width: 100%;
+  padding: 6px 9px;
+}
+
+.local-shortcut-engine-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #000;
+}
+
+.local-shortcut-engine-row > div {
+  display: grid;
+  gap: 3px;
+}
+
+.local-shortcut-engine-row span {
+  font-size: 12px;
+}
+
+.local-toggle {
+  display: block;
+  width: 42px;
+  height: 24px;
+  flex: 0 0 auto;
+}
+
+.local-toggle input {
+  position: absolute;
+  opacity: 0;
+}
+
+.local-toggle span {
+  position: relative;
+  display: block;
+  width: 42px;
+  height: 24px;
+  border: 1px solid #000;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.local-toggle span::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #000;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.local-toggle input:checked + span {
+  background: #000;
+}
+
+.local-toggle input:checked + span::after {
+  left: 21px;
+}
+
+.local-shortcut-list {
+  display: block;
+  max-height: 300px;
+  margin: 0 16px;
+  overflow-y: auto;
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  scrollbar-gutter: stable;
+}
+
+.local-shortcut-category h3 {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 7px 8px;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  background: #fff;
+  font-size: 12px;
+}
+
+.local-shortcut-entry {
+  display: grid;
+  min-height: 34px;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 8px;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  cursor: pointer;
+}
+
+.local-shortcut-entry[hidden],
+.local-shortcut-category[hidden] {
+  display: none;
+}
+
+.local-shortcut-symbol {
+  overflow: hidden;
+  font-size: 18px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.local-shortcut-entry code {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+}
+
+.local-shortcut-entry input {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  margin: 0;
+  accent-color: #000;
+}
+
+.local-shortcut-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 12px 16px 16px;
+  border-bottom: 1px solid #000;
+}
+
+#local-functions-status {
+  padding: 16px;
 }
 
 #local-close {
@@ -452,7 +610,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .desmosplus-menu-options,
   #local-save-panel,
-  #local-audio-panel {
+  #local-audio-panel,
+  #local-functions-panel {
     animation: none;
   }
 }

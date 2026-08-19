@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
-const siteVersion = "2026-08-16-1";
+const siteVersion = "2026-08-18-1";
 
 const captures = [
   {
@@ -86,12 +86,14 @@ function rewriteHtml(html, capture) {
       /<script>\s*var _paq =[\s\S]*?<\/script>/g,
       `<script src="/extension/desaudify-page.js?v=${siteVersion}"></script>
         <script src="/extension/svg-import.js?v=${siteVersion}"></script>
+        <script src="/extension/vendor/desmos-unlocked/catalog.js?v=${siteVersion}"></script>
         <script src="/assets/local/offline-save.js?v=${siteVersion}"></script>`,
     )
     .replace(
       /<script type="text\/javascript">\s*var _paq =[\s\S]*?<\/script>/g,
       `<script src="/extension/desaudify-page.js?v=${siteVersion}"></script>
         <script src="/extension/svg-import.js?v=${siteVersion}"></script>
+        <script src="/extension/vendor/desmos-unlocked/catalog.js?v=${siteVersion}"></script>
         <script src="/assets/local/offline-save.js?v=${siteVersion}"></script>`,
     )
     .replace(
