@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Desmos+",
-  "version": "1.22.0",
+  "version": "1.23.0",
   "description": "Transfer graphs, make songs in Desmos, convert SVGs into Desmos graphs, and so much more!",
   "permissions": ["activeTab", "scripting", "storage"],
   "content_scripts": [
@@ -11,8 +11,8 @@
         "https://*.desmos.com/*",
         "https://desmosplus.pages.dev/*"
       ],
-      "css": ["dark-mode.css"],
-      "js": ["dark-mode.js"],
+      "css": ["dark-mode.css", "modern-font.css"],
+      "js": ["dark-mode.js", "modern-font.js"],
       "run_at": "document_start"
     },
     {
@@ -22,6 +22,20 @@
       ],
       "js": ["autosave.js"],
       "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "fonts/LMMath-Regular-v3.woff2",
+        "fonts/LMRoman10-Regular.woff2",
+        "fonts/lmroman10-italic.woff2"
+      ],
+      "matches": [
+        "https://desmos.com/*",
+        "https://*.desmos.com/*",
+        "https://desmosplus.pages.dev/*"
+      ]
     }
   ],
   "icons": {

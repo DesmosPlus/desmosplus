@@ -26,7 +26,6 @@ const manifest = JSON.parse(
 const forbiddenManifestKeys = [
   "background",
   "host_permissions",
-  "web_accessible_resources",
 ];
 if (forbiddenManifestKeys.some((key) => key in manifest)) {
   throw new Error("Web Store package contains a DesModder-related manifest key.");
@@ -42,8 +41,8 @@ const expectedContentScripts = [
       "https://*.desmos.com/*",
       "https://desmosplus.pages.dev/*",
     ],
-    css: ["dark-mode.css"],
-    js: ["dark-mode.js"],
+    css: ["dark-mode.css", "modern-font.css"],
+    js: ["dark-mode.js", "modern-font.js"],
     run_at: "document_start",
   },
   {
@@ -59,6 +58,26 @@ if (
   JSON.stringify(manifest.content_scripts) !== JSON.stringify(expectedContentScripts)
 ) {
   throw new Error("Web Store package contains an unexpected content script.");
+}
+const expectedFontResources = [
+  {
+    resources: [
+      "fonts/LMMath-Regular-v3.woff2",
+      "fonts/LMRoman10-Regular.woff2",
+      "fonts/lmroman10-italic.woff2",
+    ],
+    matches: [
+      "https://desmos.com/*",
+      "https://*.desmos.com/*",
+      "https://desmosplus.pages.dev/*",
+    ],
+  },
+];
+if (
+  JSON.stringify(manifest.web_accessible_resources) !==
+  JSON.stringify(expectedFontResources)
+) {
+  throw new Error("Web Store package contains unexpected accessible resources.");
 }
 const output = path.resolve(
   process.argv[2] ||
@@ -106,6 +125,14 @@ if (!members.includes("obj-import.js")) {
 }
 if (!members.includes("DESLOADER-LICENSE")) {
   throw new Error("Packaged extension is missing the DesLoader MIT license.");
+}
+if (!members.includes("MODERN-FONT-NOTICE")) {
+  throw new Error("Packaged extension is missing the Modern Font notice.");
+}
+for (const resource of expectedFontResources[0].resources) {
+  if (!members.includes(resource)) {
+    throw new Error(`Packaged extension is missing ${resource}.`);
+  }
 }
 const functionEquationAssets = [
   "acosh", "asinh", "atanh", "clamp", "frac", "haversin", "hypot",

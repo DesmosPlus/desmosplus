@@ -4,7 +4,8 @@ The DesmosPlus browser extension transfers complete graph state between the
 official Desmos calculators and DesmosPlus. It also converts static SVG artwork
 and OBJ models into editable Desmos equations, converts audio files into
 playable graphs, adds reusable function definitions and a starter ticker, adds
-a dark theme, and can periodically save signed-in Desmos graphs. Processing
+a dark theme and an optional Latin Modern math font, and can periodically save
+signed-in Desmos graphs. Processing
 happens locally in the browser.
 Tool sections use short directional transitions and switch instantly when the
 browser's reduced-motion preference is enabled.
@@ -21,6 +22,8 @@ or maintained by Desmos Studio PBC.
 - [Installation](#installation)
 - [Supported Calculators](#supported-calculators)
 - [Graph Pop-Out](#graph-pop-out)
+- [Dark Mode](#dark-mode)
+- [Modern Font](#modern-font)
 - [Autosave](#autosave)
 - [Graph Transfer](#graph-transfer)
 - [SVG Import](#svg-import)
@@ -51,7 +54,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.22.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.22.0/DesmosPlus-Extension-v1.22.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.22.0) |
+| **v1.23.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.23.0/DesmosPlus-Extension-v1.23.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.23.0) |
+| v1.22.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.22.0/DesmosPlus-Extension-v1.22.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.22.0) |
 | v1.21.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.21.0/DesmosPlus-Extension-v1.21.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.21.0) |
 | v1.20.1 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.1/DesmosPlus-Extension-v1.20.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.1) |
 | v1.20.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.20.0/DesmosPlus-Extension-v1.20.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.20.0) |
@@ -94,8 +98,9 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.22.0 uses Settings for dark mode and autosave,
-adds separate 3D and Functions tabs, and does not include DesModder.
+DesModder Settings tab. Version 1.23.0 uses Settings for dark mode, autosave,
+and Modern Font, adds separate 3D and Functions tabs, and does not include
+DesModder.
 
 | 1. Graph transfer | 2. SVG import |
 | --- | --- |
@@ -202,6 +207,18 @@ restart.
 Dark mode uses packaged CSS and does not download a theme or send the setting
 anywhere. Turning it off removes the DesmosPlus theme flag and restores the
 page's normal appearance.
+
+## Modern Font
+
+Open **Settings** and switch **Modern Font** on to replace Desmos's math
+typesetting with bundled Latin Modern Math and Roman fonts. The preference
+applies immediately on supported official Desmos and hosted DesmosPlus pages,
+remains selected after a reload, and is off by default.
+
+The font files are included in the extension package and are never downloaded
+at runtime. Turning the option off removes only the DesmosPlus font flag and
+restores the calculator's normal typeface. The bundled fonts are distributed
+under the GUST Font License in `extension/MODERN-FONT-NOTICE`.
 
 ## Autosave
 
@@ -433,8 +450,8 @@ python desaudify_cli.py input.mp3 output
 | --- | --- |
 | `activeTab` | Grants temporary access to the current tab after the user opens the extension. |
 | `scripting` | Injects packaged code that reads or writes calculator state for graph, SVG, OBJ, ticker, function-library, and audio actions. |
-| `storage` | Stores the local dark-mode and autosave on/off preferences. |
-| Desmos site access | Runs the packaged dark-mode files on supported pages and the autosave timer on saved official 2D graphs. |
+| `storage` | Stores the local dark-mode, autosave, and Modern Font on/off preferences. |
+| Desmos site access | Runs packaged dark-mode and Modern Font files on supported pages and the autosave timer on saved official 2D graphs. |
 
 Selected graph, SVG, OBJ, schema, and audio files are processed locally and are
 not uploaded by DesmosPlus. Graph transfer, SVG and OBJ conversion, ticker and
@@ -533,6 +550,9 @@ The extension's main files are:
 | `extension/popup.js` | Active-tab detection and graph transfer orchestration |
 | `extension/dark-mode.js` | Stored dark-mode preference and live page toggle |
 | `extension/dark-mode.css` | Page-scoped Desmos dark theme |
+| `extension/modern-font.js` | Stored Modern Font preference and live page toggle |
+| `extension/modern-font.css` | Page-scoped Latin Modern math typography |
+| `extension/fonts/*.woff2` | Bundled Latin Modern font files |
 | `extension/autosave.js` | Opt-in 60-second save timer for saved official 2D graphs |
 | `extension/flame-effects.js` | DesAudify and OBJ MAX Flame Wrap lifecycle and colors |
 | `extension/vendor/flame-wrap.js` | Pinned Canvas UI Flame Wrap WebGL engine |
@@ -576,6 +596,12 @@ included in [`extension/vendor/CANVAS-UI-NOTICE`](extension/vendor/CANVAS-UI-NOT
 The OBJ import workflow is adapted from
 [DesLoader](https://github.com/Mr-milky-way/Desloader). Its MIT license is
 included in [`extension/DESLOADER-LICENSE`](extension/DESLOADER-LICENSE).
+
+The optional Modern Font feature is inspired by
+[physy/Desmos-extension](https://github.com/physy/Desmos-extension). DesmosPlus
+ships its own toggle implementation and bundles Latin Modern font files under
+the GUST Font License in
+[`extension/MODERN-FONT-NOTICE`](extension/MODERN-FONT-NOTICE).
 
 Desmos is a trademark of Desmos Studio PBC. See the main
 [`README.md`](README.md) for the repository's license and third-party notice.

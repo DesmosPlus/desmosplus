@@ -1,0 +1,42 @@
+@font-face {
+  font-family: "DesmosPlus Modern Math";
+  src: url("fonts/LMMath-Regular-v3.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DesmosPlus Modern Roman";
+  src: url("fonts/LMRoman10-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DesmosPlus Modern Roman";
+  src: url("fonts/lmroman10-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+html[data-desmosplus-modern-font="true"] .dcg-mq-math-mode,
+html[data-desmosplus-modern-font="true"] .dcg-mq-math-mode .dcg-mq-root-block,
+html[data-desmosplus-modern-font="true"] .dcg-mq-math-mode .dcg-mq-binary-operator,
+html[data-desmosplus-modern-font="true"] .dcg-mq-math-mode .dcg-mq-nonSymbola {
+  font-family: "DesmosPlus Modern Math", serif !important;
+}
+
+html[data-desmosplus-modern-font="true"]
+  .dcg-mq-math-mode
+  var:not(.dcg-mq-operator-name) {
+  font-family: "DesmosPlus Modern Roman", "DesmosPlus Modern Math", serif !important;
+  font-style: italic !important;
+}
+
+html[data-desmosplus-modern-font="true"] .dcg-mq-math-mode .dcg-mq-operator-name {
+  font-family: "DesmosPlus Modern Roman", "DesmosPlus Modern Math", serif !important;
+  font-style: normal !important;
+}

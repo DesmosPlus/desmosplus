@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.22.0.zip` |
-| SHA-256 | `71a0cd93168dc80d89c3806aa0d0b2c4bc9aaddbf4aa286e7307506978679bcd` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.23.0.zip` |
+| SHA-256 | `a54dc5e454ec69cc77f845341af9217c83c050117d0b41b0ce6ba59a2d1d8b7e` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,9 +27,10 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.22.0, which excludes
+> contain the GitHub DesModder integration. Use v1.23.0, which excludes
 > DesModder, its injection settings, background loader, WakaTime access, and
-> related permissions. The v1.22.0 Settings tab controls dark mode and autosave.
+> related permissions. The v1.23.0 Settings tab controls dark mode, autosave,
+> and Modern Font.
 
 ## Account Setup
 
@@ -50,7 +51,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.22.0.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.23.0.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
@@ -77,7 +78,7 @@ dashboard. Any package change requires a higher manifest version and a new ZIP.
 Paste this as plain text:
 
 ```text
-Desmos+ adds graph transfer, reusable functions, autosave, SVG and OBJ conversion, and audio creation tools directly to supported Desmos calculators.
+Desmos+ adds graph transfer, reusable functions, appearance controls, autosave, SVG and OBJ conversion, and audio creation tools directly to supported Desmos calculators.
 
 KEY FEATURES
 
@@ -92,6 +93,9 @@ Open a separate DesmosPlus 2D calculator window or use a movable, resizable in-p
 
 • Toggleable dark mode
 Apply a locally stored dark theme to supported official Desmos and hosted DesmosPlus pages, then switch back instantly.
+
+• Modern Font
+Replace Desmos math typesetting with bundled Latin Modern Math and Roman fonts. The option is off by default, applies immediately, and makes no runtime font download.
 
 • Optional autosave
 Request a save every 60 seconds on eligible saved, signed-in Desmos 2D graphs. Autosave is off by default and can be disabled instantly.
@@ -163,7 +167,7 @@ not reveal private graphs, files, or account data.
 ### Single Purpose
 
 ```text
-Enhance supported Desmos calculators with graph transfer, reusable equation-based tools, optional autosave, local SVG, OBJ, and audio conversion, and an optional dark theme.
+Enhance supported Desmos calculators with graph transfer, reusable equation-based tools, optional autosave, local SVG, OBJ, and audio conversion, and optional appearance controls.
 ```
 
 All listed features operate on supported Desmos calculator content and should
@@ -186,13 +190,13 @@ Desmos+ injects packaged functions into an active supported calculator to call i
 **storage**
 
 ```text
-Desmos+ stores two local Boolean preferences recording whether the user enabled dark mode and autosave. It does not store graph, SVG, OBJ, audio, schema, browsing-history, account, or analytics data in extension storage.
+Desmos+ stores three local Boolean preferences recording whether the user enabled dark mode, autosave, and Modern Font. It does not store graph, SVG, OBJ, audio, schema, browsing-history, account, or analytics data in extension storage.
 ```
 
 **Host access**
 
 ```text
-Desmos+ runs its packaged dark-mode files only on official Desmos pages and the hosted DesmosPlus calculator. It also runs a packaged autosave timer only on official saved 2D calculator URLs when the user enables autosave. Autosave requests Desmos's native save shortcut; any resulting account storage is performed by the official Desmos site. This access does not monitor unrelated websites or send page content to the Desmos+ developer.
+Desmos+ runs its packaged dark-mode and Modern Font files only on official Desmos pages and the hosted DesmosPlus calculator. The Latin Modern fonts are bundled in the submitted extension and are not fetched from the network. Desmos+ also runs a packaged autosave timer only on official saved 2D calculator URLs when the user enables autosave. Autosave requests Desmos's native save shortcut; any resulting account storage is performed by the official Desmos site. This access does not monitor unrelated websites or send page content to the Desmos+ developer.
 ```
 
 ### Remote Code
@@ -260,7 +264,8 @@ several calculator-specific sections. No account credentials are required.
 7. In Functions, confirm all 14 equation images and plain-text formulas render. Add two functions individually, add one again and confirm only that definition is replaced, then select Add library and confirm one complete Desmos+ Functions folder appears. Select Remove library and confirm unrelated expressions remain.
 8. In DesAudify, use a short browser-decodable audio file and Auto mode. Confirm that conversion finishes and equations are injected. MAX mode is intentionally resource intensive and is not required for review.
 9. Open Settings and enable Dark mode. Confirm that the calculator becomes dark, reload the page, and confirm the preference remains active. Disable it and confirm the normal appearance returns.
-10. While signed in, open a previously saved 2D graph, enable Autosave in Settings, edit the graph, and wait 60 seconds. Confirm Desmos saves it. Disable Autosave and confirm no further automatic save is requested. Autosave does not run on the new unsaved calculator page.
+10. In Settings, enable Modern Font. Confirm the expression-list math changes to Latin Modern immediately, reload the page, and confirm the preference remains active. Disable it and confirm the normal Desmos font returns.
+11. While signed in, open a previously saved 2D graph, enable Autosave in Settings, edit the graph, and wait 60 seconds. Confirm Desmos saves it. Disable Autosave and confirm no further automatic save is requested. Autosave does not run on the new unsaved calculator page.
 ```
 
 ## Final Submission Checklist
@@ -278,6 +283,7 @@ several calculator-specific sections. No account credentials are required.
 - [ ] Function reference images plus individual and full-library add, replace, call, and removal tested.
 - [ ] DesAudify Auto tested with a short non-private audio file.
 - [ ] Dark mode tested on, off, and after a page reload.
+- [ ] Modern Font tested on, off, live, and after a page reload.
 - [ ] Autosave tested on a saved signed-in graph and confirmed inactive after disabling.
 - [ ] Listing description matches actual behavior.
 - [ ] Icon, at least one screenshot, and small promotional tile uploaded.
@@ -300,8 +306,8 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.22.0 Web Store edition:** Graph, pop-out, individually injectable visual function reference,
-  autosave, dark mode, SVG, 3D OBJ import including warned MAX mode, starter
+- **v1.23.0 Web Store edition:** Graph, pop-out, individually injectable visual function reference,
+  autosave, dark mode, Modern Font, SVG, 3D OBJ import including warned MAX mode, starter
   ticker, and DesAudify, with no DesModder or
   WakaTime code.
 - **Older GitHub editions:** v1.11.0 through v1.14.1 include DesModder. A future

@@ -36,11 +36,13 @@ The standard edition is built from `extension/` and must contain Graph, SVG,
 - `declarativeNetRequest` or WakaTime host permissions.
 
 Its manifest permissions are limited to `activeTab`, `scripting`, and `storage`.
-The standard-edition content scripts are the packaged dark-mode toggle and the
-opt-in autosave timer. Dark mode is limited to official Desmos and hosted
-DesmosPlus pages; autosave is limited to official saved 2D calculator URLs. Any
-future permission or content script requires a documented user-facing standard
-feature and updated Chrome Web Store disclosures.
+The standard-edition content scripts are the packaged dark-mode and Modern Font
+toggles plus the opt-in autosave timer. Dark mode and Modern Font are limited to
+official Desmos and hosted DesmosPlus pages; autosave is limited to official
+saved 2D calculator URLs. The only web-accessible resources are the three
+bundled Latin Modern font files. Any future permission, content script, or
+accessible resource requires a documented user-facing standard feature and
+updated Chrome Web Store disclosures.
 
 ### DesModder Edition
 
@@ -116,16 +118,19 @@ checks for the optional DesModder edition when it is published:
    that the saved state applies without remote requests.
 12. Enable autosave on a saved signed-in 2D graph, verify one save request after
    60 seconds, then disable it and verify the timer stops.
-13. Inspect every ZIP member list for nested roots, `.DS_Store`, `__MACOSX`, and
+13. Toggle Modern Font on and off, confirm Desmos math typography changes live,
+   reload the calculator, and verify the saved state applies without remote
+   requests.
+14. Inspect every ZIP member list for nested roots, `.DS_Store`, `__MACOSX`, and
    embedded ZIP files.
-14. Confirm `manifest.json`, `DESMOSPLUS-BUILD.txt`, and required third-party
-    notices are at every ZIP root.
-15. Confirm first-party code is watermarked and third-party files are not.
-16. Scan the standard ZIP for `desmodder` and `wakatime`; it must return no
-    filenames or packaged text.
-17. When built, verify the DesModder ZIP contains its loader, background
-    support, runtime, metadata, and license.
-18. Compute and record a SHA-256 checksum for every published ZIP.
+15. Confirm `manifest.json`, `DESMOSPLUS-BUILD.txt`, and required third-party
+   notices are at every ZIP root.
+16. Confirm first-party code is watermarked and third-party files are not.
+17. Scan the standard ZIP for `desmodder` and `wakatime`; it must return no
+   filenames or packaged text.
+18. When built, verify the DesModder ZIP contains its loader, background
+   support, runtime, metadata, and license.
+19. Compute and record a SHA-256 checksum for every published ZIP.
 
 MAX mode is intentionally resource intensive and does not need to be used for
 every release smoke test. Its menu, warning, and disabled-by-default behavior

@@ -40,6 +40,8 @@
   var darkModeState = document.getElementById("dark-mode-state");
   var autosaveToggle = document.getElementById("autosave-toggle");
   var autosaveState = document.getElementById("autosave-state");
+  var modernFontToggle = document.getElementById("modern-font-toggle");
+  var modernFontState = document.getElementById("modern-font-state");
   var statusNode = document.getElementById("status");
   var availability = {
     graph: false,
@@ -55,6 +57,7 @@
   var POPOUT_URL = "https://desmosplus.pages.dev/2dcalculator";
   var DARK_MODE_KEY = "desmosPlusDarkModeEnabled";
   var AUTOSAVE_KEY = "desmosPlusAutosaveEnabled";
+  var MODERN_FONT_KEY = "desmosPlusModernFontEnabled";
   var FUNCTION_FOLDER_ID = "desmosplus-functions-folder";
   var FUNCTION_ID_PREFIX = "desmosplus-function-";
   var TICKER_FOLDER_ID = "desmosplus-starter-ticker-folder";
@@ -424,6 +427,31 @@
       setStatus("Reload DesmosPlus, then reopen this popup.");
     } finally {
       autosaveToggle.disabled = false;
+    }
+  }
+
+  function showModernFontState(enabled) {
+    modernFontToggle.checked = enabled;
+    modernFontState.textContent = enabled ? "On" : "Off";
+  }
+
+  async function loadModernFontSetting() {
+    var stored = await chrome.storage.local.get(MODERN_FONT_KEY);
+    showModernFontState(stored[MODERN_FONT_KEY] === true);
+  }
+
+  async function saveModernFontSetting() {
+    var enabled = modernFontToggle.checked;
+    modernFontToggle.disabled = true;
+    try {
+      await chrome.storage.local.set({ [MODERN_FONT_KEY]: enabled });
+      showModernFontState(enabled);
+      setStatus(enabled ? "Modern Font enabled." : "Modern Font disabled.");
+    } catch (error) {
+      showModernFontState(!enabled);
+      setStatus("Reload DesmosPlus, then reopen this popup.");
+    } finally {
+      modernFontToggle.disabled = false;
     }
   }
 
@@ -1334,6 +1362,7 @@
   customSettings.addEventListener("input", updateConversionSettings);
   darkModeToggle.addEventListener("change", saveDarkModeSetting);
   autosaveToggle.addEventListener("change", saveAutosaveSetting);
+  modernFontToggle.addEventListener("change", saveModernFontSetting);
 
   setupModeMenu();
   selectView("graph");
@@ -1345,6 +1374,10 @@
   });
   loadAutosaveSetting().catch(function () {
     showAutosaveState(false);
+    setStatus("Reload DesmosPlus, then reopen this popup.");
+  });
+  loadModernFontSetting().catch(function () {
+    showModernFontState(false);
     setStatus("Reload DesmosPlus, then reopen this popup.");
   });
   initialize();
