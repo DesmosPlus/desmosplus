@@ -1003,6 +1003,7 @@
       panel.hidden = true;
     });
     popoutPanel.hidden = false;
+    document.body.setAttribute("data-popup-state", "popout");
     desaudifyProjectLink.hidden = true;
     updateFlameEffects({ view: "graph", menuOpen: false, maxActive: false });
     setStatus("Choose where to open the graph.");
@@ -1450,6 +1451,7 @@
   async function initialize() {
     try {
       var page = await inspectPage();
+      document.body.removeAttribute("data-popup-state");
       availability.graph = true;
       availability.svg = DesmosPlusSvg.supportedProduct(page.product);
       availability.threeD = page.product === "3dcalculator";

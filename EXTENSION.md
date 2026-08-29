@@ -54,7 +54,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.24.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.0/DesmosPlus-Extension-v1.24.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.0) |
+| **v1.24.1 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.1/DesmosPlus-Extension-v1.24.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.1) |
+| v1.24.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.0/DesmosPlus-Extension-v1.24.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.0) |
 | v1.23.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.23.0/DesmosPlus-Extension-v1.23.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.23.0) |
 | v1.22.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.22.0/DesmosPlus-Extension-v1.22.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.22.0) |
 | v1.21.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.21.0/DesmosPlus-Extension-v1.21.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.21.0) |
@@ -99,7 +100,7 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.24.0 uses Settings for dark mode, autosave,
+DesModder Settings tab. Version 1.24.1 uses Settings for dark mode, autosave,
 and Modern Font, includes separate 3D and Functions tabs, and does not include
 DesModder.
 

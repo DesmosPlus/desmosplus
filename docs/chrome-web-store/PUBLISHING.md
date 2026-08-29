@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.24.0.zip` |
-| SHA-256 | `dec5768d8894186e903ca8dc793c06dce822cbef969724d73d6bee0138be23d8` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.24.1.zip` |
+| SHA-256 | `5e6da6ac9f58750de161e89f5db50d0c65480b8b6d24e10703758f6257a3797c` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,9 +27,9 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.24.0, which excludes
+> contain the GitHub DesModder integration. Use v1.24.1, which excludes
 > DesModder, its injection settings, background loader, WakaTime access, and
-> related permissions. Version 1.24.0 adds the separately attributed, locally
+> related permissions. Version 1.24.1 includes the separately attributed, locally
 > bundled Desmos Unlocked shortcut engine; it is not DesModder.
 
 ## Account Setup
@@ -51,7 +51,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.24.0.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.24.1.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, load the matching `extension/` directory unpacked in Chrome
@@ -311,7 +311,7 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.24.0 Web Store edition:** Graph, pop-out, individually injectable visual function reference,
+- **v1.24.1 Web Store edition:** Graph, pop-out, individually injectable visual function reference,
   autosave, dark mode, Modern Font, SVG, 3D OBJ import including warned MAX mode, starter
   ticker, complete locally bundled editor shortcuts, and DesAudify, with no DesModder or
   WakaTime code.
