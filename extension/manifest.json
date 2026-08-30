@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Desmos+",
-  "version": "1.24.1",
+  "version": "1.25.0",
   "description": "Transfer graphs, make songs in Desmos, convert SVGs into Desmos graphs, and so much more!",
   "permissions": [
     "activeTab",
@@ -9,6 +9,25 @@
     "storage"
   ],
   "host_permissions": ["https://www.desmos.com/calculator*"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';",
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals allow-downloads; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' data:; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; worker-src 'self' blob:; child-src 'self' blob:; frame-src 'self' blob:;"
+  },
+  "sandbox": {
+    "pages": [
+      "index.html",
+      "2dcalculator.html",
+      "3dcalculator.html",
+      "geometry.html",
+      "matrix.html",
+      "notebook.html",
+      "fourfunction.html",
+      "scientific.html",
+      "extension.html",
+      "privacy.html",
+      "support.html"
+    ]
+  },
   "content_scripts": [
     {
       "matches": [

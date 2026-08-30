@@ -5,6 +5,11 @@ export const WATERMARK_MARKER = "DesmosPlus release watermark";
 
 const SOURCE_URL = "https://github.com/DesmosPlus/desmosplus";
 const SKIPPED_DIRECTORIES = new Set(["icons", "vendor"]);
+const SKIPPED_PATH_PREFIXES = [
+  path.join("assets", "build"),
+  path.join("assets", "desaudify"),
+  path.join("assets", "img"),
+];
 const CODE_EXTENSIONS = new Set([".css", ".html", ".js"]);
 
 function watermark(version) {
@@ -31,9 +36,15 @@ function stampFile(file, version) {
 function stampDirectory(directory, version, relative = "") {
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
     const childRelative = path.join(relative, entry.name);
-    const topLevel = childRelative.split(path.sep)[0];
+    const pathParts = childRelative.split(path.sep);
+    const skippedPath = SKIPPED_PATH_PREFIXES.some(
+      (prefix) => childRelative === prefix || childRelative.startsWith(prefix + path.sep),
+    );
     if (entry.isDirectory()) {
-      if (!SKIPPED_DIRECTORIES.has(topLevel)) {
+      if (
+        !skippedPath &&
+        !pathParts.some((part) => SKIPPED_DIRECTORIES.has(part))
+      ) {
         stampDirectory(path.join(directory, entry.name), version, childRelative);
       }
       continue;

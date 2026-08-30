@@ -44,6 +44,20 @@
     "iota nu upsilon Upsilon square mid parallel nparallel perp times div approx";
   var shortcutSettings = { engineEnabled: false, commands: new Set() };
   var shortcutRuntimeInstalled = false;
+  var fallbackStorageValues = {};
+  var fallbackStorage = {
+    getItem: function (key) {
+      return Object.prototype.hasOwnProperty.call(fallbackStorageValues, key)
+        ? fallbackStorageValues[key]
+        : null;
+    },
+    setItem: function (key, value) {
+      fallbackStorageValues[key] = String(value);
+    },
+    removeItem: function (key) {
+      delete fallbackStorageValues[key];
+    },
+  };
   var PRODUCTS = [
     ["2dcalculator", "2D Calculator"],
     ["3dcalculator", "3D Calculator"],
@@ -53,6 +67,17 @@
     ["fourfunction", "Four Function"],
     ["scientific", "Scientific"],
   ];
+
+  function persistentStorage() {
+    if (window.DesmosPlusExtensionStorage) {
+      return window.DesmosPlusExtensionStorage;
+    }
+    try {
+      return window.localStorage;
+    } catch (error) {
+      return fallbackStorage;
+    }
+  }
 
   function product() {
     var path = window.location.pathname;
@@ -71,6 +96,14 @@
 
   function productPath(id) {
     return "/" + id + ".html";
+  }
+
+  function navigateTo(path) {
+    if (typeof window.DesmosPlusExtensionNavigate === "function") {
+      window.DesmosPlusExtensionNavigate(path);
+      return;
+    }
+    window.location.href = path;
   }
 
   function api() {
@@ -113,7 +146,7 @@
       // Turbo still resets when session storage is unavailable.
     }
     try {
-      localStorage.removeItem(LEGACY_TURBO_KEY);
+      persistentStorage().removeItem(LEGACY_TURBO_KEY);
     } catch (error) {
       // Turbo still resets when local storage is unavailable.
     }
@@ -327,7 +360,7 @@
         sessionStorage.getItem(recoveryKey("restore-attempted")) === "1";
       recoveryNeeded = wasActive && !restoreAttempted;
       recoverySkipped = wasActive && restoreAttempted;
-      if (recoverySkipped) localStorage.removeItem(recoveryKey("snapshot"));
+      if (recoverySkipped) persistentStorage().removeItem(recoveryKey("snapshot"));
       sessionStorage.setItem(recoveryKey("active"), "1");
       document.documentElement.setAttribute(
         "data-recovery",
@@ -361,7 +394,7 @@
       return;
     }
     try {
-      localStorage.setItem(
+      persistentStorage().setItem(
         recoveryKey("snapshot"),
         JSON.stringify({
           version: 1,
@@ -388,10 +421,12 @@
   function restoreRecoverySnapshot() {
     if (!recoveryNeeded) return false;
     try {
-      var snapshot = JSON.parse(localStorage.getItem(recoveryKey("snapshot")) || "null");
+      var snapshot = JSON.parse(
+        persistentStorage().getItem(recoveryKey("snapshot")) || "null",
+      );
       if (!snapshot || snapshot.product !== product() || !snapshot.state) return false;
       sessionStorage.setItem(recoveryKey("restore-attempted"), "1");
-      localStorage.removeItem(recoveryKey("snapshot"));
+      persistentStorage().removeItem(recoveryKey("snapshot"));
       recoverySafeAt = Date.now() + RECOVERY_REARM_DELAY;
       setState(snapshot.state);
       document.documentElement.setAttribute("data-recovery", "restored");
@@ -593,9 +628,11 @@
     var commands = SHORTCUT_DEFAULT_COMMANDS.split(/\s+/);
     var engineEnabled = false;
     try {
-      var storedCommands = JSON.parse(localStorage.getItem(SHORTCUT_COMMANDS_KEY) || "null");
+      var storedCommands = JSON.parse(
+        persistentStorage().getItem(SHORTCUT_COMMANDS_KEY) || "null",
+      );
       if (Array.isArray(storedCommands)) commands = storedCommands;
-      engineEnabled = localStorage.getItem(SHORTCUT_ENGINE_KEY) === "true";
+      engineEnabled = persistentStorage().getItem(SHORTCUT_ENGINE_KEY) === "true";
     } catch (error) {
       // Default shortcuts remain available when local storage is blocked.
     }
@@ -612,8 +649,11 @@
       engineEnabled: engineEnabled === true,
     };
     try {
-      localStorage.setItem(SHORTCUT_COMMANDS_KEY, JSON.stringify(Array.from(commands)));
-      localStorage.setItem(SHORTCUT_ENGINE_KEY, String(engineEnabled === true));
+      persistentStorage().setItem(
+        SHORTCUT_COMMANDS_KEY,
+        JSON.stringify(Array.from(commands)),
+      );
+      persistentStorage().setItem(SHORTCUT_ENGINE_KEY, String(engineEnabled === true));
     } catch (error) {
       functionsStatus("Shortcut settings apply until this page closes.");
     }
@@ -781,12 +821,16 @@
   }
 
   function cookieMap() {
-    return document.cookie.split(";").reduce(function (map, part) {
-      var index = part.indexOf("=");
-      if (index === -1) return map;
-      map[part.slice(0, index).trim()] = part.slice(index + 1);
-      return map;
-    }, {});
+    try {
+      return document.cookie.split(";").reduce(function (map, part) {
+        var index = part.indexOf("=");
+        if (index === -1) return map;
+        map[part.slice(0, index).trim()] = part.slice(index + 1);
+        return map;
+      }, {});
+    } catch (error) {
+      return {};
+    }
   }
 
   function clearCookieChunks() {
@@ -841,7 +885,7 @@
   }
 
   function readStore() {
-    var encoded = readCookie() || localStorage.getItem(STORE_KEY) || "";
+    var encoded = readCookie() || persistentStorage().getItem(STORE_KEY) || "";
     if (!encoded) return blankStore();
     try {
       var parsed = JSON.parse(decodeURIComponent(encoded));
@@ -853,11 +897,11 @@
 
   function writeStore(store) {
     var encoded = encodeURIComponent(JSON.stringify(store));
-    localStorage.setItem(STORE_KEY, encoded);
+    persistentStorage().setItem(STORE_KEY, encoded);
     try {
       writeCookie(encoded);
     } catch (error) {
-      localStorage.setItem(STORE_KEY + ".cookieError", String(error));
+      persistentStorage().setItem(STORE_KEY + ".cookieError", String(error));
     }
   }
 
@@ -912,7 +956,7 @@
     isolateControls(shell);
 
     setupDropdown("desmosplus-product", function (value) {
-      window.location.href = productPath(value);
+      navigateTo(productPath(value));
     });
     setupDropdown("local-turbo", function (value) {
       setTurboSpeed(value, true);
@@ -1288,7 +1332,7 @@
     });
     if (!save) return;
     if (save.product !== product()) {
-      window.location.href = productPath(save.product) + "#save=" + encodeURIComponent(id);
+      navigateTo(productPath(save.product) + "#save=" + encodeURIComponent(id));
       return;
     }
     try {
@@ -1393,8 +1437,7 @@
       writeStore(store);
 
       if (importedProduct !== product()) {
-        window.location.href =
-          productPath(importedProduct) + "#save=" + encodeURIComponent(id);
+        navigateTo(productPath(importedProduct) + "#save=" + encodeURIComponent(id));
         return;
       }
 
@@ -1667,10 +1710,21 @@
     });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot);
+  function scheduleBoot() {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", boot);
+    } else {
+      boot();
+    }
+  }
+
+  if (
+    window.DesmosPlusExtensionStorageReady &&
+    typeof window.DesmosPlusExtensionStorageReady.then === "function"
+  ) {
+    window.DesmosPlusExtensionStorageReady.then(scheduleBoot);
   } else {
-    boot();
+    scheduleBoot();
   }
 
   window.DesmosPlusTurbo = {

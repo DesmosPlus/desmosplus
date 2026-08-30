@@ -34,6 +34,7 @@
   var popoutPanel = document.getElementById("popout-panel");
   var popoutButton = document.getElementById("open-popout");
   var overlayButton = document.getElementById("open-overlay");
+  var localSiteButton = document.getElementById("open-local-site");
   var nameInput = document.getElementById("graph-name");
   var categoryInput = document.getElementById("graph-category");
   var darkModeToggle = document.getElementById("dark-mode-toggle");
@@ -60,7 +61,8 @@
   var panelAnimation = null;
   var panelTransitionId = 0;
   var audioAction = "import";
-  var POPOUT_URL = "https://desmosplus.pages.dev/2dcalculator";
+  var LOCAL_SITE_URL = chrome.runtime.getURL("local-site.html");
+  var POPOUT_URL = LOCAL_SITE_URL + "#2dcalculator.html";
   var DARK_MODE_KEY = "desmosPlusDarkModeEnabled";
   var AUTOSAVE_KEY = "desmosPlusAutosaveEnabled";
   var MODERN_FONT_KEY = "desmosPlusModernFontEnabled";
@@ -1028,6 +1030,19 @@
     }
   }
 
+  async function openLocalSite() {
+    localSiteButton.disabled = true;
+    setStatus("Opening local website...");
+    try {
+      await chrome.tabs.create({ url: LOCAL_SITE_URL });
+      setStatus("Local website opened.");
+    } catch (error) {
+      setStatus(error.message || String(error));
+    } finally {
+      localSiteButton.disabled = false;
+    }
+  }
+
   async function openGraphOverlay() {
     overlayButton.disabled = true;
     setStatus("Opening graph on this page...");
@@ -1472,6 +1487,7 @@
   exportButton.addEventListener("click", exportGraph);
   popoutButton.addEventListener("click", openGraphPopout);
   overlayButton.addEventListener("click", openGraphOverlay);
+  localSiteButton.addEventListener("click", openLocalSite);
   importButton.addEventListener("click", function () {
     importFile.click();
   });

@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.24.1.zip` |
-| SHA-256 | `5e6da6ac9f58750de161e89f5db50d0c65480b8b6d24e10703758f6257a3797c` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.25.0.zip` |
+| SHA-256 | `9481e748f97ff523839b128ad87edec15e62441684053c1190b86a80ee122763` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,9 +27,9 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.24.1, which excludes
+> contain the GitHub DesModder integration. Use v1.25.0, which excludes
 > DesModder, its injection settings, background loader, WakaTime access, and
-> related permissions. Version 1.24.1 includes the separately attributed, locally
+> related permissions. Version 1.25.0 includes the separately attributed, locally
 > bundled Desmos Unlocked shortcut engine; it is not DesModder.
 
 ## Account Setup
@@ -51,12 +51,14 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.24.1.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.25.0.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
-Before uploading, load the matching `extension/` directory unpacked in Chrome
-and test every user-facing feature. Manifest metadata cannot be edited in the
-dashboard. Any package change requires a higher manifest version and a new ZIP.
+Before uploading, extract the matching release ZIP, load that extracted folder
+unpacked in Chrome, and test every user-facing feature. The release build adds
+the bundled website files to the source extension. Manifest metadata cannot be
+edited in the dashboard. Any package change requires a higher manifest version
+and a new ZIP.
 
 ## Store Listing
 
@@ -89,7 +91,7 @@ Export and import complete Desmos graphs while preserving expressions, folders, 
 Save graphs in a portable format and reopen them later in Desmos+ or a compatible calculator.
 
 • Graph pop-out
-Open a separate DesmosPlus 2D calculator window or use a movable, resizable in-page calculator that minimizes into a floating DesmosPlus icon.
+Open the complete packaged DesmosPlus website and all seven calculators without localhost or a hosted site, or use a movable, resizable in-page calculator that minimizes into a floating DesmosPlus icon.
 
 • Toggleable dark mode
 Apply a locally stored dark theme to supported official Desmos and hosted DesmosPlus pages, then switch back instantly.
@@ -193,7 +195,7 @@ Desmos+ injects packaged functions into an active supported calculator to call i
 **storage**
 
 ```text
-Desmos+ stores local preferences for dark mode, autosave, Modern Font, enabled editor shortcuts, and the optional extended symbol engine. It does not store graph, SVG, OBJ, audio, schema, browsing-history, account, or analytics data in extension storage.
+Desmos+ stores local preferences for dark mode, autosave, Modern Font, enabled editor shortcuts, and the optional extended symbol engine. It also stores graph-library saves that users create in the bundled local website so those graphs can be reopened and edited. This data stays on the user's device and is not uploaded to the developer. It does not store browsing-history, account, or analytics data.
 ```
 
 **Host access**
@@ -210,12 +212,13 @@ Select:
 No, I am not using remote code.
 ```
 
-All executable extension logic, including the OBJ importer, overlay, DesAudify,
-FFT, Flame Wrap, and Desmos Unlocked-compatible editor code, is inside the
-submitted package. The optional graph window and
-overlay display the documented DesmosPlus calculator as a separate cross-origin
-web page without extension API access; no remote script is imported into or
-executed by the extension.
+All executable extension logic, including the bundled website and calculators,
+OBJ importer, overlay, DesAudify, FFT, Flame Wrap, and
+Desmos Unlocked-compatible editor code, is inside the submitted package. The
+local website runs in a packaged sandbox without direct extension API access.
+The optional overlay displays the documented DesmosPlus calculator as a
+separate cross-origin web page without extension API access; no remote script
+is imported into or executed by the extension.
 
 ### Data Types
 
@@ -270,6 +273,7 @@ several calculator-specific sections. No account credentials are required.
 9. Open Settings and enable Dark mode. Confirm that the calculator becomes dark, reload the page, and confirm the preference remains active. Disable it and confirm the normal appearance returns.
 10. In Settings, enable Modern Font. Confirm the expression-list math changes to Latin Modern immediately, reload the page, and confirm the preference remains active. Disable it and confirm the normal Desmos font returns.
 11. While signed in, open a previously saved 2D graph, enable Autosave in Settings, edit the graph, and wait 60 seconds. Confirm Desmos saves it. Disable Autosave and confirm no further automatic save is requested. Autosave does not run on the new unsaved calculator page.
+12. Open Settings and select Open local website. Confirm the packaged DesmosPlus home page opens without localhost. Open each calculator, create a local 2D graph-library save, reopen it, and confirm the graph is restored after reloading the page.
 ```
 
 ## Final Submission Checklist
@@ -290,6 +294,7 @@ several calculator-specific sections. No account credentials are required.
 - [ ] Dark mode tested on, off, and after a page reload.
 - [ ] Modern Font tested on, off, live, and after a page reload.
 - [ ] Autosave tested on a saved signed-in graph and confirmed inactive after disabling.
+- [ ] Bundled local website, all seven calculators, and a persistent local graph-library save tested without localhost.
 - [ ] Listing description matches actual behavior.
 - [ ] Icon, at least one screenshot, and small promotional tile uploaded.
 - [ ] Category set to Education and language set to English.
@@ -311,7 +316,7 @@ Chrome Web Store guide applies only to the standard edition.
 
 The current release choices are:
 
-- **v1.24.1 Web Store edition:** Graph, pop-out, individually injectable visual function reference,
+- **v1.25.0 Web Store edition:** Graph, complete bundled local website, individually injectable visual function reference,
   autosave, dark mode, Modern Font, SVG, 3D OBJ import including warned MAX mode, starter
   ticker, complete locally bundled editor shortcuts, and DesAudify, with no DesModder or
   WakaTime code.

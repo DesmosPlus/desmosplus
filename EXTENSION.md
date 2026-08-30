@@ -5,8 +5,9 @@ official Desmos calculators and DesmosPlus. It also converts static SVG artwork
 and OBJ models into editable Desmos equations, converts audio files into
 playable graphs, adds reusable function definitions and a starter ticker, adds
 a dark theme and an optional Latin Modern math font, and can periodically save
-signed-in Desmos graphs. Processing
-happens locally in the browser.
+signed-in Desmos graphs. Version 1.25.0 also bundles the complete DesmosPlus
+website and all seven calculators inside the extension for offline use.
+Processing happens locally in the browser.
 Tool sections use short directional transitions and switch instantly when the
 browser's reduced-motion preference is enabled.
 
@@ -21,6 +22,7 @@ or maintained by Desmos Studio PBC.
 - [Screenshots](#screenshots)
 - [Installation](#installation)
 - [Supported Calculators](#supported-calculators)
+- [Bundled Local Website](#bundled-local-website)
 - [Graph Pop-Out](#graph-pop-out)
 - [Dark Mode](#dark-mode)
 - [Modern Font](#modern-font)
@@ -54,7 +56,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.24.1 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.1/DesmosPlus-Extension-v1.24.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.1) |
+| **v1.25.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.25.0/DesmosPlus-Extension-v1.25.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.25.0) |
+| v1.24.1 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.1/DesmosPlus-Extension-v1.24.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.1) |
 | v1.24.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.0/DesmosPlus-Extension-v1.24.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.0) |
 | v1.23.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.23.0/DesmosPlus-Extension-v1.23.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.23.0) |
 | v1.22.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.22.0/DesmosPlus-Extension-v1.22.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.22.0) |
@@ -100,7 +103,7 @@ DesmosPlus code.
 ## Screenshots
 
 These reference screenshots were captured from v1.14.1 and may show its
-DesModder Settings tab. Version 1.24.1 uses Settings for dark mode, autosave,
+DesModder Settings tab. Version 1.25.0 uses Settings for dark mode, autosave,
 and Modern Font, includes separate 3D and Functions tabs, and does not include
 DesModder.
 
@@ -140,10 +143,11 @@ from that location and cannot use the ZIP directly.
 ### Install from the Repository
 
 1. Clone or download the DesmosPlus repository.
-2. Open the browser's extension manager and enable **Developer mode**.
-3. Select **Load unpacked**.
-4. Choose the repository's `extension` directory.
-5. Pin **DesmosPlus** from the browser's extensions menu.
+2. Run `node scripts/package-extension.mjs` from the repository root.
+3. Extract the generated ZIP from `dist/` into a permanent folder.
+4. Open the browser's extension manager and enable **Developer mode**.
+5. Select **Load unpacked** and choose the extracted folder.
+6. Pin **DesmosPlus** from the browser's extensions menu.
 
 ### Update an Existing Installation
 
@@ -180,13 +184,30 @@ The hosted DesmosPlus 2D calculator at
 `https://desmosplus.pages.dev/2dcalculator` is also recognized as a supported
 graph page.
 
+## Bundled Local Website
+
+Version 1.25.0 is a big update that packages the DesmosPlus homepage, 2D, 3D,
+Geometry, Matrix, Notebook, Four Function, and Scientific calculators, and the
+project information pages directly inside the extension ZIP.
+
+Open **Settings** and select **Open** beside **Local website**. On an unsupported
+website, **Open local website** opens the bundled 2D calculator in a separate
+window. These pages use only packaged files and continue to work without the
+hosted DesmosPlus site or a localhost server.
+
+The calculator engine runs in Chrome's isolated extension sandbox and cannot
+use extension APIs directly. A narrow packaged bridge stores only the local
+website's graph library and settings in `chrome.storage.local`. Those values
+stay on the device, can be removed by clearing the extension's data, and are
+deleted when the extension is uninstalled.
+
 ## Graph Pop-Out
 
 When DesmosPlus is opened on a website that is not a supported calculator, the
 popup offers two options:
 
-- **Open graph window** opens the hosted DesmosPlus 2D calculator in a separate
-  1200x800 browser window.
+- **Open local website** opens the bundled DesmosPlus 2D calculator in a
+  separate 1200x800 browser window without contacting the hosted site.
 - **Show graph on this page** places a smaller calculator window on the current
   website. Drag its title bar to move it and drag the bottom-right handle to
   resize it. Use the minus button or press Escape to minimize it into the
@@ -470,7 +491,7 @@ python desaudify_cli.py input.mp3 output
 | --- | --- |
 | `activeTab` | Grants temporary access to the current tab after the user opens the extension. |
 | `scripting` | Injects packaged code that reads or writes calculator state for graph, SVG, OBJ, ticker, function-library, and audio actions. |
-| `storage` | Stores local dark-mode, autosave, Modern Font, and editor-shortcut preferences. |
+| `storage` | Stores local dark-mode, autosave, Modern Font, editor-shortcut preferences, and user-created graph-library saves from the bundled local website. |
 | Desmos site access | Runs packaged appearance tools and autosave on their supported pages, and limits the optional shortcut engine to `www.desmos.com/calculator`. |
 
 Selected graph, SVG, OBJ, schema, and audio files are processed locally and are
@@ -574,6 +595,9 @@ The extension's main files are:
 | `extension/modern-font.css` | Page-scoped Latin Modern math typography |
 | `extension/fonts/*.woff2` | Bundled Latin Modern font files |
 | `extension/autosave.js` | Opt-in 60-second save timer for saved official 2D graphs |
+| `extension/local-site.html` | Trusted wrapper for the bundled local website |
+| `extension/local-site.js` | Calculator sandbox navigation and local storage bridge |
+| `extension/local-site-sandbox.js` | Restricted calculator-side storage and navigation bridge |
 | `extension/flame-effects.js` | DesAudify and OBJ MAX Flame Wrap lifecycle and colors |
 | `extension/vendor/flame-wrap.js` | Pinned Canvas UI Flame Wrap WebGL engine |
 | `extension/svg-import.js` | Static SVG validation and equation conversion |
@@ -588,6 +612,7 @@ The extension's main files are:
 | `extension/desaudify-page.js` | Main-world player and paced schema injection bridge |
 | `extension/desaudify-template.json` | Bundled DesAudify player state |
 | `scripts/package-extension.mjs` | Creates a clean versioned extension ZIP |
+| `scripts/build-extension-site.mjs` | Adds the complete offline website to release staging |
 
 ## Known Limitations
 

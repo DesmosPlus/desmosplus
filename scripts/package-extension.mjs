@@ -7,6 +7,10 @@ import {
   WATERMARK_MARKER,
   watermarkExtensionDirectory,
 } from "./extension-watermark.mjs";
+import {
+  buildExtensionSite,
+  extensionSitePages,
+} from "./build-extension-site.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const extension = path.join(root, "extension");
@@ -25,6 +29,15 @@ const manifest = JSON.parse(
 );
 if (manifest.background) {
   throw new Error("Web Store package contains an unexpected background worker.");
+}
+if (JSON.stringify(manifest.sandbox?.pages) !== JSON.stringify(extensionSitePages)) {
+  throw new Error("Web Store package has an unexpected local website page list.");
+}
+if (
+  !manifest.content_security_policy?.sandbox?.includes("sandbox allow-scripts") ||
+  manifest.content_security_policy.sandbox.includes("allow-same-origin")
+) {
+  throw new Error("Web Store package has an invalid local website sandbox policy.");
 }
 if (
   JSON.stringify(manifest.host_permissions) !==
@@ -108,6 +121,7 @@ if (fs.existsSync(output)) fs.unlinkSync(output);
 const staging = fs.mkdtempSync(path.join(os.tmpdir(), "desmosplus-extension-"));
 try {
   fs.cpSync(extension, staging, { recursive: true });
+  buildExtensionSite(root, staging);
   watermarkExtensionDirectory(staging, manifest.version);
   normalizeArchiveTimestamps(staging);
   execFileSync(
@@ -137,6 +151,22 @@ if (!members.includes("manifest.json")) {
 }
 if (!members.includes("DESMOSPLUS-BUILD.txt")) {
   throw new Error("Packaged extension is missing its release watermark file.");
+}
+for (const page of ["local-site.html", ...extensionSitePages]) {
+  if (!members.includes(page)) {
+    throw new Error(`Packaged extension is missing local website page ${page}.`);
+  }
+}
+for (const resource of [
+  "local-site.js",
+  "local-site.css",
+  "local-site-sandbox.js",
+  "assets/local/offline-save.js",
+  "assets/build/shared_calculator_desktop-439f0ecfe37f5abf802d0f5ab4a878fd6798cff3.js",
+]) {
+  if (!members.includes(resource)) {
+    throw new Error(`Packaged extension is missing local website resource ${resource}.`);
+  }
 }
 if (!members.includes("obj-import.js")) {
   throw new Error("Packaged extension is missing the OBJ importer.");

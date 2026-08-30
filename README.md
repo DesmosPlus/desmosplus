@@ -49,7 +49,9 @@ audio-resynthesis equations.
 - Browser-local persistence with no application database.
 - [Chrome MV3 extension](EXTENSION.md) for graph transfer, autosave, dark mode,
   optional Latin Modern math typography, SVG and OBJ conversion, unrestricted OBJ MAX imports, a visual function
-  reference with individual injection, starter ticker setup, and audio import.
+  reference with individual injection, starter ticker setup, audio import, and
+  a complete bundled copy of the DesmosPlus website that runs without a local
+  server.
 - Static SVG import for local Desmos 2D and Geometry graphs.
 - Manual DesAudify player and schema import on the local 2D calculator.
 - Complete 387-command editor-shortcut catalog with local preferences and contained scrolling on the local 2D calculator.

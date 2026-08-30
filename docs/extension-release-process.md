@@ -47,6 +47,13 @@ bundled Latin Modern font files and the packaged shortcut-engine script. Any fut
 permission, content script, or accessible resource requires a documented
 user-facing standard feature and updated Chrome Web Store disclosures.
 
+Starting with v1.25.0, the standard edition also includes the complete
+DesmosPlus website and all seven calculator pages. The popup opens that bundled
+site through a packaged sandbox page, so it works without localhost or the
+public website. The trusted wrapper may persist user-created local graph-library
+saves in `chrome.storage.local`; calculator code in the sandbox has no direct
+access to extension APIs.
+
 ### DesModder Edition
 
 The DesModder edition starts from the same version of the standard source and
@@ -128,16 +135,20 @@ checks for the optional DesModder edition when it is published:
 13. Toggle Modern Font on and off, confirm Desmos math typography changes live,
    reload the calculator, and verify the saved state applies without remote
    requests.
-14. Inspect every ZIP member list for nested roots, `.DS_Store`, `__MACOSX`, and
+14. Open the bundled local website from Settings and from the unsupported-page
+    popup. Open all seven calculators, create and reopen a local graph-library
+    save, switch calculator types, and confirm no localhost or hosted website is
+    requested.
+15. Inspect every ZIP member list for nested roots, `.DS_Store`, `__MACOSX`, and
    embedded ZIP files.
-15. Confirm `manifest.json`, `DESMOSPLUS-BUILD.txt`, and required third-party
+16. Confirm `manifest.json`, `DESMOSPLUS-BUILD.txt`, and required third-party
    notices are at every ZIP root.
-16. Confirm first-party code is watermarked and third-party files are not.
-17. Scan the standard ZIP for `desmodder` and `wakatime`; it must return no
+17. Confirm first-party code is watermarked and third-party files are not.
+18. Scan the standard ZIP for `desmodder` and `wakatime`; it must return no
    filenames or packaged text.
-18. When built, verify the DesModder ZIP contains its loader, background
+19. When built, verify the DesModder ZIP contains its loader, background
    support, runtime, metadata, and license.
-19. Compute and record a SHA-256 checksum for every published ZIP.
+20. Compute and record a SHA-256 checksum for every published ZIP.
 
 MAX mode is intentionally resource intensive and does not need to be used for
 every release smoke test. Its menu, warning, and disabled-by-default behavior

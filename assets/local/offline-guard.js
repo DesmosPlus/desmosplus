@@ -55,6 +55,7 @@
       var url = new URL(value, window.location.href);
       return (
         url.origin === window.location.origin ||
+        url.protocol === "chrome-extension:" ||
         url.protocol === "data:" ||
         url.protocol === "blob:" ||
         url.protocol === "about:"

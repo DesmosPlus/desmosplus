@@ -228,6 +228,14 @@ section[hidden] {
   margin: 0;
 }
 
+.local-site-setting {
+  align-items: center;
+}
+
+.local-site-setting > button {
+  min-width: 82px;
+}
+
 .popup-menu {
   position: relative;
   width: 100%;
