@@ -80,68 +80,45 @@ and a new ZIP.
 Paste this as plain text:
 
 ```text
-Desmos+ adds graph transfer, reusable functions, appearance controls, autosave, SVG and OBJ conversion, and audio creation tools directly to supported Desmos calculators.
+Desmos+ is a local toolkit for working with supported Desmos calculators. It helps you move projects between calculators, create equation-based artwork and models, build playable audio projects, and keep useful tools close at hand.
 
 KEY FEATURES
 
-• Graph transfer
-Export and import complete Desmos graphs while preserving expressions, folders, tables, sliders, notes, viewport settings, and supported animations.
+• Import and export
+Save a calculator project as a portable .desmos file and reopen it later while preserving supported project content and settings.
 
-• Native .desmos files
-Save graphs in a portable format and reopen them later in Desmos+ or a compatible calculator.
+• Bundled local workspace
+Open the packaged DesmosPlus workspace directly from the extension. It works without a localhost server or hosted copy of the project.
 
-• Graph pop-out
-Open the complete packaged DesmosPlus website and all seven calculators without localhost or a hosted site, or use a movable, resizable in-page calculator that minimizes into a floating DesmosPlus icon.
+• Visual conversion
+Turn supported SVG artwork and OBJ models into editable equations using files selected from your device.
 
-• Toggleable dark mode
-Apply a locally stored dark theme to supported official Desmos and hosted DesmosPlus pages, then switch back instantly.
+• Audio creation
+Use DesAudify conversion controls to create playable projects. Larger conversions can be downloaded as organized shards for manual insertion.
 
-• Modern Font
-Replace Desmos math typesetting with bundled Latin Modern Math and Roman fonts. The option is off by default, applies immediately, and makes no runtime font download.
+• Equation tools
+Browse reusable definitions, add them individually, configure editor shortcuts, and add a starter ticker for animation work.
 
-• Optional autosave
-Request a save every 60 seconds on eligible saved, signed-in Desmos 2D graphs. Autosave is off by default and can be disabled instantly.
+• Optional preferences
+Enable dark mode, bundled Latin Modern typography, or periodic saving for eligible signed-in projects. These options are off until you choose them.
 
-• SVG-to-equation conversion
-Convert static SVG artwork into editable Desmos polygons, points, and equations.
-
-• OBJ-to-Desmos 3D conversion
-Import local OBJ models as editable Desmos 3D triangle equations. Direct mode keeps one expression per face, Optimized mode uses indexed vertex and face arrays for larger models, and warned MAX mode removes Desmos+'s file-size and triangle safeguards.
-
-• Starter ticker
-Add an editable native Desmos ticker that tracks elapsed seconds for 3D animation without replacing a graph's existing ticker.
-
-• Reusable function library
-Review bundled LaTeX equation images and readable plain-text formulas, then inject one definition or the complete editable library for normalized sinc, clamping, interpolation, inverse hyperbolic functions, and other helpers that Desmos does not provide natively.
-
-• Complete editor shortcut catalog
-Search and configure 387 Desmos defaults, Greek symbols, advanced commands, and extended symbol aliases. Enable all at once or toggle commands individually in a contained scrolling list.
-
-• DesAudify audio tools
-Turn audio files into playable Desmos graphs using automatic, high-quality, MAX, or fully custom conversion settings.
-
-• Downloadable audio shards
-Export large audio projects as organized shard ZIPs that can be added to a graph using Desmos's native graph-pasting tools.
-
-• Multiple calculator types
-Transfer graphs across supported Desmos Graphing, Geometry, 3D, Notebook, Matrix, Scientific, and Four Function calculators.
-
-• Smooth tool navigation
-Move between extension sections with short directional transitions. Reduced-motion preferences are respected.
+• Flexible window options
+Open the local workspace separately or place a movable, resizable calculator window on another webpage.
 
 • Local processing
-Graph, SVG, OBJ, and audio processing runs locally in your browser.
+Selected files and project data are processed on your device.
 
 PRIVACY
 
-Desmos+ does not sell user data, run advertising analytics, or send selected graph, SVG, OBJ, or audio files to the developer. Its executable code is included in the extension package and is not downloaded remotely at runtime.
+Desmos+ does not sell user data, run advertising analytics, or send selected project files to the developer. Preferences and local-library saves remain on your device. Executable extension code is included in the submitted package and is not downloaded remotely at runtime.
 
 Desmos+ is an independent project. It is not affiliated with, endorsed by, or maintained by Desmos Studio PBC.
 ```
 
 Do not describe Desmos+ as an official Desmos extension. Keep the listing free
-of repetitive keywords, unsupported performance claims, and anonymous user
-testimonials.
+of repetitive keywords, product-name lists, unsupported performance claims,
+and anonymous user testimonials. This shortened description replaces the
+calculator-name enumeration rejected under Yellow Argon for v1.25.0.
 
 ## Graphic Assets
 
