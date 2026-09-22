@@ -34,6 +34,10 @@ function copyFile(root, destination, relativePath) {
 export function buildExtensionSite(root, destination) {
   for (const page of extensionSitePages) {
     let html = fs.readFileSync(path.join(root, page), "utf8");
+    if (page === "index.html") {
+      html = html.replace('href="/test-versions/"',
+        'href="https://desmosplus.pages.dev/test-versions/" target="_blank" rel="noopener noreferrer"');
+    }
     if (calculatorPages.has(page)) {
       html = html.replace(
         /(<script src="\/assets\/local\/offline-guard\.js[^>]*><\/script>)/,

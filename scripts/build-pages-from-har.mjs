@@ -174,6 +174,12 @@ fs.writeFileSync(
       <nav aria-label="Calculators">
 ${links}
       </nav>
+      <section aria-labelledby="other-heading">
+        <h2 id="other-heading">Other</h2>
+        <nav aria-label="Other calculators">
+          <a href="/test-versions/"><strong>Test versions</strong><span>Browse tests and states</span></a>
+        </nav>
+      </section>
     </main>
   </body>
 </html>

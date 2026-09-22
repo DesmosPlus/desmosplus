@@ -1,0 +1,13 @@
+form { margin: 28px 0; }
+form > label { display: block; font-weight: 600; margin-bottom: 8px; }
+input[type="search"] { width: 100%; padding: 12px; border: 1px solid #000; border-radius: 0; font: inherit; }
+fieldset { display: flex; flex-wrap: wrap; gap: 10px 20px; border: 0; padding: 0; margin: 18px 0 0; }
+legend { font-weight: 600; margin-bottom: 8px; }
+fieldset label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+input[type="radio"] { accent-color: #000; }
+.test-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; padding: 20px 0; border-top: 1px solid #ccc; }
+.test-row h2 { border: 0; padding: 0; margin: 0 0 6px; font-size: 18px; }
+.test-row p { margin: 0; font-size: 14px; overflow-wrap: anywhere; }
+.test-links { display: flex; flex-wrap: wrap; align-content: center; gap: 10px 18px; }
+.test-links a { padding: 4px 0; }
+@media (max-width: 600px) { .test-row { grid-template-columns: 1fr; gap: 8px; } .site-main { margin-top: 28px; } }

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test versions | DesmosPlus</title>
+  <link rel="icon" href="/extension/icons/icon-32.png">
+  <link rel="stylesheet" href="/assets/local/site-pages.css">
+  <link rel="stylesheet" href="directory.css">
+  <script src="directory.js" defer></script>
+</head>
+<body>
+  <header class="site-header"><a class="site-brand" href="/">DesmosPlus</a><a href="/">Calculators</a></header>
+  <main class="site-main">
+    <h1>Test versions</h1>
+    <p>Practice calculators by assessment and state. Captured September 22, 2026; not an official testing environment.</p>
+    <form role="search">
+      <label for="search">Test, state or territory</label>
+      <input id="search" type="search" placeholder="Search SAT, your state, ACT" autocomplete="off">
+      <fieldset><legend>Calculator</legend>
+        <label><input type="radio" name="type" value="all" checked> All</label>
+        <label><input type="radio" name="type" value="graphing"> Graphing</label>
+        <label><input type="radio" name="type" value="scientific"> Scientific</label>
+        <label><input type="radio" name="type" value="fourfunction"> Four function</label>
+      </fieldset>
+    </form>
+    <p id="count" role="status">Loading test versions...</p>
+    <div id="results"></div>
+    <noscript>Enable JavaScript to search and open these calculators.</noscript>
+  </main>
+</body>
+</html>
