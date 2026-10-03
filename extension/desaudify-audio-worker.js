@@ -1,6 +1,7 @@
 "use strict";
 
-importScripts("vendor/fft.js");
+if (typeof FFTJS === "undefined") importScripts("vendor/fft.js");
+if (!self.DesmosPlusBigList) importScripts("big-list.js", "desaudify-v2.js");
 
 var DEFAULT_FPS = 30;
 var DEFAULT_POLYPHONY = 32;
@@ -9,7 +10,6 @@ var MIN_FREQUENCY = 20;
 var MAX_FREQUENCY = 20000;
 var DEFAULT_MAX_NOTES = 260000;
 var DEFAULT_MIN_MAGNITUDE = 0.0001;
-var MAX_SHARD_BYTES = Math.floor(4.5 * 1024 * 1024);
 
 function progress(value, message) {
   self.postMessage({ type: "progress", value: value, message: message });
@@ -132,171 +132,6 @@ function encodeFrames(frames, maximumMagnitude, minimumMagnitude, maxNotes) {
   return { frames: encoded, noteCount: noteCount };
 }
 
-function packTwoNotes(first, second) {
-  if (!first && !second) return 0;
-  if (!first || !second) return first || second;
-  var high = Math.max(first, second);
-  var low = Math.min(first, second);
-  return (high - low) * 10000000 + low;
-}
-
-function packFrameNotes(notes) {
-  var sorted = notes.slice().sort(function (a, b) {
-    return a - b;
-  });
-  if (sorted.length % 2) sorted.push(0);
-  var packedCount = Math.ceil(notes.length / 6);
-  var pairCount = packedCount * 3;
-  var packed = new Array(pairCount).fill(0);
-  for (var pairIndex = 0; pairIndex < sorted.length / 2; pairIndex += 1) {
-    packed[pairIndex] = packTwoNotes(sorted[pairIndex * 2], sorted[pairIndex * 2 + 1]);
-  }
-  return {
-    count: packedCount,
-    first: packed.filter(function (_, index) {
-      return index % 3 === 0;
-    }),
-    second: packed.filter(function (_, index) {
-      return index % 3 === 1;
-    }),
-    third: packed.filter(function (_, index) {
-      return index % 3 === 2;
-    }),
-  };
-}
-
-function processingSchema(chunkCount) {
-  var minmax = [];
-  var maxpoly = [];
-  var maximumPitch = [];
-  var minimumPitch = [];
-  var superConditions = [];
-  var counters = [];
-  var tones = [];
-
-  for (var index = 1; index <= chunkCount; index += 1) {
-    minmax.push("f_{minmax}\\left(p_{" + index + "}\\right)");
-    maxpoly.push("\\max\\left(p_{" + index + "}\\left[3...\\right]\\right)");
-    maximumPitch.push("g_{mxp}\\left(t_{" + index + "}\\right)");
-    minimumPitch.push("g_{mnp}\\left(t_{" + index + "}\\right)");
-    superConditions.push(
-      "\\left\\{M\\left[" +
-        index +
-        "\\right]=1:\\left(c_{t" +
-        index +
-        "}\\to t_{0}\\right),\\left\\{c_{t" +
-        index +
-        "}\\ge0:c_{t" +
-        index +
-        "}\\to-1\\right\\}\\right\\}",
-    );
-    counters.push("c_{t" + index + "}=-1");
-    tones.push(
-      "t_{h}\\left(t_{" +
-        index +
-        "},i_{i}\\left(p_{" +
-        index +
-        "}\\right),p_{" +
-        index +
-        "}\\left[1\\right],p_{" +
-        index +
-        "}\\left[2\\right],c_{t" +
-        index +
-        "}\\right)",
-    );
-  }
-
-  var toneDefinition =
-    tones.length > 1
-      ? "t_{ones}=\\operatorname{join}\\left(" + tones.join(",") + "\\right)"
-      : "t_{ones}=" + tones[0];
-  return [
-    "m_{inmax}=\\left[" + minmax.join(",") + "\\right]",
-    "m_{axpoly}=6\\max\\left(" + maxpoly.join(",") + "\\right)",
-    "M=\\left\\{m_{inmax}.x\\le t_{0}<m_{inmax}.y,0\\right\\}",
-    "m_{axpitch}=\\max\\left(" + maximumPitch.join(",") + "\\right)",
-    "m_{inpitch}=\\min\\left(" + minimumPitch.join(",") + "\\right)",
-    "s_{upercond}=" + superConditions.join(","),
-  ]
-    .concat(counters)
-    .concat([toneDefinition, "d_{uration}=\\max\\left(m_{inmax}.y\\right)"])
-    .join("\n");
-}
-
-function generateSchemas(frames, fps) {
-  var millisecondsPerFrame = 1000 / fps;
-  var chunks = [];
-  var current = [];
-  var currentPacked = 0;
-
-  for (var frameIndex = 0; frameIndex < frames.length; frameIndex += 1) {
-    var packed = packFrameNotes(frames[frameIndex]);
-    if (current.length && (currentPacked + packed.count > 10000 || current.length >= 9998)) {
-      chunks.push(current);
-      current = [];
-      currentPacked = 0;
-    }
-    current.push({
-      time: Math.round(frameIndex * millisecondsPerFrame),
-      packed: packed,
-    });
-    currentPacked += packed.count;
-  }
-  if (current.length) chunks.push(current);
-
-  var dataLines = [];
-  chunks.forEach(function (chunk, chunkIndex) {
-    var first = [];
-    var second = [];
-    var third = [];
-    var counts = [];
-    chunk.forEach(function (frame) {
-      first.push.apply(first, frame.packed.first);
-      second.push.apply(second, frame.packed.second);
-      third.push.apply(third, frame.packed.third);
-      counts.push(frame.packed.count);
-    });
-    var id = chunkIndex + 1;
-    dataLines.push(
-      "t_{" +
-        id +
-        "}=\\left(\\left[" +
-        first.join(",") +
-        "\\right],\\left[" +
-        second.join(",") +
-        "\\right],\\left[" +
-        third.join(",") +
-        "\\right]\\right)",
-    );
-    dataLines.push(
-      "p_{" + id + "}=\\left[" + [chunk[0].time, fps].concat(counts).join(",") + "\\right]",
-    );
-  });
-
-  var dataShards = [];
-  var currentShard = [];
-  var currentBytes = 0;
-  for (var lineIndex = 0; lineIndex < dataLines.length; lineIndex += 2) {
-    var pair = dataLines.slice(lineIndex, lineIndex + 2).join("\n");
-    var pairBytes = new TextEncoder().encode(pair).length;
-    if (currentShard.length && currentBytes + pairBytes + 1 > MAX_SHARD_BYTES) {
-      dataShards.push(currentShard.join("\n"));
-      currentShard = [];
-      currentBytes = 0;
-    }
-    currentShard.push(pair);
-    currentBytes += pairBytes + (currentShard.length > 1 ? 1 : 0);
-  }
-  if (currentShard.length) dataShards.push(currentShard.join("\n"));
-
-  progress(98, "Building DesAudify equations");
-  return {
-    dataShards: dataShards,
-    processing: processingSchema(chunks.length),
-    chunkCount: chunks.length,
-  };
-}
-
 self.onmessage = function (event) {
   try {
     var payload = event.data || {};
@@ -331,12 +166,15 @@ self.onmessage = function (event) {
       minimumMagnitude,
       maxNotes,
     );
-    var schemas = generateSchemas(encoded.frames, fps);
+    var storageMode = payload.storageMode === "matrix" ? "matrix" : "compatible";
+    var schemas = self.DesmosPlusAudioV2.schemas(encoded.frames, fps, storageMode);
     self.postMessage({
       type: "complete",
       dataShards: schemas.dataShards,
       processing: schemas.processing,
       stats: {
+        bigListVersion: 2,
+        storageMode: storageMode,
         duration: samples.length / sampleRate,
         fps: fps,
         frames: analysis.frames.length,

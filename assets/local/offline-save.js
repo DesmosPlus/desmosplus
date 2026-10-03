@@ -945,7 +945,7 @@
       '<button type="button" id="local-new">New</button>' +
       '<button type="button" id="local-save">Save</button>' +
       (product() === "2dcalculator"
-        ? '<button type="button" id="local-audio" aria-expanded="false">Audio</button>'
+        ? '<button type="button" id="local-audio" aria-expanded="false">Audio</button><button type="button" id="local-biglist">BigList</button>'
         : "") +
       (shortcutSupported()
         ? '<button type="button" id="local-functions" aria-expanded="false">Functions</button>'
@@ -965,6 +965,26 @@
     document.getElementById("local-save").addEventListener("click", saveCurrent);
     var audioButton = document.getElementById("local-audio");
     if (audioButton) audioButton.addEventListener("click", toggleAudioPanel);
+    var bigListButton = document.getElementById("local-biglist");
+    if (bigListButton) bigListButton.addEventListener("click", async function () {
+      bigListButton.disabled = true;
+      try {
+        if (!window.DesmosPlusBigListPage) {
+          for (var file of ["big-list.js", "big-list-page.js"]) {
+            await new Promise(function (resolve, reject) {
+              var script = document.createElement("script");
+              script.src = "/extension/" + file;
+              script.onload = resolve;
+              script.onerror = reject;
+              document.head.appendChild(script);
+            });
+          }
+        }
+        window.DesmosPlusBigListPage.setEnabled(true);
+        window.DesmosPlusBigListPage.edit();
+      } catch (error) { window.alert(error.message || "BigList could not load."); }
+      finally { bigListButton.disabled = false; }
+    });
     var functionsButton = document.getElementById("local-functions");
     if (functionsButton) functionsButton.addEventListener("click", toggleFunctionsPanel);
     document.getElementById("local-library").addEventListener("click", togglePanel);
@@ -1084,6 +1104,8 @@
       '<button type="button" id="local-audio-close" aria-label="Close audio tools">Close</button>' +
       "</div>" +
       '<div class="local-audio-actions">' +
+      '<button type="button" id="local-audio-import">Import audio</button>' +
+      '<input type="file" id="local-audio-import-file" accept="audio/*" hidden>' +
       '<button type="button" id="local-audio-template">Load player</button>' +
       '<button type="button" id="local-audio-data">Import data</button>' +
       '<button type="button" id="local-audio-processing">Import processing</button>' +
@@ -1095,6 +1117,44 @@
     isolateControls(panel);
 
     document.getElementById("local-audio-close").addEventListener("click", closeAudioPanel);
+    document.getElementById("local-audio-import").addEventListener("click", function () {
+      document.getElementById("local-audio-import-file").click();
+    });
+    document.getElementById("local-audio-import-file").addEventListener("change", async function (event) {
+      var file = event.target.files[0];
+      event.target.value = "";
+      if (!file || !window.confirm("Replace this graph with the converted audio player?")) return;
+      var buttons = panel.querySelectorAll(".local-audio-actions button");
+      buttons.forEach(function (button) { button.disabled = true; });
+      try {
+        if (!window.DesmosPlusAudioV2) {
+          for (var filename of ["desaudify-audio.js", "desaudify-v2.js"]) {
+            await new Promise(function (resolve, reject) {
+              var script = document.createElement("script");
+              script.src = "/extension/" + filename;
+              script.onload = resolve; script.onerror = reject;
+              document.head.appendChild(script);
+            });
+          }
+        }
+        var converted = await window.DesmosPlusAudio.convert(file, "/extension/desaudify-audio-worker.js", {
+          fps:30, polyphony:32, maxNotes:260000, minimumMagnitude:0.0001
+        }, function (message) { audioStatus(message || "Converting audio..."); });
+        var bridge = desAudifyBridge();
+        bridge.loadTemplate(window.DesmosPlusAudioV2.prepare(await readDesAudifyTemplate(), file, converted.stats));
+        for (var index = 0; index < converted.dataShards.length; index++) {
+          audioStatus("Importing audio shard " + (index + 1) + " / " + converted.dataShards.length);
+          await bridge.insertSchema(converted.dataShards[index], "Shard " + (index + 1), "data");
+        }
+        await bridge.insertSchema(converted.processing, "Processing", "processing");
+        loadedId = "";
+        document.getElementById("local-save-name").value = file.name.replace(/\.[^.]+$/, "");
+        document.getElementById("local-save-category").value = "Audio";
+        queueRecoverySnapshot();
+        audioStatus("Audio ready. Unmute and click the title to play.");
+      } catch (error) { audioStatus(error.message || String(error)); }
+      finally { buttons.forEach(function (button) { button.disabled = false; }); }
+    });
     document
       .getElementById("local-audio-template")
       .addEventListener("click", loadDesAudifyTemplate);
@@ -1223,13 +1283,18 @@
     return window.DesmosPlusDesAudify;
   }
 
+  async function readDesAudifyTemplate() {
+    if (window.DesmosPlusAudioTemplate) return JSON.parse(JSON.stringify(window.DesmosPlusAudioTemplate));
+    var response = await fetch("/assets/desaudify/template-state.json");
+    if (!response.ok) throw new Error("Bundled DesAudify player could not be read.");
+    return response.json();
+  }
+
   async function loadDesAudifyTemplate() {
     if (!window.confirm("Replace the current graph with the DesAudify player?")) return;
     audioStatus("Loading DesAudify player...");
     try {
-      var response = await fetch("/assets/desaudify/template-state.json");
-      if (!response.ok) throw new Error("Bundled DesAudify player could not be read.");
-      var result = desAudifyBridge().loadTemplate(await response.json());
+      var result = desAudifyBridge().loadTemplate(await readDesAudifyTemplate());
       loadedId = "";
       document.getElementById("local-save-name").value = "DesAudify Audio";
       document.getElementById("local-save-category").value = "Audio";

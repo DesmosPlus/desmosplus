@@ -934,6 +934,7 @@
   }
 
   function prepareDesAudifyTemplate(template, file, stats, options) {
+    if (stats.bigListVersion === 2) return window.DesmosPlusAudioV2.prepare(template, file, stats, options);
     options = options || {};
     var state = JSON.parse(JSON.stringify(template));
     var items = state.expressions.list;
@@ -1338,6 +1339,7 @@
     try {
       var page = await inspectPage();
       if (page.product !== "2dcalculator") throw new Error("Open Desmos 2D Calculator.");
+      settings.storageMode = /(^|\.)desmos\.com$/.test(new URL(page.tab.url).hostname) ? "matrix" : "compatible";
       if (!window.DesmosPlusAudio) throw new Error("Audio converter did not load.");
       var converted = await window.DesmosPlusAudio.convert(
         file,

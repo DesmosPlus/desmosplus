@@ -47,6 +47,9 @@ export function buildExtensionSite(root, destination) {
         throw new Error(`Could not install the local storage bridge in ${page}.`);
       }
     }
+    if (page === "2dcalculator.html") {
+      html = html.replace('</head>', '<script src="/extension/desaudify-sandbox-data.js"></script></head>');
+    }
     fs.writeFileSync(path.join(destination, page), html);
   }
 
@@ -58,9 +61,15 @@ export function buildExtensionSite(root, destination) {
     copyFile(root, destination, endpoint);
   }
 
-  for (const file of ["desaudify-page.js", "svg-import.js"]) {
+  for (const file of ["desaudify-page.js", "svg-import.js", "big-list.js", "big-list-page.js", "desaudify-audio.js", "desaudify-audio-worker.js", "desaudify-v2.js", "vendor/fft.js"]) {
     copyFile(root, destination, `extension/${file}`);
   }
+  // Sandboxed extension pages have opaque origins and cannot load URL workers.
+  const workerSource = ["vendor/fft.js", "big-list.js", "desaudify-v2.js", "desaudify-audio-worker.js"]
+    .map(file => fs.readFileSync(path.join(root, "extension", file), "utf8")).join("\n;\n");
+  const template = JSON.parse(fs.readFileSync(path.join(root, "assets/desaudify/template-state.json"), "utf8"));
+  fs.writeFileSync(path.join(destination, "extension/desaudify-sandbox-data.js"),
+    `globalThis.DesmosPlusAudioWorkerSource = ${JSON.stringify(workerSource)};\nglobalThis.DesmosPlusAudioTemplate = ${JSON.stringify(template)};\n`);
   copyFile(
     root,
     destination,

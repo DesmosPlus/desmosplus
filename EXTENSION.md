@@ -31,6 +31,7 @@ or maintained by Desmos Studio PBC.
 - [SVG Import](#svg-import)
 - [3D OBJ Import and Starter Ticker](#3d-obj-import-and-starter-ticker)
 - [Function Library](#function-library)
+- [BigList](#biglist)
 - [DesAudify Audio Import](#desaudify-audio-import)
   - [Downloadable Shard ZIP](#downloadable-shard-zip)
 - [Permissions and Privacy](#permissions-and-privacy)
@@ -56,7 +57,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.25.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.25.0/DesmosPlus-Extension-v1.25.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.25.0) |
+| **v1.26.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.26.0/DesmosPlus-Extension-v1.26.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.26.0) |
+| v1.25.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.25.0/DesmosPlus-Extension-v1.25.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.25.0) |
 | v1.24.1 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.1/DesmosPlus-Extension-v1.24.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.1) |
 | v1.24.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.0/DesmosPlus-Extension-v1.24.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.0) |
 | v1.23.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.23.0/DesmosPlus-Extension-v1.23.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.23.0) |
@@ -82,6 +84,9 @@ release downloads are public and do not require a GitHub account.
 
 The complete release history is available on the
 [GitHub Releases page](https://github.com/DesmosPlus/desmosplus/releases).
+
+The optional DesModder edition is unavailable for v1.26.0. The standard
+edition includes all of the features documented below.
 
 ## Release Process
 
@@ -383,7 +388,35 @@ part of the graph, can be edited directly, and does not require a runtime patch.
 Selecting **Add library** again replaces the DesmosPlus-owned definitions with
 the current set. **Remove library** deletes only that folder and its contents.
 
+## BigList
+
+Version 1.26.0 adds a BigList tab and a BigList option on the website. Enable
+**Per-list expand buttons** to place an expand control beside each list result,
+including new empty lists. The toggle lasts for the current page and can be
+turned off from the tab or editor.
+
+Select a control or choose **New BigList**, provide a function name and a JSON
+array of finite numbers, then add the expanded list. The original expression
+is preserved. Read values with `biglist([1,10001])`, using your chosen name.
+BigList is a callable, chunked representation: it does not remove Desmos's
+native limit on an individual list or a single returned slice.
+
+**Compatible** works on the older bundled website. **BigList 2 matrices** uses
+the newer upstream matrix-backed storage and requires a recent official Desmos
+calculator. Large inputs can consume substantial memory; save your graph first.
+
 ## DesAudify Audio Import
+
+Version 1.26.0 updates the player and schema format to the current DesAudify
+BigList 2 tone-data/timing format. Direct imports on official Desmos use matrix
+storage; website imports and downloadable shard ZIPs use compatible chunks so
+they also work with the older bundled calculator. The browser still uses its
+local FFT analyzer rather than the Python CLI's synchrosqueezed transform.
+Old saved `.desmos` graphs remain self-contained; older text schemas require
+their matching older player, not the new player.
+
+The website's Audio panel also accepts audio files directly, using Auto settings.
+All conversion code remains bundled and runs locally.
 
 [DesAudify](https://github.com/whitecaplol/DesAudify) represents audio with
 Desmos equations. The extension includes an offline browser port that decodes
@@ -417,9 +450,10 @@ tab using the extension's **Graph** section. Import a numbered shard into a
 second Desmos 2D tab, focus its folder, and copy it with `Ctrl+C` on Windows or
 `Command+C` on macOS. Focus a blank expression line in the player graph and
 paste with `Ctrl+V` or `Command+V`. Desmos inserts the copied item as a folder.
-Repeat in numerical order for every shard.
+Repeat in numerical order for every shard. Start the ticker at the top of the
+expression list, unmute Desmos, and click the title to play.
 
-The shard graphs contain only their folder and `t_i`/`p_i` equations. Shared
+The shard graphs contain only their folder and BigList tone-data/timing equations. Shared
 player and processing expressions stay in the UI graph, so they are not
 duplicated in every download.
 
@@ -456,8 +490,8 @@ changes to the supplied blue version on hover or keyboard focus, links directly
 to the [DesAudify repository](https://github.com/whitecaplol/DesAudify), and is
 hidden on the Graph and SVG tabs.
 
-Generated data is divided into shard-sized folders. Ordered `t_i` and `p_i`
-pairs are inserted with byte-scaled pauses, followed by small processing
+Generated data is divided into shard-sized folders. Tone-data and timing
+helpers are inserted with byte-scaled pauses, followed by small processing
 batches. This pacing gives Desmos time to parse large graphs without receiving
 the entire song in one burst. The ticker starts after processing finishes.
 

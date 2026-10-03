@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import vm from "node:vm";
 import { buildExtensionSite } from "./build-extension-site.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -40,6 +41,17 @@ test("extension only opens the hosted directory and never bundles test pages", (
     const expected = 'href="https://desmosplus.pages.dev/test-versions/" target="_blank"';
     assert(fs.readFileSync(path.join(destination, "index.html"), "utf8").includes(expected));
     assert(fs.readFileSync(path.join(root, "extension/popup.html"), "utf8").includes(expected));
+    const sandbox = vm.createContext({});
+    vm.runInContext(fs.readFileSync(path.join(destination, "extension/desaudify-sandbox-data.js"), "utf8"), sandbox);
+    const messages = [];
+    const worker = vm.createContext({ TextEncoder, postMessage: message => messages.push(message) });
+    worker.self = worker;
+    vm.runInContext(sandbox.DesmosPlusAudioWorkerSource, worker);
+    const samples = Float32Array.from({length:2205}, (_, i) => Math.sin(i * 2 * Math.PI * 440 / 22050));
+    worker.onmessage({data:{samples:samples.buffer,sampleRate:22050}});
+    assert.equal(messages.at(-1).type, "complete", messages.at(-1).message);
+    assert.equal(messages.at(-1).stats.bigListVersion, 2);
+    assert.equal(sandbox.DesmosPlusAudioTemplate.expressions.ticker.playing, false);
   } finally {
     fs.rmSync(destination, { recursive: true, force: true });
   }

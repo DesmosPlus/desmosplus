@@ -1,0 +1,16 @@
+DesmosPlus BigList integration
+
+Upstream projects:
+https://github.com/whitecaplol/DesmosBigList
+https://github.com/whitecaplol/DesAudify
+
+The matrix-backed formatter is adapted from format_desmos_list in
+DesAudify/desaudify_cli.py, commit 4ddd49a65851701615f5ec01c0c901516fa23433,
+licensed under Apache License 2.0. See DESAUDIFY-LICENSE.
+
+Changes: JavaScript port; validated numeric input; bounded matrix fragments;
+correct local offsets across fragments; a non-matrix compatibility backend
+for older bundled calculators; in-page list controls; browser audio integration.
+
+BigList provides a callable representation, not an increase to Desmos's native
+list limit. A single returned list still cannot exceed the calculator's limit.

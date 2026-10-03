@@ -193,7 +193,7 @@
     var title = options.title;
     var allIds = [];
     var shards = converted.dataShards.map(function (schema, index) {
-      var ids = chunkIds(schema);
+      var ids = converted.stats.bigListVersion === 2 ? [index + 1] : chunkIds(schema);
       Array.prototype.push.apply(allIds, ids);
       return { schema: schema, ids: ids, index: index + 1 };
     });
@@ -270,7 +270,7 @@
         "DesAudify shard bundle generated locally by DesmosPlus.\n\n" +
         "01-player-ui.desmos contains the player and processing equations.\n" +
         "Each numbered file in shards/ contains exactly one folder with that shard's " +
-        "t_i and p_i audio equations.\n\n" +
+        "audio data equations. BigList 2 uses callable tone-data and timing lists.\n\n" +
         "ASSEMBLE WITH DESMOS COPY AND PASTE\n" +
         "1. Open an official Desmos 2D graph and import 01-player-ui.desmos with the " +
         "DesmosPlus Graph tab. Keep this as the destination graph.\n" +
@@ -281,7 +281,8 @@
         "4. Return to the player graph, focus a blank expression line, and press Ctrl+V " +
         "or Command+V. Desmos inserts the shard as a folder.\n" +
         "5. Repeat steps 2-4 for every numbered shard. Keep the original order.\n" +
-        "6. Unmute Desmos and click the title to play or pause. Click the author row " +
+        "6. Start the ticker at the top of the expression list, unmute Desmos, " +
+        "and click the title to play or pause. Click the author row " +
         "to restart.\n",
     });
 

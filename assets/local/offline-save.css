@@ -617,10 +617,26 @@ body {
 }
 
 @media (max-width: 700px) {
+  :root {
+    --desmosplus-bar-height: 96px;
+  }
+
   #desmosplus-shell {
+    flex-wrap: wrap;
+    align-content: center;
     gap: 6px;
     padding-right: 8px;
     padding-left: 8px;
+  }
+
+  .desmosplus-actions {
+    width: 100%;
+    margin-left: 0;
+    gap: 4px;
+  }
+
+  #desmosplus-shell > * {
+    flex-shrink: 0;
   }
 
   .desmosplus-product-label,

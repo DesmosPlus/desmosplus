@@ -1,1 +1,980 @@
-{"doNotMigrateMovablePointStyle":true,"expressions":{"list":[{"id":"8901","text":"Data\n\nAudio chunks are added by DesmosPlus","type":"text"},{"collapsed":true,"hidden":true,"id":"8512","title":"Aux","type":"folder"},{"color":"#2d70b3","folderId":"8512","id":"8513","latex":"c_{ount}\\left(t_{n}\\right)=\\operatorname{total}\\left(\\operatorname{count}\\left(g_{upn}\\left(t_{n}.x\\right)\\left[g_{upn}\\left(t_{n}.x\\right)>0\\right]\\right),\\operatorname{count}\\left(g_{lon}\\left(t_{n}.x\\right)\\left[g_{lon}\\left(t_{n}.x\\right)>0\\right]\\right),\\operatorname{count}\\left(g_{upn}\\left(t_{n}.y\\right)\\left[g_{upn}\\left(t_{n}.y\\right)>0\\right]\\right),\\operatorname{count}\\left(g_{lon}\\left(t_{n}.y\\right)\\left[g_{lon}\\left(t_{n}.y\\right)>0\\right]\\right),\\operatorname{count}\\left(g_{upn}\\left(t_{n}.z\\right)\\left[g_{upn}\\left(t_{n}.z\\right)>0\\right]\\right),\\operatorname{count}\\left(g_{lon}\\left(t_{n}.z\\right)\\left[g_{lon}\\left(t_{n}.z\\right)>0\\right]\\right)\\right)","type":"expression"},{"color":"#c74440","folderId":"8512","id":"8647","latex":"c_{ount}\\left(t_{1}\\right)","type":"expression"},{"collapsed":true,"hidden":true,"id":"1388","title":"Helpers","type":"folder"},{"color":"#c74440","folderId":"1388","id":"6674","latex":"l_{i}\\left(p\\right)=\\operatorname{join}\\left(1,1+\\left[\\operatorname{total}\\left(p\\left[3...j\\right]\\right)\\operatorname{for}j=\\left[3...\\operatorname{count}\\left(p\\right)\\right]\\right]\\right)","type":"expression"},{"color":"#388c46","folderId":"1388","id":"6676","latex":"i_{i}\\left(p_{n}\\right)=\\left(\\left(s_{i},s_{i}+p_{n}\\left[3...\\right]-1\\right)\\operatorname{with}s_{i}=l_{i}\\left(p_{n}\\right)\\right)","type":"expression"},{"color":"#6042a6","folderId":"1388","id":"6677","latex":"i_{n}\\left(i_{in},p_{i},c_{tn},f_{r}\\right)=i_{in}\\left[1+\\operatorname{floor}\\left(0.001f_{r}\\left(c_{tn}-p_{i}\\right)\\right)\\right]","type":"expression"},{"color":"#000000","folderId":"1388","id":"6678","latex":"l_{f}\\left(t_{i},i_{fn}\\right)=t_{i}\\left[l_{o}...h_{i}\\right]\\operatorname{with}l_{o}=\\left\\{i_{fn}.x>0:i_{fn}.x,0\\right\\},h_{i}=\\left\\{i_{fn}.y>0:i_{fn}.y,0\\right\\}","type":"expression"},{"color":"#c74440","folderId":"1388","id":"7336","latex":"t_{h}\\left(t,i,p,f_{r},c\\right)=\\left\\{c\\ge0:l_{f}\\left(t,i_{n}\\left(i,p,c,f_{r}\\right)\\right),\\left[\\right]\\right\\}","type":"expression"},{"folderId":"1388","id":"9121","text":"Legacy extraction","type":"text"},{"color":"#c74440","folderId":"1388","id":"7915","latex":"g_{upn}\\left(x\\right)=\\left\\{x\\ge10000000:x-9999999\\operatorname{floor}\\left(0.0000001x\\right),0\\right\\}","type":"expression"},{"color":"#2d70b3","folderId":"1388","id":"7916","latex":"g_{lon}\\left(x\\right)=x-10000000\\operatorname{floor}\\left(0.0000001x\\right)","type":"expression"},{"folderId":"1388","id":"9123","text":"Modern","type":"text"},{"color":"#6042a6","folderId":"1388","id":"9130","latex":"g_{calc2}\\left(q,v\\right)=\\operatorname{join}\\left(\\left(v+q\\right)\\left[q>0\\right],v\\left[v>0\\right]\\right)","type":"expression"},{"color":"#000000","folderId":"1388","id":"9131","latex":"g_{calc}\\left(L\\right)=g_{calc2}\\left(\\operatorname{floor}\\left(0.0000001L\\right),\\operatorname{mod}\\left(L,10000000\\right)\\right)","type":"expression"},{"color":"#c74440","folderId":"1388","id":"6679","latex":"g_{mxp}\\left(t_{n}\\right)=\\max\\left(\\max\\left(l_{ightpitch}\\left(g_{upn}\\left(t_{n}.x\\right)\\right)\\right),\\max\\left(l_{ightpitch}\\left(g_{lon}\\left(t_{n}.x\\right)\\right)\\right),\\max\\left(l_{ightpitch}\\left(g_{upn}\\left(t_{n}.y\\right)\\right)\\right),\\max\\left(l_{ightpitch}\\left(g_{lon}\\left(t_{n}.y\\right)\\right)\\right),\\max\\left(l_{ightpitch}\\left(g_{upn}\\left(t_{n}.z\\right)\\right)\\right),\\max\\left(l_{ightpitch}\\left(g_{lon}\\left(t_{n}.z\\right)\\right)\\right)\\right)","type":"expression"},{"color":"#2d70b3","folderId":"1388","id":"6680","latex":"g_{mnp}\\left(t_{n}\\right)=\\min\\left(\\min\\left(l_{ightpitch}\\left(g_{upn}\\left(t_{n}.x\\right)\\right)\\left[g_{upn}\\left(t_{n}.x\\right)>0\\right]\\right),\\min\\left(l_{ightpitch}\\left(g_{lon}\\left(t_{n}.x\\right)\\right)\\left[g_{lon}\\left(t_{n}.x\\right)>0\\right]\\right),\\min\\left(l_{ightpitch}\\left(g_{upn}\\left(t_{n}.y\\right)\\right)\\left[g_{upn}\\left(t_{n}.y\\right)>0\\right]\\right),\\min\\left(l_{ightpitch}\\left(g_{lon}\\left(t_{n}.y\\right)\\right)\\left[g_{lon}\\left(t_{n}.y\\right)>0\\right]\\right),\\min\\left(l_{ightpitch}\\left(g_{upn}\\left(t_{n}.z\\right)\\right)\\left[g_{upn}\\left(t_{n}.z\\right)>0\\right]\\right),\\min\\left(l_{ightpitch}\\left(g_{lon}\\left(t_{n}.z\\right)\\right)\\left[g_{lon}\\left(t_{n}.z\\right)>0\\right]\\right)\\right)","type":"expression"},{"color":"#c74440","folderId":"1388","id":"7328","latex":"f_{minmax}\\left(p\\right)=\\left(p\\left[1\\right],p\\left[1\\right]+\\left(p.\\operatorname{count}-2\\right)\\cdot\\frac{1000}{p\\left[2\\right]}\\right)","type":"expression"},{"color":"#388c46","folderId":"1388","id":"9180","latex":"l_{ightpitch}\\left(x\\right)=\\operatorname{floor}\\left(0.001x\\right)","type":"expression"},{"color":"#6042a6","folderId":"1388","id":"9181","latex":"l_{ightgain}\\left(x\\right)=\\operatorname{mod}\\left(x,1000\\right)","type":"expression"},{"color":"#388c46","folderId":"1388","id":"7715","latex":"s_{pitch}\\left(x\\right)=20\\cdot1000^{\\frac{1}{9999}\\cdot l_{ightpitch}\\left(x\\right)}","type":"expression"},{"color":"#6042a6","folderId":"1388","id":"7716","latex":"s_{gain}\\left(x\\right)=10^{\\frac{4}{998}\\left(l_{ightgain}\\left(x\\right)-1\\right)-4}","type":"expression"},{"collapsed":true,"hidden":true,"id":"52","title":"Stats for nerds","type":"folder"},{"color":"#2d70b3","folderId":"52","id":"2","latex":"t_{0}=-500","slider":{"hardMax":true,"hardMin":true,"loopMode":"LOOP_FORWARD","max":"d_{uration}+1000","min":"-500"},"type":"expression"},{"color":"#2d70b3","folderId":"52","hidden":true,"id":"34","latex":"d_{t}=17","slider":{"hardMin":true,"max":"20","min":"0"},"type":"expression"},{"collapsed":true,"hidden":true,"id":"9183","title":"Processing","type":"folder"},{"collapsed":true,"id":"8212","title":"Background","type":"folder"},{"color":"#2d70b3","folderId":"8212","id":"8618","latex":"b_{g}=\\operatorname{hsv}\\left(93,0.64,0.63\\right)","type":"expression"},{"color":"#c74440","folderId":"8212","id":"9119","latex":"m_{axy}=6\\frac{\\operatorname{height}}{\\operatorname{width}}","type":"expression"},{"color":"#000000","colorLatex":"b_{g}","fillOpacity":"1","folderId":"8212","id":"8215","latex":"\\operatorname{polygon}\\left(\\left(-6,m_{axy}\\right),\\left(6,m_{axy}\\right),\\left(6,-m_{axy}\\right),\\left(-6,-m_{axy}\\right)\\right)","lines":false,"type":"expression"},{"collapsed":true,"id":"7088","title":"Other Text","type":"folder"},{"color":"#388c46","folderId":"7088","id":"8360","latex":"f_{gcolor}=\\operatorname{hsv}\\left(0,0,1\\right)","type":"expression"},{"clickableInfo":{"enabled":true,"latex":"i_{splaying}\\to\\left(1-i_{splaying}\\right)"},"color":"#6042a6","colorLatex":"f_{gcolor}","folderId":"7088","hidden":true,"id":"7089","label":"DesAudify Audio","labelOrientation":"below_right","labelSize":"\\frac{\\operatorname{width}}{1920}3.25","latex":"\\left(-5,-0.125+y_{offset}\\right)","showLabel":true,"suppressTextOutline":true,"type":"expression"},{"type":"expression","folderId":"7088","color":"#6042a6","showLabel":true,"hidden":true,"labelOrientation":"below_left","labelSize":"\\frac{\\operatorname{width}}{1920}1.35","suppressTextOutline":true,"colorLatex":"f_{gcolor}","id":"desmosplus-play-tip","latex":"\\left(5,-0.125+y_{offset}\\right)","label":"Unmute the audio and click me","clickableInfo":{"enabled":true,"latex":"i_{splaying}\\to\\left(1-i_{splaying}\\right)"}},{"clickableInfo":{"enabled":true,"latex":"t_{0}\\to-500,i_{splaying}\\to0"},"color":"#6042a6","colorLatex":"f_{gcolor}","folderId":"7088","hidden":true,"id":"7104","label":"Generated locally with DesmosPlus","labelOrientation":"below_right","labelSize":"\\frac{\\operatorname{width}}{1920}2.75","latex":"\\left(-5,-0.575+y_{offset}\\right)","showLabel":true,"suppressTextOutline":true,"type":"expression"},{"type":"expression","folderId":"7088","color":"#6042a6","showLabel":true,"hidden":true,"labelOrientation":"below_left","labelSize":"\\frac{\\operatorname{width}}{1920}1.35","suppressTextOutline":true,"colorLatex":"f_{gcolor}","id":"desmosplus-restart-tip","latex":"\\left(5,-0.575+y_{offset}\\right)","label":"Click me to restart the song","clickableInfo":{"enabled":true,"latex":"t_{0}\\to-500,i_{splaying}\\to0"}},{"collapsed":true,"hidden":true,"id":"7118","title":"Extraction","type":"folder"},{"color":"#6042a6","folderId":"7118","id":"8210","latex":"d_{ata}=g_{calc}\\left(\\operatorname{join}\\left(t_{ones}.x,t_{ones}.y,t_{ones}.z\\right)\\right)","type":"expression"},{"color":"#c74440","folderId":"7118","id":"9171","latex":"S_{pitch}=s_{pitch}\\left(d_{ata}\\right)","type":"expression"},{"color":"#2d70b3","folderId":"7118","id":"9172","latex":"S_{gain}=s_{gain}\\left(d_{ata}\\right)","type":"expression"},{"color":"#000000","folderId":"7118","id":"8509","latex":"p_{itch}=S_{pitch}.\\operatorname{sort}","type":"expression"},{"color":"#c74440","folderId":"7118","id":"8510","latex":"g_{ain}=S_{gain}.\\operatorname{sort}\\left(S_{pitch}\\right)","type":"expression"},{"collapsed":true,"id":"41","title":"Audio","type":"folder"},{"color":"#2d70b3","folderId":"41","id":"7113","latex":"i_{splaying}=0","slider":{"hardMax":true,"hardMin":true,"max":"1","min":"0","step":"1"},"type":"expression"},{"color":"#6042a6","folderId":"41","id":"4","latex":"\\left\\{t_{0}>0\\right\\}\\operatorname{tone}\\left(p_{itch},i_{splaying}g_{ain}\\right)","type":"expression"},{"collapsed":true,"hidden":true,"id":"7120","title":"Visual Extraction","type":"folder"},{"color":"#000000","folderId":"7120","id":"8306","latex":"b_{ars}\\left(n_{p}\\right)=\\frac{10}{n_{otes}}\\operatorname{round}\\left(\\frac{n_{otes}}{\\left(m_{axpitch}-m_{inpitch}\\right)}\\left(l_{ightpitch}\\left(n_{p}\\right)-m_{inpitch}\\right)\\right)-5","type":"expression"},{"color":"#c74440","folderId":"7120","id":"9176","latex":"b_{f}=b_{ars}\\left(d_{ata}\\right)","type":"expression"},{"color":"#6042a6","folderId":"7120","id":"8401","latex":"c_{olors}=f_{gcolor}","type":"expression"},{"color":"#000000","folderId":"7120","id":"389","latex":"y_{offset}=-\\frac{4}{n_{otes}}+g_{lobalyoffset}-\\frac{0.0125\\operatorname{width}}{1920}","type":"expression"},{"color":"#2d70b3","folderId":"7120","id":"9177","latex":"b_{height}=\\left(-b_{aseline}-g_{lobalyoffset}-0.125\\right)","type":"expression"},{"color":"#388c46","folderId":"7120","hidden":true,"id":"9173","latex":"b_{s}=\\left(b_{f},g_{lobalyoffset}\\right)","type":"expression"},{"color":"#6042a6","folderId":"7120","hidden":true,"id":"9174","latex":"b_{e}=\\left(b_{f},g_{lobalyoffset}+b_{height}S_{gain}\\right)","type":"expression"},{"collapsed":true,"id":"86","title":"Visual","type":"folder"},{"color":"#c74440","folderId":"86","id":"683","latex":"g_{lobalyoffset}=b_{aseline}+1.875","type":"expression"},{"color":"#c74440","folderId":"86","id":"8392","latex":"t_{hickness}=16\\cdot\\frac{96}{n_{otes}}\\frac{\\operatorname{width}}{1920}","type":"expression"},{"color":"#c74440","colorLatex":"c_{olors}","fill":false,"folderId":"86","id":"8380","latex":"\\operatorname{polygon}\\left(b_{s},b_{e}\\right)","lineWidth":"t_{hickness}","lines":true,"type":"expression"},{"color":"#388c46","folderId":"86","id":"8619","latex":"b_{aseline}=-\\frac{\\operatorname{height}}{\\operatorname{width}}6","type":"expression"},{"color":"#c74440","colorLatex":"f_{gcolor}","fill":false,"folderId":"86","id":"8903","latex":"\\operatorname{polygon}\\left(\\left(-5,g_{lobalyoffset}\\right),\\left(5,g_{lobalyoffset}\\right)\\right)","lineWidth":"\\frac{96}{n_{otes}}\\cdot20\\cdot\\frac{\\operatorname{width}}{1920}","type":"expression"},{"color":"#2d70b3","folderId":"86","hidden":true,"id":"168","latex":"n_{otes}=256","slider":{"hardMax":true,"hardMin":true,"max":"256","min":"16","step":"1"},"type":"expression"},{"id":"dsm-metadata","secret":true,"text":"{\"version\":2,\"expressions\":{\"8286\":{\"errorHidden\":true},\"8291\":{\"errorHidden\":true},\"8296\":{\"errorHidden\":true}}}","type":"text"}],"ticker":{"handlerLatex":"\\left\\{t_{0}<d_{uration}+1000:t_{0}\\to t_{0}+i_{splaying}\\operatorname{dt},t_{0}\\to d_{uration}+1000\\right\\},d_{t}\\to\\operatorname{dt},s_{upercond}","open":true,"playing":false}},"graph":{"__v12ViewportLatexStash":{"xmax":"6","xmin":"-6","ymax":"4.664634146341464","ymin":"-4.664634146341464"},"userLockedViewport":true,"viewport":{"xmax":6,"xmin":-6,"ymax":4.664634146341464,"ymin":-4.664634146341464}},"includeFunctionParametersInRandomSeed":true,"randomSeed":"52e48826ec854cf3471f2986a90ec294","version":11}
+{
+  "version": 11,
+  "randomSeed": "52e48826ec854cf3471f2986a90ec294",
+  "graph": {
+    "viewport": {
+      "xmin": -6,
+      "ymin": -31.02,
+      "xmax": 6,
+      "ymax": 31.02
+    },
+    "userLockedViewport": true,
+    "__v12ViewportLatexStash": {
+      "xmin": "-6",
+      "xmax": "6",
+      "ymin": "-31.02",
+      "ymax": "31.02"
+    }
+  },
+  "expressions": {
+    "list": [
+      {
+        "type": "folder",
+        "id": "1388",
+        "title": "Helpers",
+        "hidden": true,
+        "collapsed": true
+      },
+      {
+        "type": "expression",
+        "id": "7915",
+        "folderId": "1388",
+        "color": "#c74440",
+        "latex": "g_{upn}\\left(x\\right)=\\left\\{x\\ge10000000:x-9999999\\operatorname{floor}\\left(0.0000001x\\right),0\\right\\}"
+      },
+      {
+        "type": "expression",
+        "id": "7916",
+        "folderId": "1388",
+        "color": "#2d70b3",
+        "latex": "g_{lon}\\left(x\\right)=x-10000000\\operatorname{floor}\\left(0.0000001x\\right)"
+      },
+      {
+        "type": "text",
+        "id": "9123",
+        "folderId": "1388",
+        "text": "Modern"
+      },
+      {
+        "type": "expression",
+        "id": "9129",
+        "folderId": "1388",
+        "color": "#388c46",
+        "latex": "g_{calc3}\\left(q,v_{lo}\\right)=\\operatorname{join}\\left(\\left(v_{lo}+q\\right)\\left[q>0\\right],v_{lo}\\left[v_{lo}>0\\right]\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "9130",
+        "folderId": "1388",
+        "color": "#6042a6",
+        "latex": "g_{calc2}\\left(L,q\\right)=g_{calc3}\\left(q,L-10000000q\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "9131",
+        "folderId": "1388",
+        "color": "#000000",
+        "latex": "g_{calc}\\left(L\\right)=g_{calc2}\\left(L,\\operatorname{floor}\\left(0.0000001L\\right)\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "9180",
+        "folderId": "1388",
+        "color": "#388c46",
+        "latex": "l_{ightpitch}\\left(x\\right)=\\operatorname{floor}\\left(0.001x\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "9181",
+        "folderId": "1388",
+        "color": "#6042a6",
+        "latex": "l_{ightgain}\\left(x\\right)=\\operatorname{mod}\\left(x,1000\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "7715",
+        "folderId": "1388",
+        "color": "#388c46",
+        "latex": "s_{pitch}\\left(x\\right)=20\\cdot1000^{\\frac{1}{9999}\\cdot l_{ightpitch}\\left(x\\right)}"
+      },
+      {
+        "type": "expression",
+        "id": "7716",
+        "folderId": "1388",
+        "color": "#6042a6",
+        "latex": "s_{gain}\\left(x\\right)=\\operatorname{sign}\\left(x\\right)10^{\\frac{4}{998}\\left(l_{ightgain}\\left(x\\right)-1\\right)-4}"
+      },
+      {
+        "type": "expression",
+        "id": "9193",
+        "folderId": "1388",
+        "color": "#c74440",
+        "latex": "l_{ightfilter}\\left(l\\right)=\\left\\{\\left|l\\left[1\\right]\\right|\\ge0:\\left\\{\\left|l\\left[2\\right]\\right|\\ge0:l,\\left[0,0\\right]\\right\\},\\left[0,0\\right]\\right\\}"
+      },
+      {
+        "type": "folder",
+        "id": "52",
+        "title": "Stats for nerds",
+        "hidden": true,
+        "collapsed": true
+      },
+      {
+        "type": "expression",
+        "id": "2",
+        "folderId": "52",
+        "color": "#2d70b3",
+        "latex": "t_{0}=-500",
+        "slider": {
+          "hardMin": true,
+          "loopMode": "LOOP_FORWARD",
+          "min": "-500",
+          "max": "138600"
+        }
+      },
+      {
+        "type": "expression",
+        "id": "34",
+        "folderId": "52",
+        "color": "#2d70b3",
+        "latex": "d_{t}=18",
+        "hidden": true,
+        "slider": {
+          "hardMin": true,
+          "min": "0",
+          "max": "20"
+        }
+      },
+      {
+        "type": "folder",
+        "id": "9183",
+        "title": "Audio Metadata",
+        "hidden": true,
+        "collapsed": true
+      },
+      {
+        "type": "expression",
+        "id": "9187",
+        "folderId": "9183",
+        "color": "#c74440",
+        "latex": "a_{udindex}=\\operatorname{floor}\\left(\\left(t_{0}-0\\right)\\cdot0.001\\cdot60\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "9188",
+        "folderId": "9183",
+        "color": "#2d70b3",
+        "latex": "a_{udioduration}=0"
+      },
+      {
+        "type": "folder",
+        "id": "20327",
+        "title": "Colors",
+        "hidden": true,
+        "collapsed": true
+      },
+      {
+        "type": "text",
+        "id": "20328",
+        "folderId": "20327",
+        "text": "I know it's spelled pink but"
+      },
+      {
+        "type": "expression",
+        "id": "20329",
+        "folderId": "20327",
+        "color": "#388c46",
+        "latex": "p_{ilk}=\\operatorname{hsv}\\left(295,0.31,1\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "20330",
+        "folderId": "20327",
+        "color": "#c74440",
+        "latex": "l_{ightpilk}=\\operatorname{hsv}\\left(299,0.29,1\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "20331",
+        "folderId": "20327",
+        "color": "#000000",
+        "latex": "d_{arkpilk}=\\operatorname{hsv}\\left(294,0.46,0.99\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "20332",
+        "folderId": "20327",
+        "color": "#6042a6",
+        "latex": "g_{ray}=\\operatorname{hsv}\\left(273,0.09,0.91\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "20333",
+        "folderId": "20327",
+        "color": "#2d70b3",
+        "latex": "w_{hite}=\\operatorname{hsv}\\left(0,0,1\\right)"
+      },
+      {
+        "type": "folder",
+        "id": "20334",
+        "title": "Formulae",
+        "hidden": true,
+        "collapsed": true
+      },
+      {
+        "type": "expression",
+        "id": "20335",
+        "folderId": "20334",
+        "color": "#6042a6",
+        "latex": "e_{psilon}=2^{-26}"
+      },
+      {
+        "type": "expression",
+        "id": "20336",
+        "folderId": "20334",
+        "color": "#2d70b3",
+        "latex": "M_{ax}\\left(a,b\\right)=\\frac{a+b+\\sqrt{\\left(a-b\\right)^{2}+e_{psilon}}}{2}"
+      },
+      {
+        "type": "expression",
+        "id": "20337",
+        "folderId": "20334",
+        "color": "#388c46",
+        "latex": "M_{in}\\left(a,b\\right)=\\frac{a+b-\\sqrt{\\left(a-b\\right)^{2}+e_{psilon}}}{2}"
+      },
+      {
+        "type": "expression",
+        "id": "20338",
+        "folderId": "20334",
+        "color": "#c74440",
+        "latex": "g\\left(x\\right)=M_{in}\\left(M_{ax}\\left(x,0\\right),1\\right)",
+        "hidden": true
+      },
+      {
+        "type": "expression",
+        "id": "20339",
+        "folderId": "20334",
+        "color": "#388c46",
+        "latex": "h\\left(x\\right)=\\left\\{0\\le x<1:1,0\\right\\}",
+        "hidden": true
+      },
+      {
+        "type": "expression",
+        "id": "20340",
+        "folderId": "20334",
+        "color": "#6042a6",
+        "latex": "l_{erp}\\left(a,b,t\\right)=\\left(1-t\\right)a+tb"
+      },
+      {
+        "type": "expression",
+        "id": "20341",
+        "folderId": "20334",
+        "color": "#000000",
+        "latex": "q_{uad}\\left(a,b,c,t\\right)=\\left(1-t\\right)l_{erp}\\left(a,b,t\\right)+tl_{erp}\\left(b,c,t\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "20342",
+        "folderId": "20334",
+        "color": "#c74440",
+        "latex": "c_{ubic}\\left(a,b,c,d,t\\right)=\\left(1-t\\right)q_{uad}\\left(a,b,c,t\\right)+tq_{uad}\\left(b,c,d,t\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "20343",
+        "folderId": "20334",
+        "color": "#2d70b3",
+        "latex": "b_{ezierraw}\\left(p,t_{f}\\right)=\\left\\{0\\le t_{f}<1:\\left(\\operatorname{total}\\left(h\\left(t-\\left(i-1\\right)\\right)c_{ubic}\\left(p\\left[3i-2\\right],p\\left[3i-1\\right],p\\left[3i\\right],\\left\\{3i+1\\le\\operatorname{count}\\left(p\\right):p\\left[3i+1\\right],p\\left[1\\right]\\right\\},g\\left(t-\\left(i-1\\right)\\right)\\right)\\operatorname{for}i=\\left[1...\\frac{\\operatorname{count}\\left(p\\right)}{3}\\right]\\right)\\right),p\\left[1\\right]\\right\\}\\operatorname{with}t=t_{f}\\frac{\\operatorname{count}\\left(p\\right)}{3}"
+      },
+      {
+        "type": "expression",
+        "id": "20344",
+        "folderId": "20334",
+        "color": "#000000",
+        "latex": "r_{otate}\\left(p,\\theta\\right)=\\left(\\cos\\left(\\theta\\right)p.x-\\sin\\left(\\theta\\right)p.y,\\sin\\left(\\theta\\right)p.x+\\cos\\left(\\theta\\right)p.y\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "20345",
+        "folderId": "20334",
+        "color": "#2d70b3",
+        "latex": "b_{ezier}\\left(p,t_{f}\\right)=t_{ransform}\\left(b_{ezierraw}\\left(p,t_{f}\\right)\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "20367",
+        "folderId": "20334",
+        "color": "#388c46",
+        "latex": "t_{ransform}\\left(p\\right)=\\frac{6}{5}\\left(p.x,\\max\\left(1,1\\frac{\\operatorname{height}}{\\operatorname{width}}\\right)p.y\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "20346",
+        "folderId": "20334",
+        "color": "#388c46",
+        "latex": "b_{ezierpolygon}\\left(p,t\\right)=b_{ezier}\\left(\\left(p\\left[\\operatorname{ceil}\\left(\\frac{i}{3}\\right)\\right]\\operatorname{for}i=\\left[1...3\\operatorname{count}\\left(p\\right)\\right]\\right),t\\right)"
+      },
+      {
+        "type": "folder",
+        "id": "20347",
+        "title": "Background",
+        "collapsed": true
+      },
+      {
+        "id": "20348",
+        "type": "table",
+        "folderId": "20347",
+        "columns": [
+          {
+            "values": [
+              "5",
+              "-5",
+              "-5",
+              "5"
+            ],
+            "hidden": true,
+            "id": "14592",
+            "color": "#388c46",
+            "latex": "x_{1}"
+          },
+          {
+            "values": [
+              "5",
+              "5",
+              "-5",
+              "-5"
+            ],
+            "hidden": true,
+            "id": "14593",
+            "color": "#6042a6",
+            "latex": "y_{1}"
+          }
+        ]
+      },
+      {
+        "type": "expression",
+        "id": "20349",
+        "folderId": "20347",
+        "color": "#000000",
+        "latex": "b_{ezierpolygon}\\left(\\left(x_{1},y_{1}\\right),t\\right)",
+        "fill": true,
+        "lines": false,
+        "colorLatex": "p_{ilk}",
+        "fillOpacity": "1"
+      },
+      {
+        "id": "20350",
+        "type": "table",
+        "folderId": "20347",
+        "columns": [
+          {
+            "values": [
+              "-5",
+              "-2.5",
+              "5",
+              "5",
+              "2.5",
+              "-5"
+            ],
+            "hidden": true,
+            "id": "14621",
+            "color": "#c74440",
+            "latex": "x_{2}"
+          },
+          {
+            "values": [
+              "5",
+              "5",
+              "-2.5",
+              "-5",
+              "-5",
+              "2.5"
+            ],
+            "hidden": true,
+            "id": "14622",
+            "color": "#2d70b3",
+            "latex": "y_{2}"
+          }
+        ]
+      },
+      {
+        "type": "expression",
+        "id": "20351",
+        "folderId": "20347",
+        "color": "#000000",
+        "latex": "b_{ezierpolygon}\\left(\\left(x_{2},y_{2}\\right),t\\right)",
+        "fill": true,
+        "lines": false,
+        "colorLatex": "g_{ray}",
+        "fillOpacity": "1"
+      },
+      {
+        "id": "20352",
+        "type": "table",
+        "folderId": "20347",
+        "columns": [
+          {
+            "values": [
+              "-5",
+              "-0.75",
+              "0.526",
+              "2.865",
+              "2.865",
+              "1.47",
+              "1.47",
+              "-1.633",
+              "-2.388",
+              "-5",
+              "-5",
+              "-5"
+            ],
+            "hidden": true,
+            "id": "19442",
+            "color": "#6042a6",
+            "latex": "x_{3}"
+          },
+          {
+            "values": [
+              "3.4125",
+              "-0.547",
+              "-2.175",
+              "-5",
+              "-5",
+              "-5",
+              "-5",
+              "-1.312",
+              "-0.607",
+              "1.925",
+              "1.925",
+              "3.4125"
+            ],
+            "dragMode": "XY",
+            "hidden": true,
+            "id": "19443",
+            "color": "#2d70b3",
+            "latex": "y_{3}"
+          }
+        ]
+      },
+      {
+        "type": "expression",
+        "id": "20353",
+        "folderId": "20347",
+        "color": "#2d70b3",
+        "latex": "b_{ezier}\\left(\\left(x_{3},y_{3}\\right),t\\right)",
+        "fill": true,
+        "lines": false,
+        "colorLatex": "d_{arkpilk}",
+        "fillOpacity": "1"
+      },
+      {
+        "id": "20354",
+        "type": "table",
+        "folderId": "20347",
+        "columns": [
+          {
+            "values": [
+              "-3.02",
+              "0.56",
+              "2.214",
+              "5",
+              "5",
+              "5",
+              "5",
+              "2.357",
+              "1.355",
+              "-1.34",
+              "-1.34",
+              "-3.02"
+            ],
+            "hidden": true,
+            "id": "19448",
+            "color": "#6042a6",
+            "latex": "x_{4}"
+          },
+          {
+            "values": [
+              "5",
+              "1.79",
+              "0.06",
+              "-3.6",
+              "-3.6",
+              "-1.75",
+              "-1.75",
+              "1.477",
+              "2.397",
+              "5",
+              "5",
+              "5"
+            ],
+            "dragMode": "XY",
+            "hidden": true,
+            "id": "19449",
+            "color": "#2d70b3",
+            "latex": "y_{4}"
+          }
+        ]
+      },
+      {
+        "type": "expression",
+        "id": "20355",
+        "folderId": "20347",
+        "color": "#2d70b3",
+        "latex": "b_{ezier}\\left(\\left(x_{4},y_{4}\\right),t\\right)",
+        "fill": true,
+        "lines": false,
+        "lineStyle": "DASHED",
+        "colorLatex": "d_{arkpilk}",
+        "fillOpacity": "1"
+      },
+      {
+        "id": "20356",
+        "type": "table",
+        "folderId": "20347",
+        "columns": [
+          {
+            "values": [
+              "-5",
+              "-3.72",
+              "-2.643",
+              "-0.925",
+              "-0.925",
+              "-2.38",
+              "-2.38",
+              "-3.243",
+              "-4.206",
+              "-5",
+              "-5",
+              "-5"
+            ],
+            "hidden": true,
+            "id": "19454",
+            "color": "#6042a6",
+            "latex": "x_{5}"
+          },
+          {
+            "values": [
+              "-0.48",
+              "-1.762",
+              "-3.002",
+              "-5",
+              "-5",
+              "-5",
+              "-5",
+              "-4.007",
+              "-2.916",
+              "-2.05",
+              "-2.05",
+              "-0.48"
+            ],
+            "dragMode": "XY",
+            "hidden": true,
+            "id": "19455",
+            "color": "#000000",
+            "latex": "y_{5}"
+          }
+        ]
+      },
+      {
+        "type": "expression",
+        "id": "20357",
+        "folderId": "20347",
+        "color": "#2d70b3",
+        "latex": "b_{ezier}\\left(\\left(x_{5},y_{5}\\right),t\\right)",
+        "fill": true,
+        "lines": false,
+        "lineStyle": "DASHED",
+        "colorLatex": "d_{arkpilk}",
+        "fillOpacity": "1"
+      },
+      {
+        "id": "20358",
+        "type": "table",
+        "folderId": "20347",
+        "columns": [
+          {
+            "values": [
+              "5",
+              "4.697",
+              "4.336",
+              "4.02",
+              "4.02",
+              "2.4",
+              "2.4",
+              "3.38",
+              "4.204",
+              "5",
+              "5",
+              "5"
+            ],
+            "hidden": true,
+            "id": "19460",
+            "color": "#6042a6",
+            "latex": "x_{6}"
+          },
+          {
+            "values": [
+              "4.02",
+              "4.343",
+              "4.725",
+              "5",
+              "5",
+              "5",
+              "5",
+              "4.116",
+              "3.315",
+              "2.45",
+              "2.45",
+              "4.02"
+            ],
+            "dragMode": "XY",
+            "hidden": true,
+            "id": "19461",
+            "color": "#000000",
+            "latex": "y_{6}"
+          }
+        ]
+      },
+      {
+        "type": "expression",
+        "id": "20359",
+        "folderId": "20347",
+        "color": "#2d70b3",
+        "latex": "b_{ezier}\\left(\\left(x_{6},y_{6}\\right),t\\right)",
+        "fill": true,
+        "lines": false,
+        "lineStyle": "DASHED",
+        "colorLatex": "d_{arkpilk}",
+        "fillOpacity": "1"
+      },
+      {
+        "type": "folder",
+        "id": "7088",
+        "title": "Other Text",
+        "collapsed": true
+      },
+      {
+        "type": "expression",
+        "id": "8360",
+        "folderId": "7088",
+        "color": "#388c46",
+        "latex": "f_{gcolor}=\\operatorname{hsv}\\left(294,0.46,0.35\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "7089",
+        "folderId": "7088",
+        "color": "#6042a6",
+        "latex": "\\left(-5,-0.125+y_{offset}\\right)",
+        "showLabel": true,
+        "label": "DesAudify Audio",
+        "hidden": true,
+        "labelOrientation": "below_right",
+        "labelSize": "\\frac{\\operatorname{width}}{1920}3.5",
+        "suppressTextOutline": true,
+        "colorLatex": "f_{gcolor}",
+        "clickableInfo": {
+          "enabled": true,
+          "latex": "i_{splaying}\\to\\left(1-i_{splaying}\\right)"
+        }
+      },
+      {
+        "type": "expression",
+        "id": "7104",
+        "folderId": "7088",
+        "color": "#6042a6",
+        "latex": "\\left(-5,-0.6+y_{offset}\\right)",
+        "showLabel": true,
+        "label": "Generated locally with DesmosPlus",
+        "hidden": true,
+        "labelOrientation": "below_right",
+        "labelSize": "\\frac{\\operatorname{width}}{1920}3",
+        "suppressTextOutline": true,
+        "colorLatex": "f_{gcolor}",
+        "clickableInfo": {
+          "enabled": true,
+          "latex": "t_{0}\\to-500,i_{splaying}\\to0"
+        }
+      },
+      {
+        "type": "folder",
+        "id": "7118",
+        "title": "Extraction",
+        "hidden": true,
+        "collapsed": true
+      },
+      {
+        "type": "expression",
+        "id": "9194",
+        "folderId": "7118",
+        "color": "#2d70b3",
+        "latex": "t_{ones}=t_{onedata}\\left(\\left[i_{dx}\\left[1\\right]...i_{dx}\\left[2\\right]-1\\right]\\right)\\operatorname{with}i_{dx}=l_{ightfilter}\\left(t_{onetimings}\\left(\\left[a_{udindex}+1,a_{udindex}+2\\right]\\right)\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "8210",
+        "folderId": "7118",
+        "color": "#6042a6",
+        "latex": "d_{ata}=g_{calc}\\left(t_{ones}\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "9195",
+        "folderId": "7118",
+        "color": "#c74440",
+        "latex": "N_{pad}=\\left(2+m_{axpoly}\\right)-\\operatorname{count}\\left(d_{ata}\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "9196",
+        "folderId": "7118",
+        "color": "#2d70b3",
+        "latex": "m_{axpoly}=256",
+        "slider": {
+          "hardMin": true,
+          "hardMax": true,
+          "min": "0",
+          "max": "256",
+          "step": "1"
+        }
+      },
+      {
+        "type": "expression",
+        "id": "9171",
+        "folderId": "7118",
+        "color": "#c74440",
+        "latex": "S_{pitch}=\\operatorname{join}\\left(s_{pitch}\\left(d_{ata}\\right),20\\cdot1000^{\\left[0,\\frac{1}{\\max\\left(1,N_{pad}-1\\right)}...1\\right]}\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "9172",
+        "folderId": "7118",
+        "color": "#2d70b3",
+        "latex": "S_{gain}=s_{gain}\\left(d_{ata}\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "8509",
+        "folderId": "7118",
+        "color": "#000000",
+        "latex": "p_{itch}=S_{pitch}.\\operatorname{sort}"
+      },
+      {
+        "type": "expression",
+        "id": "8510",
+        "folderId": "7118",
+        "color": "#c74440",
+        "latex": "g_{ain}=\\operatorname{join}\\left(S_{gain},\\operatorname{repeat}\\left(0,N_{pad}\\right)\\right).\\operatorname{sort}\\left(S_{pitch}\\right)"
+      },
+      {
+        "type": "folder",
+        "id": "41",
+        "title": "Audio",
+        "collapsed": true
+      },
+      {
+        "type": "expression",
+        "id": "7113",
+        "folderId": "41",
+        "color": "#2d70b3",
+        "latex": "i_{splaying}=0",
+        "slider": {
+          "hardMin": true,
+          "hardMax": true,
+          "min": "0",
+          "max": "1",
+          "step": "1"
+        }
+      },
+      {
+        "type": "expression",
+        "id": "4",
+        "folderId": "41",
+        "color": "#6042a6",
+        "latex": "\\left\\{t_{0}>0\\right\\}\\operatorname{tone}\\left(p_{itch},i_{splaying}g_{ain}\\right)"
+      },
+      {
+        "type": "folder",
+        "id": "7120",
+        "title": "Visual Extraction",
+        "collapsed": true
+      },
+      {
+        "type": "expression",
+        "id": "9198",
+        "folderId": "7120",
+        "color": "#6042a6",
+        "latex": "m_{axpitch}=9999\\cdot1"
+      },
+      {
+        "type": "expression",
+        "id": "9199",
+        "folderId": "7120",
+        "color": "#000000",
+        "latex": "m_{inpitch}=0\\cdot1"
+      },
+      {
+        "type": "expression",
+        "id": "8306",
+        "folderId": "7120",
+        "color": "#000000",
+        "latex": "b_{ars}\\left(n_{p}\\right)=\\frac{5\\left(n_{otes}-1\\right)}{n_{otes}^{2}}\\cdot\\left(2\\operatorname{round}\\left(\\frac{n_{otes}-1}{\\left(m_{axpitch}-m_{inpitch}\\right)}\\left(l_{ightpitch}\\left(n_{p}\\right)-m_{inpitch}\\right)\\right)-\\left(n_{otes}-1\\right)\\right)",
+        "hidden": true
+      },
+      {
+        "type": "expression",
+        "id": "9200",
+        "folderId": "7120",
+        "color": "#c74440",
+        "latex": "U_{step}=\\operatorname{unique}\\left(b_{ars}\\left(1000\\cdot\\left[0...9999\\right]\\right)\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "9201",
+        "folderId": "7120",
+        "color": "#2d70b3",
+        "latex": "p_{rune}\\left(b_{ar},g_{ain}\\right)=\\left[\\left(u,g_{lobalyoffset}+0.5\\operatorname{total}\\left(g_{ain}\\left[b_{ar}=u\\right]\\right)\\right)\\operatorname{for}u=U_{step}\\right]"
+      },
+      {
+        "type": "expression",
+        "id": "9176",
+        "folderId": "7120",
+        "color": "#c74440",
+        "latex": "b_{f}=b_{ars}\\left(d_{ata}\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "8401",
+        "folderId": "7120",
+        "color": "#6042a6",
+        "latex": "c_{olors}=\\operatorname{hsv}\\left(294,0.46,0.35\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "389",
+        "folderId": "7120",
+        "color": "#000000",
+        "latex": "y_{offset}=-\\frac{4}{n_{otes}}+g_{lobalyoffset}-\\frac{0.0125\\operatorname{width}}{1920}"
+      },
+      {
+        "type": "expression",
+        "id": "9177",
+        "folderId": "7120",
+        "color": "#2d70b3",
+        "latex": "b_{height}=\\left(-b_{aseline}-g_{lobalyoffset}-0.125\\right)"
+      },
+      {
+        "type": "expression",
+        "id": "9173",
+        "folderId": "7120",
+        "color": "#388c46",
+        "latex": "b_{s}=\\left(b_{e}.x,g_{lobalyoffset}\\right)",
+        "hidden": true
+      },
+      {
+        "type": "expression",
+        "id": "9202",
+        "folderId": "7120",
+        "color": "#388c46",
+        "latex": "b_{e}=p_{rune}\\left(b_{ars}\\left(d_{ata}\\right),b_{height}S_{gain}\\right)",
+        "hidden": true
+      },
+      {
+        "type": "folder",
+        "id": "86",
+        "title": "Visual",
+        "collapsed": true
+      },
+      {
+        "type": "expression",
+        "id": "683",
+        "folderId": "86",
+        "color": "#c74440",
+        "latex": "g_{lobalyoffset}=b_{aseline}+1.875"
+      },
+      {
+        "type": "expression",
+        "id": "8392",
+        "folderId": "86",
+        "color": "#c74440",
+        "latex": "t_{hickness}=16\\cdot\\frac{96}{n_{otes}}\\frac{\\operatorname{width}}{1920}"
+      },
+      {
+        "type": "expression",
+        "id": "8380",
+        "folderId": "86",
+        "color": "#c74440",
+        "latex": "\\operatorname{polygon}\\left(b_{s},b_{e}\\right)",
+        "fill": false,
+        "lines": true,
+        "colorLatex": "c_{olors}",
+        "lineWidth": "t_{hickness}"
+      },
+      {
+        "type": "expression",
+        "id": "8619",
+        "folderId": "86",
+        "color": "#388c46",
+        "latex": "b_{aseline}=-\\frac{\\operatorname{height}}{\\operatorname{width}}6"
+      },
+      {
+        "type": "expression",
+        "id": "168",
+        "folderId": "86",
+        "color": "#2d70b3",
+        "latex": "n_{otes}=84",
+        "hidden": true,
+        "slider": {
+          "hardMin": true,
+          "hardMax": true,
+          "min": "16",
+          "max": "256",
+          "step": "1"
+        }
+      },
+      {
+        "type": "expression",
+        "id": "8903",
+        "folderId": "86",
+        "color": "#c74440",
+        "latex": "\\operatorname{polygon}\\left(\\left(-5,g_{lobalyoffset}\\right),\\left(5,g_{lobalyoffset}\\right)\\right)",
+        "fill": false,
+        "colorLatex": "f_{gcolor}",
+        "lineWidth": "\\frac{96}{n_{otes}}\\cdot20\\cdot\\frac{\\operatorname{width}}{1920}"
+      },
+      {
+        "type": "expression",
+        "folderId": "7088",
+        "color": "#6042a6",
+        "showLabel": true,
+        "hidden": true,
+        "labelOrientation": "below_left",
+        "labelSize": "\\frac{\\operatorname{width}}{1920}1.35",
+        "suppressTextOutline": true,
+        "colorLatex": "f_{gcolor}",
+        "id": "desmosplus-play-tip",
+        "latex": "\\left(5,-0.125+y_{offset}\\right)",
+        "label": "Unmute the audio and click me",
+        "clickableInfo": {
+          "enabled": true,
+          "latex": "i_{splaying}\\to\\left(1-i_{splaying}\\right)"
+        }
+      },
+      {
+        "type": "expression",
+        "folderId": "7088",
+        "color": "#6042a6",
+        "showLabel": true,
+        "hidden": true,
+        "labelOrientation": "below_left",
+        "labelSize": "\\frac{\\operatorname{width}}{1920}1.35",
+        "suppressTextOutline": true,
+        "colorLatex": "f_{gcolor}",
+        "id": "desmosplus-restart-tip",
+        "latex": "\\left(5,-0.575+y_{offset}\\right)",
+        "label": "Click me to restart the song",
+        "clickableInfo": {
+          "enabled": true,
+          "latex": "t_{0}\\to-500,i_{splaying}\\to0"
+        }
+      }
+    ],
+    "ticker": {
+      "handlerLatex": "\\left\\{t_{0}<a_{udioduration}+100:t_{0}\\to t_{0}+i_{splaying}\\operatorname{dt},t_{0}\\to a_{udioduration}+1000\\right\\},d_{t}\\to\\operatorname{dt}",
+      "open": true,
+      "playing": false
+    }
+  },
+  "includeFunctionParametersInRandomSeed": true,
+  "doNotMigrateMovablePointStyle": true,
+  "backmigrated": 14
+}

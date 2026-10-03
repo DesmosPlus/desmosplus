@@ -1,7 +1,7 @@
 (function (root) {
   "use strict";
 
-  var BRIDGE_VERSION = 3;
+  var BRIDGE_VERSION = 4;
   if (root.DesmosPlusDesAudify && root.DesmosPlusDesAudify.version === BRIDGE_VERSION) return;
 
   var MAX_SCHEMA_BYTES = 6 * 1024 * 1024;
@@ -145,6 +145,12 @@
     if (!hasPlayer(state)) throw new Error("Load the DesAudify player before adding schemas.");
 
     var lines = schemaLines(text);
+    if (kind === "data") {
+      var newPlayer = state.expressions.list.some(function (item) { return (item.latex || "").includes("t_{onedata}"); });
+      var oldData = lines.some(function (line) { return /^t_\{\d+\}=/.test(line); });
+      var newData = lines.some(function (line) { return /^t_\{one(data|timings)/.test(line); });
+      if ((newPlayer && oldData) || (!newPlayer && newData)) throw new Error("This audio schema needs its matching player version. Load the new player for BigList 2 data; use the older player for legacy schemas.");
+    }
     var stamp = Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
     var base = "desaudify_" + kind + "_" + stamp;
     var title = cleanName(fileName, kind === "data" ? "Shard" : "Processing");
@@ -174,8 +180,12 @@
       "#c74440",
     ];
     var expressions = lines.map(function (line, index) {
+      var lhs = line.split("=")[0];
+      var existing = kind === "processing" && state.expressions.list.find(function (item) {
+        return item.type === "expression" && (item.latex || "").split("=")[0] === lhs;
+      });
       return {
-        id: base + "_line_" + String(index + 1),
+        id: existing ? existing.id : base + "_line_" + String(index + 1),
         type: "expression",
         color:
           kind === "data"

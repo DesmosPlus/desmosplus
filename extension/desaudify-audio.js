@@ -55,19 +55,28 @@
 
   function analyze(decoded, workerUrl, options, onProgress) {
     return new Promise(function (resolve, reject) {
-      var worker = new Worker(workerUrl);
+      var blobUrl = root.DesmosPlusAudioWorkerSource
+        ? URL.createObjectURL(new Blob([root.DesmosPlusAudioWorkerSource], { type: "text/javascript" }))
+        : null;
+      var worker;
+      try { worker = new Worker(blobUrl || workerUrl); }
+      catch (error) { if (blobUrl) URL.revokeObjectURL(blobUrl); reject(error); return; }
+      function stop() {
+        worker.terminate();
+        if (blobUrl) URL.revokeObjectURL(blobUrl);
+      }
       worker.onmessage = function (event) {
         var message = event.data || {};
         if (message.type === "progress") {
           onProgress(message.message || "Analyzing audio...");
           return;
         }
-        worker.terminate();
+        stop();
         if (message.type === "complete") resolve(message);
         else reject(new Error(message.message || "Audio analysis failed."));
       };
       worker.onerror = function (event) {
-        worker.terminate();
+        stop();
         reject(new Error(event.message || "Audio analysis worker failed."));
       };
       worker.postMessage(
@@ -79,6 +88,7 @@
           maxNotes: options.maxNotes,
           minimumMagnitude: options.minimumMagnitude,
           unlimited: options.unlimited === true,
+          storageMode: options.storageMode,
         },
         [decoded.samples.buffer],
       );
