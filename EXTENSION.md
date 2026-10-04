@@ -57,7 +57,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.26.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.26.0/DesmosPlus-Extension-v1.26.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.26.0) |
+| **v1.27.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.27.0/DesmosPlus-Extension-v1.27.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.27.0) |
+| v1.26.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.26.0/DesmosPlus-Extension-v1.26.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.26.0) |
 | v1.25.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.25.0/DesmosPlus-Extension-v1.25.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.25.0) |
 | v1.24.1 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.1/DesmosPlus-Extension-v1.24.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.1) |
 | v1.24.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.0/DesmosPlus-Extension-v1.24.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.0) |
@@ -85,7 +86,7 @@ release downloads are public and do not require a GitHub account.
 The complete release history is available on the
 [GitHub Releases page](https://github.com/DesmosPlus/desmosplus/releases).
 
-The optional DesModder edition is unavailable for v1.26.0. The standard
+The optional DesModder edition is unavailable for v1.27.0. The standard
 edition includes all of the features documented below.
 
 ## Release Process
@@ -395,15 +396,45 @@ Version 1.26.0 adds a BigList tab and a BigList option on the website. Enable
 including new empty lists. The toggle lasts for the current page and can be
 turned off from the tab or editor.
 
-Select a control or choose **New BigList**, provide a function name and a JSON
-array of finite numbers, then add the expanded list. The original expression
-is preserved. Read values with `biglist([1,10001])`, using your chosen name.
-BigList is a callable, chunked representation: it does not remove Desmos's
-native limit on an individual list or a single returned slice.
+Version 1.27.0 adds two memory-bounded options for millions of values, on the
+website, the packaged offline website, and the extension's BigList editor:
 
-**Compatible** works on the older bundled website. **BigList 2 matrices** uses
-the newer upstream matrix-backed storage and requires a recent official Desmos
-calculator. Large inputs can consume substantial memory; save your graph first.
+- **Generated sequence:** choose the first value, step, and count. The default
+  count is 20 million. An indexed equation represents the whole sequence without
+  allocating a huge array. Counts of 20 million and one billion were tested.
+  For a sequence named `biglist`, read one value with `biglist(20000000)` or a
+  small group with `biglist([1,10000000,20000000])`. Negative and fractional steps
+  are supported. Invalid or fractional indices return undefined.
+- **Large JSON file (windowed):** select a flat UTF-8 JSON array of finite
+  numbers. The importer indexes file offsets in chunks, then embeds only the
+  active window (1,000 values by default, up to 10,000). Jump to any start index,
+  or use the previous/next buttons. A real 30-million-value file was tested.
+  Only indices in the loaded window are defined; changing windows replaces that
+  window, not the entire graph. Closing the editor during indexing cancels it.
+- **Pasted array:** small arrays can still use Compatible or BigList 2 matrices.
+  Arrays over 10,000 values automatically use the windowed path. The text field
+  accepts up to 2 MB; use a file for larger inputs.
+
+The original expression is preserved, and new expressions are grouped in a
+collapsed folder. Generated sequences save as complete equations. For files,
+the graph saves only the current window and reattachment metadata, not millions
+of hidden values. After reloading, open BigList, select **Reattach**, and choose
+the original local file to resume paging. Files remain on your device; no upload
+or new extension permission is involved. **Forget file** releases the current
+file reference while keeping the embedded window.
+
+These modes do **not** remove Desmos's native limit on an individual list or a
+single returned slice. Do not request `[1...20000000]` as one result. Arithmetic
+uses browser/Desmos floating-point precision, and performance remains dependent
+on the graph, browser, and device. File numbers/whitespace gaps over 1,024 bytes
+are rejected. **BigList 2 matrices** requires a recent official calculator;
+sequences, file windows, and Compatible work with the older bundled website.
+
+Reproducible checks: `node --test scripts/test-big-list.mjs`, then
+`BIGLIST_TEST_COUNT=30000000 node scripts/test-big-list-scale.mjs`. To run the
+Playwright UI check, set `BIGLIST_KEEP_FIXTURE=1` for the scale test and pass the
+printed fixture path to `node scripts/test-big-list-browser.cjs` while the local
+server is running. Playwright and its Chromium browser must be available.
 
 ## DesAudify Audio Import
 

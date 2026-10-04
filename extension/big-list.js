@@ -42,5 +42,82 @@
     lines.push(symbol + "\\left(l\\right)=\\left\\{" + choices.join(",") + "\\right\\}\\operatorname{for}k=l");
     return lines;
   }
-  root.DesmosPlusBigList = { format, variable };
+  function count(value, label) {
+    if (!Number.isSafeInteger(value) || value < 1) throw new Error(label + " must be a positive safe integer.");
+    return value;
+  }
+  function indexed(symbol, total, body, start = 1) {
+    return symbol + "\\left(k\\right)=\\left\\{" + start + "\\le k\\le" + total + ":\\left\\{k=\\operatorname{floor}\\left(k\\right):" + body + "\\right\\}\\right\\}";
+  }
+  function sequence(name, start, step, length) {
+    count(length, "Count");
+    number(start); number(step); number(start + step * (length - 1));
+    return indexed(variable(name), length, "\\left(" + number(start) + "\\right)+\\left(" + number(step) + "\\right)\\left(k-1\\right)");
+  }
+  function windowExpression(name, start, values) {
+    count(start, "Start index");
+    if (!Array.isArray(values) || !values.length || values.length > 10000) throw new Error("A window must contain 1 to 10,000 values.");
+    const end = count(start + values.length - 1, "End index");
+    return indexed(variable(name), end, "\\left[" + values.map(number).join(",") + "\\right]\\left[k-" + (start - 1) + "\\right]", start);
+  }
+
+  // Index byte ranges, not values. Each read/parse stays bounded even for multi-GB files.
+  async function indexFile(file, {signal, onProgress, chunkSize = 1024 * 1024} = {}) {
+    count(chunkSize, "Chunk size");
+    const pageSize = 1000, starts = [], ends = [];
+    let phase = "open", pending = "", length = 0, pageStart = 0;
+    const numeric = /^\s*(-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\s*$/;
+    const abort = () => { if (signal?.aborted) throw new Error("Indexing cancelled."); };
+    for (let offset = 0; offset < file.size; offset += chunkSize) {
+      abort();
+      const text = pending + await file.slice(offset, offset + chunkSize).text();
+      const base = offset - pending.length;
+      pending = "";
+      // JSON numeric arrays are ASCII. Reject other bytes to keep file offsets exact.
+      if (/[^\x20-\x7e\t\r\n]/.test(text)) throw new Error("Use a UTF-8 JSON array of finite numbers.");
+      let pos = 0;
+      if (phase === "open") {
+        while (pos < text.length && /[ \t\r\n]/.test(text[pos])) pos++;
+        if (pos === text.length) continue;
+        if (text[pos++] !== "[") throw new Error("The file must contain one JSON array of numbers.");
+        phase = "value";
+      }
+      const close = text.indexOf("]", pos);
+      while (phase === "value") {
+        const comma = text.indexOf(",", pos);
+        const end = comma < 0 ? close : close < 0 ? comma : Math.min(comma, close);
+        if (end < 0) {
+          pending = text.slice(pos);
+          if (pending.length > 1024) throw new Error("A number or whitespace gap is too long (1,024 bytes maximum).");
+          break;
+        }
+        const token = text.slice(pos, end);
+        if (token.length > 1024 || !numeric.test(token) || !Number.isFinite(Number(token))) throw new Error("Lists must contain finite numbers only, with no empty entries or trailing comma.");
+        if (length % pageSize === 0) pageStart = base + pos;
+        count(++length, "Count");
+        if (length % pageSize === 0) { starts.push(pageStart); ends.push(base + end); }
+        pos = end + 1;
+        if (text[end] === "]") {
+          if (length % pageSize) { starts.push(pageStart); ends.push(base + end); }
+          phase = "done";
+        }
+      }
+      if (phase === "done" && /[^ \t\r\n]/.test(text.slice(pos))) throw new Error("Unexpected content after the JSON array.");
+      onProgress?.({count:length, bytes:Math.min(file.size, offset + chunkSize), total:file.size});
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    abort();
+    if (phase !== "done" || !length) throw new Error("The JSON array is empty or incomplete.");
+    return {file, length, pageSize, starts, ends};
+  }
+  async function readWindow(source, start, size = 1000) {
+    count(start, "Start index"); count(size, "Window size");
+    if (size > 10000 || start > source.length) throw new Error("Choose an existing index and a window of at most 10,000 values.");
+    const end = Math.min(source.length, start + size - 1);
+    const first = Math.floor((start - 1) / source.pageSize), last = Math.floor((end - 1) / source.pageSize);
+    const text = await source.file.slice(source.starts[first], source.ends[last]).text();
+    const values = JSON.parse("[" + text + "]");
+    return values.slice((start - 1) % source.pageSize, (start - 1) % source.pageSize + end - start + 1);
+  }
+  root.DesmosPlusBigList = { format, variable, sequence, windowExpression, indexFile, readWindow };
 })(globalThis);
