@@ -36,7 +36,7 @@
   var loadedId = "";
   var SHORTCUT_COMMANDS_KEY = "desmosplus.site.shortcut-commands.v1";
   var SHORTCUT_ENGINE_KEY = "desmosplus.site.shortcut-engine.v1";
-  var SHORTCUT_SENTINEL = "keepmeKEEPME";
+  var SHORTCUT_SENTINEL = "matrix";
   var SHORTCUT_DEFAULT_COMMANDS =
     "alpha beta sqrt theta Theta phi Phi pi Pi tau nthroot cbrt sum prod int " +
     "ans percent infinity infty gamma Gamma delta Delta epsilon epsiv zeta eta " +
@@ -670,7 +670,7 @@
     ) {
       return false;
     }
-    window.Desmos.MathQuill.config({
+    var options = {
       autoCommands:
         SHORTCUT_SENTINEL +
         (shortcutSettings.commands.size
@@ -678,6 +678,25 @@
           : ""),
       charsThatBreakOutOfSupSub: "+-=<>*",
       disableAutoSubstitutionInSubscripts: true,
+    };
+    // Current MathQuill locks global configuration after the first field.
+    document.querySelectorAll(".dcg-mq-editable-field").forEach(function (element) {
+      var field = window.Desmos.MathQuill.getApiInstanceForElement
+        ? window.Desmos.MathQuill.getApiInstanceForElement(element)
+        : window.Desmos.MathQuill(element);
+      if (!field || typeof field.config !== "function") return;
+      // Extended commands are handled by our key listener, not MathQuill's
+      // built-in command registry, which now rejects unknown names.
+      for (;;) {
+        try { field.config(options); break; }
+        catch (error) {
+          var invalid = /^Invalid auto-command: "([A-Za-z]+)"$/.exec(error.message || "");
+          if (!invalid || !options.autoCommands.split(" ").includes(invalid[1])) throw error;
+          options.autoCommands = options.autoCommands.split(" ").filter(function (name) {
+            return name !== invalid[1];
+          }).join(" ");
+        }
+      }
     });
     return true;
   }
@@ -741,6 +760,7 @@
     if (shortcutRuntimeInstalled || !shortcutSupported()) return;
     shortcutRuntimeInstalled = true;
     shortcutSettings = readShortcutSettings();
+    document.addEventListener("focusin", applyShortcutSettings, true);
     document.addEventListener("keydown", replaceShortcutCommand, true);
     applyShortcutSettings();
     showShortcutSettings();

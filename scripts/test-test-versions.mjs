@@ -9,6 +9,20 @@ import { buildExtensionSite } from "./build-extension-site.mjs";
 const root = path.resolve(import.meta.dirname, "..");
 const catalog = JSON.parse(fs.readFileSync(path.join(root, "test-versions/catalog.json")));
 
+test("standard captures are anonymous and retain guarded local tools", () => {
+  for (const name of ["2dcalculator", "3dcalculator", "geometry", "matrix", "notebook", "scientific", "fourfunction"]) {
+    const html = fs.readFileSync(path.join(root, name + ".html"), "utf8");
+    assert(!html.includes("&quot;user&quot;"), name);
+    assert(!html.includes("setTrackerUrl"), name);
+    assert(html.includes("Content-Security-Policy"), name);
+    assert(html.indexOf("offline-guard.js") < html.indexOf('<script src="/assets/pagepack/'), name);
+    assert(html.includes("offline-save.js?v="), name);
+    for (const [, asset] of html.matchAll(/(?:src|href)="(\/assets\/pagepack\/[^"?]+)"/g)) {
+      assert(fs.statSync(path.join(root, asset)).size > 0, asset);
+    }
+  }
+});
+
 test("every captured assessment link has a page and complete local runtime", () => {
   assert.equal(catalog.length, 60);
   const versions = catalog.flatMap(entry => entry.versions);

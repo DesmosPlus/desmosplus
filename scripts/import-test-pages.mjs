@@ -59,9 +59,14 @@ for (const capture of captures) {
       }
       if (text.includes("stateTestName")) {
         // Preserve language selection on our host, without enabling other URL flags.
-        text = text.replace('return fT(r)?new URLSearchParams(e!=null?e:t):new URLSearchParams',
-          'return fT(r)?new URLSearchParams(e!=null?e:t):new URLSearchParams(new URLSearchParams(t).has("lang")?{lang:new URLSearchParams(t).get("lang")}:{} )');
-        text = text.replace('/testing/.test(document.location.search)||od(new Ml);', "");
+        const language = /return ([\w$]+)\(r\)\?new URLSearchParams\(e!=null\?e:t\):new URLSearchParams(?=})/g;
+        const telemetry = /\/testing\/\.test\(document\.location\.search\)\|\|[\w$]+\(new [\w$]+\);/g;
+        if ([...text.matchAll(language)].length !== 1 || [...text.matchAll(telemetry)].length !== 1) {
+          throw new Error("Capture startup changed; review language and telemetry handling before importing.");
+        }
+        text = text.replace(language,
+          'return $1(r)?new URLSearchParams(e!=null?e:t):new URLSearchParams(new URLSearchParams(t).has("lang")?{lang:new URLSearchParams(t).get("lang")}:{} )');
+        text = text.replace(telemetry, "");
       }
       // Omit the capture's analytics loader; assessment configurations stay unchanged.
       if (text && !text.includes("setTrackerUrl")) scripts.push(asset(text, ".js"));
