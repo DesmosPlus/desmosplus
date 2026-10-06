@@ -7,6 +7,7 @@ const SOURCE_URL = "https://github.com/DesmosPlus/desmosplus";
 const SKIPPED_DIRECTORIES = new Set(["icons", "vendor"]);
 const SKIPPED_PATH_PREFIXES = [
   path.join("assets", "build"),
+  path.join("assets", "pagepack"),
   path.join("assets", "desaudify"),
   path.join("assets", "img"),
 ];

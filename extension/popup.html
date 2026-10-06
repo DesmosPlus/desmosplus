@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DesmosPlus</title>
     <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="qr-ui.css">
   </head>
   <body>
     <div id="desaudify-flame-frame" aria-hidden="true"></div>
@@ -47,6 +48,7 @@
         <button type="button" role="tab" aria-selected="false" aria-controls="functions-panel" data-view="functions">Functions</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="desaudify-panel" data-view="desaudify">DesAudify</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="biglist-panel" data-view="biglist">BigList</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="qr-panel" data-view="qr">QR code</button>
         <button type="button" role="tab" aria-selected="false" aria-controls="settings-panel" data-view="settings">Settings</button>
       </nav>
 
@@ -71,6 +73,10 @@
           <button id="export" type="button" data-action>Export</button>
           <button id="import" type="button" data-action>Import</button>
         </div>
+      </section>
+
+      <section id="qr-panel" role="tabpanel" data-panel="qr" hidden>
+        <div id="qr-editor"></div>
       </section>
 
       <section id="svg-panel" role="tabpanel" data-panel="svg" hidden>
@@ -358,5 +364,9 @@
     <script src="vendor/desmos-unlocked/catalog.js"></script>
     <script src="popup.js"></script>
     <script src="big-list-popup.js"></script>
+    <script src="vendor/qrcodegen.js"></script>
+    <script src="qr-code.js"></script>
+    <script src="qr-ui.js"></script>
+    <script src="qr-popup.js"></script>
   </body>
 </html>

@@ -1,0 +1,21 @@
+.dp-qr {font:14px system-ui;color:inherit;letter-spacing:0}
+.dp-qr * {box-sizing:border-box}
+.dp-qr [hidden] {display:none!important}
+.dp-qr form {display:grid;gap:12px}
+.dp-qr label {display:grid;gap:6px;font-weight:600;min-width:0}
+.dp-qr input:not([type=checkbox]),.dp-qr textarea {width:100%;min-width:0;border:1px solid currentColor;border-radius:6px;padding:8px;background:transparent;color:inherit;font:inherit}
+.dp-qr textarea {resize:vertical;min-height:90px;max-height:220px}
+.dp-qr input[type=color] {height:38px;padding:3px;cursor:pointer}
+.dp-qr .qr-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.dp-qr .qr-fit {display:flex;align-items:center;font-weight:400}
+.dp-qr .qr-fit input {width:16px;height:16px;accent-color:currentColor}
+.dp-qr button {min-height:36px;padding:8px 12px;border:1px solid currentColor;border-radius:6px;background:transparent;color:inherit;font:inherit;cursor:pointer;white-space:normal;overflow-wrap:anywhere}
+.dp-qr button:disabled {opacity:.5;cursor:default}
+.dp-qr :focus-visible {outline:2px solid currentColor;outline-offset:2px}
+.dp-qr .qr-preview {width:185px;height:185px;max-width:100%;object-fit:contain;image-rendering:pixelated;justify-self:center}
+.dp-qr .qr-status {min-height:20px;margin:0;overflow-wrap:anywhere;font-size:12px}
+.dp-qr .qr-saved {display:grid;gap:6px;margin-top:16px;max-height:180px;overflow:auto}
+#desmosplus-qr-dialog {width:min(480px,calc(100vw - 24px));max-height:90vh;overflow:auto;box-sizing:border-box;background:white;color:black;border:1px solid currentColor;border-radius:8px;padding:20px}
+#desmosplus-qr-dialog::backdrop {background:rgb(0 0 0 / .3)}
+#desmosplus-qr-dialog .qr-header {display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font:600 18px system-ui}
+#desmosplus-qr-dialog .qr-close {border:0;background:transparent;color:inherit;font:24px system-ui;cursor:pointer;width:32px;height:32px}

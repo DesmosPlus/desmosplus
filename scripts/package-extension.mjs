@@ -162,6 +162,9 @@ for (const resource of [
   "local-site.css",
   "local-site-sandbox.js",
   "assets/local/offline-save.js",
+  "qr-code.js", "qr-ui.js", "qr-ui.css", "qr-page.js", "qr-popup.js",
+  "vendor/qrcodegen.js", "QR-CODE-NOTICE",
+  "extension/qr-code.js", "extension/qr-ui.js", "extension/qr-ui.css", "extension/qr-page.js", "extension/vendor/qrcodegen.js",
   "assets/build/shared_calculator_desktop-439f0ecfe37f5abf802d0f5ab4a878fd6798cff3.js",
 ]) {
   if (!members.includes(resource)) {

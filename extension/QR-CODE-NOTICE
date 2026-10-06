@@ -1,0 +1,11 @@
+QR Code generator library by Project Nayuki (MIT license).
+Source: https://www.nayuki.io/page/qr-code-generator-library
+Bundled JavaScript: https://www.nayuki.io/res/qr-code-generator-library/qrcodegen.js
+Retrieved: 2026-10-06
+SHA-256: 2511bc17f40a3c41d4a0578995db956b38997334d3d20113a5d4dc5c49c69480
+
+The complete MIT copyright and permission notice is retained at the top of
+vendor/qrcodegen.js. Encoding runs locally; no external service is used.
+The native 17-character prototype remains in the repository's qr-code directory.
+The integrated editor computes QR modules in JavaScript and inserts editable
+Desmos polygon equations rather than embedding an image.

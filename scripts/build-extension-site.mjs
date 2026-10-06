@@ -61,7 +61,7 @@ export function buildExtensionSite(root, destination) {
     copyFile(root, destination, endpoint);
   }
 
-  for (const file of ["desaudify-page.js", "svg-import.js", "big-list.js", "big-list-page.js", "desaudify-audio.js", "desaudify-audio-worker.js", "desaudify-v2.js", "vendor/fft.js"]) {
+  for (const file of ["desaudify-page.js", "svg-import.js", "big-list.js", "big-list-page.js", "desaudify-audio.js", "desaudify-audio-worker.js", "desaudify-v2.js", "vendor/fft.js", "vendor/qrcodegen.js", "qr-code.js", "qr-ui.js", "qr-ui.css", "qr-page.js"]) {
     copyFile(root, destination, `extension/${file}`);
   }
   // Sandboxed extension pages have opaque origins and cannot load URL workers.

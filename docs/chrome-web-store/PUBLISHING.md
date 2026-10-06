@@ -15,8 +15,8 @@ account-specific material.
 
 | Item | Repository path |
 | --- | --- |
-| Upload package | `../../dist/DesmosPlus-Extension-v1.25.0.zip` |
-| SHA-256 | `9481e748f97ff523839b128ad87edec15e62441684053c1190b86a80ee122763` |
+| Upload package | `../../dist/DesmosPlus-Extension-v1.28.0.zip` |
+| SHA-256 | `43c64af090100d671215080e97d83e17e2553702c96e3b7c03b8167dfbe7c9b2` |
 | Store icon | `assets/icon-128.png` |
 | Required small promo tile | `assets/small-promo-440x280.png` |
 | Optional marquee tile | `assets/marquee-1400x560.png` |
@@ -27,7 +27,7 @@ account-specific material.
 
 > [!WARNING]
 > Do not upload v1.11.0 through v1.14.1 to the Chrome Web Store. Those releases
-> contain the GitHub DesModder integration. Use v1.25.0, which excludes
+> contain the GitHub DesModder integration. Use v1.28.0, which excludes
 > DesModder, its injection settings, background loader, WakaTime access, and
 > related permissions. Version 1.25.0 includes the separately attributed, locally
 > bundled Desmos Unlocked shortcut engine; it is not DesModder.
@@ -51,7 +51,7 @@ verification, dashboard declarations, and the final **Submit for Review** action
 
 ## Package Upload
 
-Upload `DesmosPlus-Extension-v1.25.0.zip` after completing the unpacked browser
+Upload `DesmosPlus-Extension-v1.28.0.zip` after completing the unpacked browser
 tests. It is a Manifest V3 extension with `manifest.json` at the archive root.
 
 Before uploading, extract the matching release ZIP, load that extracted folder

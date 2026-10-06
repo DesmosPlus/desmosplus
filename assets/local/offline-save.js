@@ -965,7 +965,7 @@
       '<button type="button" id="local-new">New</button>' +
       '<button type="button" id="local-save">Save</button>' +
       (product() === "2dcalculator"
-        ? '<button type="button" id="local-audio" aria-expanded="false">Audio</button><button type="button" id="local-biglist">BigList</button>'
+        ? '<button type="button" id="local-audio" aria-expanded="false">Audio</button><button type="button" id="local-biglist">BigList</button><button type="button" id="local-qr">QR code</button>'
         : "") +
       (shortcutSupported()
         ? '<button type="button" id="local-functions" aria-expanded="false">Functions</button>'
@@ -1006,6 +1006,29 @@
       finally { bigListButton.disabled = false; }
     });
     var functionsButton = document.getElementById("local-functions");
+    var qrButton = document.getElementById("local-qr");
+    if (qrButton) qrButton.addEventListener("click", async function () {
+      qrButton.disabled = true;
+      try {
+        if (!window.DesmosPlusQRUI) {
+          if (!document.getElementById("local-qr-css")) {
+            var css = document.createElement("link");
+            css.id = "local-qr-css"; css.rel = "stylesheet"; css.href = "/extension/qr-ui.css";
+            document.head.appendChild(css);
+          }
+          for (var file of ["vendor/qrcodegen.js", "qr-code.js", "qr-ui.js", "qr-page.js"]) {
+            await new Promise(function (resolve, reject) {
+              var script = document.createElement("script");
+              script.src = "/extension/" + file;
+              script.onload = resolve; script.onerror = function () { reject(new Error("QR editor could not load.")); };
+              document.head.appendChild(script);
+            });
+          }
+        }
+        window.DesmosPlusQRPage.open();
+      } catch (error) { window.alert(error.message || "QR editor could not open."); }
+      finally { qrButton.disabled = false; }
+    });
     if (functionsButton) functionsButton.addEventListener("click", toggleFunctionsPanel);
     document.getElementById("local-library").addEventListener("click", togglePanel);
   }

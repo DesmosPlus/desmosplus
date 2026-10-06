@@ -32,6 +32,7 @@ or maintained by Desmos Studio PBC.
 - [3D OBJ Import and Starter Ticker](#3d-obj-import-and-starter-ticker)
 - [Function Library](#function-library)
 - [BigList](#biglist)
+- [QR Codes](#qr-codes)
 - [DesAudify Audio Import](#desaudify-audio-import)
   - [Downloadable Shard ZIP](#downloadable-shard-zip)
 - [Permissions and Privacy](#permissions-and-privacy)
@@ -57,7 +58,8 @@ release downloads are public and do not require a GitHub account.
 
 | Version | DesModder included | Package | Release |
 | --- | --- | --- | --- |
-| **v1.27.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.27.0/DesmosPlus-Extension-v1.27.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.27.0) |
+| **v1.28.0 (latest)** | **No** | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.28.0/DesmosPlus-Extension-v1.28.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.28.0) |
+| v1.27.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.27.0/DesmosPlus-Extension-v1.27.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.27.0) |
 | v1.26.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.26.0/DesmosPlus-Extension-v1.26.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.26.0) |
 | v1.25.0 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.25.0/DesmosPlus-Extension-v1.25.0.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.25.0) |
 | v1.24.1 | No | [Download ZIP](https://github.com/DesmosPlus/desmosplus/releases/download/v1.24.1/DesmosPlus-Extension-v1.24.1.zip) | [Release notes](https://github.com/DesmosPlus/desmosplus/releases/tag/v1.24.1) |
@@ -86,7 +88,7 @@ release downloads are public and do not require a GitHub account.
 The complete release history is available on the
 [GitHub Releases page](https://github.com/DesmosPlus/desmosplus/releases).
 
-The optional DesModder edition is unavailable for v1.27.0. The standard
+The optional DesModder edition is unavailable for v1.28.0. The standard
 edition includes all of the features documented below.
 
 ## Release Process
@@ -388,6 +390,26 @@ Every definition is an ordinary Desmos expression. It is saved and exported as
 part of the graph, can be edited directly, and does not require a runtime patch.
 Selecting **Add library** again replaces the DesmosPlus-owned definitions with
 the current set. **Remove library** deletes only that folder and its contents.
+
+## QR Codes
+
+In the 2D calculator, open **QR code**, enter text or a URL, choose the module
+and background colors, and set the size in graph units. Add it as one collapsed
+folder of editable polygons. Reopen the tab and choose **Edit** to change its
+text or appearance; updates replace only that folder. **New QR** starts a
+separate code. The website and bundled offline website offer the same editor.
+
+Automatic QR versions 1-40 support up to 2,953 ASCII bytes of general text,
+4,296 QR-alphanumeric characters, or 7,089 digits. Unicode is supported but
+uses more bytes per character. Oversized messages are rejected, not truncated.
+Dense codes may need a larger display to scan. The editor preserves the quiet
+zone and requires contrasting dark modules and a light background.
+
+Encoding happens locally with the bundled MIT-licensed Nayuki library. Text
+and appearance settings are stored in the graph folder, so graph recipients
+can read them. The integrated editor generates polygon equations; use the
+editor to regenerate them when changing the message. The original native
+17-character prototype remains in [`qr-code/`](qr-code/README.md).
 
 ## BigList
 
